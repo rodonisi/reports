@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reports/form_builder.dart';
 import 'report_viewer.dart';
+import 'report_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,9 +51,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final fields = [FieldOptions(title: 't', fieldType: 0)];
-    final data = [FieldData(text: "test")];
-    final report = Report(fields: fields, data: data);
-    return ReportViewer(report: report);
+    // final fields = [FieldOptions(title: 't', fieldType: 0)];
+    // final data = [FieldData(text: "test")];
+    // final report = Report(fields: fields, data: data);
+    return ReportList();
   }
 }

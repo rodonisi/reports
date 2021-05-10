@@ -10,104 +10,160 @@ class FieldData {
   String text;
 }
 
-class Report {
-  Report({this.fields, this.data});
+class ReportLayout {
+  ReportLayout({this.fields});
 
   final List<FieldOptions> fields;
+}
+
+class Report {
+  const Report({this.title, this.layout, this.data});
+
+  final String title;
+  final ReportLayout layout;
   final List<FieldData> data;
 }
 
 class ReportViewer extends StatelessWidget {
-  const ReportViewer({Key key, this.report}) : super(key: key);
+  ReportViewer({
+    Key key,
+    // this.layout,
+    this.report,
+  }) : super(key: key);
+
+  // final ReportLayout layout;
   final Report report;
+
+  // final Report report;
+  final logger = Logger(
+    printer: PrettyPrinter(
+      printEmojis: true,
+      printTime: true,
+      colors: true,
+    ),
+  );
+  final controllers = <TextEditingController>[];
+
+  Widget _getField(FieldOptions options, int i) {
+    switch (options.fieldType) {
+      case 0:
+        return TextField(
+          controller: controllers[i],
+        );
+      case 1:
+        return DateTimeFormField(
+          decoration: InputDecoration(
+            suffixIcon: Icon(Icons.event_note),
+          ),
+          mode: DateTimeFieldPickerMode.time,
+          enabled: false,
+        );
+      case 2:
+        return DateTimeFormField(
+          decoration: InputDecoration(
+            suffixIcon: Icon(Icons.event_note),
+          ),
+          mode: DateTimeFieldPickerMode.date,
+          enabled: false,
+        );
+      case 3:
+        return DateTimeFormField(
+          decoration: InputDecoration(
+            suffixIcon: Icon(Icons.event_note),
+          ),
+          mode: DateTimeFieldPickerMode.dateAndTime,
+          enabled: false,
+        );
+      case 4:
+        return Row(
+          children: [
+            Expanded(
+                child: DateTimeFormField(
+              mode: DateTimeFieldPickerMode.time,
+              enabled: false,
+            )),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text('-'),
+            ),
+            Expanded(
+                child: DateTimeFormField(
+              mode: DateTimeFieldPickerMode.time,
+              enabled: false,
+            )),
+          ],
+        );
+      default:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget _getField(FieldOptions options, FieldData data) {
-      switch (options.fieldType) {
-        case 0:
-          return Text(
-            data.text,
-          );
-        case 1:
-          return DateTimeFormField(
-            decoration: InputDecoration(
-              suffixIcon: Icon(Icons.event_note),
-            ),
-            mode: DateTimeFieldPickerMode.time,
-            enabled: false,
-          );
-        case 2:
-          return DateTimeFormField(
-            decoration: InputDecoration(
-              suffixIcon: Icon(Icons.event_note),
-            ),
-            mode: DateTimeFieldPickerMode.date,
-            enabled: false,
-          );
-        case 3:
-          return DateTimeFormField(
-            decoration: InputDecoration(
-              suffixIcon: Icon(Icons.event_note),
-            ),
-            mode: DateTimeFieldPickerMode.dateAndTime,
-            enabled: false,
-          );
-        case 4:
-          return Row(
-            children: [
-              Expanded(
-                  child: DateTimeFormField(
-                mode: DateTimeFieldPickerMode.time,
-                enabled: false,
-              )),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text('-'),
-              ),
-              Expanded(
-                  child: DateTimeFormField(
-                mode: DateTimeFieldPickerMode.time,
-                enabled: false,
-              )),
-            ],
-          );
-        default:
-          return null;
-      }
+    controllers.addAll(List.generate(
+        report.layout.fields.length, (index) => TextEditingController()));
+
+    for (var i = 0; i < report.data.length; i++) {
+      controllers[i].text = report.data[i].text;
     }
+
+    // var report = Report(
+    //     layout: layout, title: 'Report ${DateTime.now().toString()}', data: []);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('test'),
+        title: Text(report.title),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        shrinkWrap: true,
-        itemBuilder: (context, i) {
-          if (i < report.fields.length) {
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(report.fields[i].title),
-                          _getField(report.fields[i], report.data[i])
-                        ],
-                      ),
+      body: Stack(
+        children: [
+          ListView.builder(
+            padding: EdgeInsets.all(16.0),
+            shrinkWrap: true,
+            itemBuilder: (context, i) {
+              if (i < report.layout.fields.length) {
+                return Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(report.layout.fields[i].title),
+                              _getField(report.layout.fields[i], i)
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          }
+                  ),
+                );
+              }
 
-          return null;
-        },
+              return null;
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              child: Text('save'),
+              onPressed: () {
+                for (var i = 0; i < report.layout.fields.length; i++) {
+                  if (report.data.length <= i) {
+                    report.data.add(FieldData(text: controllers[i].text));
+                  } else {
+                    report.data[i].text = controllers[i].text;
+                  }
+                  logger.d(
+                      '${report.layout.fields[i].title}: ${controllers[i].text}');
+                }
+                Navigator.pop(context, report);
+                logger.i("Saved report");
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
