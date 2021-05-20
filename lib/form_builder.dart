@@ -16,9 +16,10 @@ class TextFieldOptions extends FieldOptions {
 }
 
 class FormBuilder extends StatefulWidget {
-  FormBuilder({Key key, this.title}) : super(key: key);
+  FormBuilder({Key key, this.title, this.layout}) : super(key: key);
 
   final String title;
+  List<FieldOptions> layout;
 
   @override
   _FormBuilderState createState() => _FormBuilderState();
@@ -26,7 +27,6 @@ class FormBuilder extends StatefulWidget {
 
 class _FormBuilderState extends State<FormBuilder> {
   final logger = Logger(printer: PrettyPrinter(methodCount: 0));
-  final _fields = <FieldOptions>[];
   Widget _getField(FieldOptions options) {
     switch (options.fieldType) {
       case 0:
@@ -94,7 +94,7 @@ class _FormBuilderState extends State<FormBuilder> {
         new TextButton(
           onPressed: () {
             setState(() {
-              _fields.add(FieldOptions(
+              widget.layout.add(FieldOptions(
                 title: textFieldController.text,
                 fieldType: type,
               ));
@@ -113,45 +113,57 @@ class _FormBuilderState extends State<FormBuilder> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("layout builder"),
       ),
-      body: ListView.builder(
-          padding: EdgeInsets.all(16.0),
-          shrinkWrap: true,
-          itemBuilder: (context, i) {
-            if (i < _fields.length) {
-              return Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_fields[i].title),
-                            _getField(_fields[i])
-                          ],
+      body: Stack(children: [
+        ListView.builder(
+            padding: EdgeInsets.all(16.0),
+            shrinkWrap: true,
+            itemBuilder: (context, i) {
+              if (i < widget.layout.length) {
+                return Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.layout[i].title),
+                              _getField(widget.layout[i])
+                            ],
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_forever),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onPressed: () {
-                          setState(() {
-                            _fields.removeAt(i);
-                          });
-                        },
-                      ),
-                    ],
+                        IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            setState(() {
+                              widget.layout.removeAt(i);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
 
-            return null;
-          }),
+              return null;
+            }),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: ElevatedButton(
+            child: Text('save'),
+            onPressed: () {
+              Navigator.pop(context, widget.layout);
+              logger.i("Saved layout");
+            },
+          ),
+        ),
+      ]),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,

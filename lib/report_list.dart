@@ -19,13 +19,10 @@ class _ReportListState extends State<ReportList> {
     ),
   );
   var _reports = <Report>[];
+  var _layout = ReportLayout(fields: []);
   var c = 0;
 
   _navigateAndDisplaySelection(BuildContext context) async {
-    final fields = [
-      FieldOptions(title: 'field0', fieldType: 0),
-      FieldOptions(title: 'field1', fieldType: 0)
-    ];
     // final data = [FieldData(text: "")];
     // final report = Report(
     //   fields: fields,
@@ -38,7 +35,7 @@ class _ReportListState extends State<ReportList> {
         MaterialPageRoute(
           builder: (context) => ReportViewer(
             report: Report(
-              layout: ReportLayout(fields: fields),
+              layout: ReportLayout(fields: _layout.fields),
               title: 'Report ${DateTime.now().toString()}',
               data: [],
             ),
@@ -73,11 +70,32 @@ class _ReportListState extends State<ReportList> {
     }
   }
 
+  _pushLayout(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FormBuilder(layout: _layout.fields),
+        ));
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    if (result != null) {
+      setState(() {
+        _layout = ReportLayout(fields: result);
+      });
+      _logger.i('Updated layout');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('report list'),
+        leading: IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () => _pushLayout(context),
+        ),
       ),
       body: ListView.separated(
         itemCount: _reports.length,
