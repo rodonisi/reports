@@ -3,6 +3,7 @@ import 'form_builder.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
+import 'dart:convert';
 
 class FieldData {
   FieldData({this.text});
@@ -112,7 +113,7 @@ class ReportViewer extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(report.title),
+        title: TextField(report.title),
       ),
       body: Stack(
         children: [
@@ -146,21 +147,44 @@ class ReportViewer extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              child: Text('save'),
-              onPressed: () {
-                for (var i = 0; i < report.layout.fields.length; i++) {
-                  if (report.data.length <= i) {
-                    report.data.add(FieldData(text: controllers[i].text));
-                  } else {
-                    report.data[i].text = controllers[i].text;
-                  }
-                  logger.d(
-                      '${report.layout.fields[i].title}: ${controllers[i].text}');
-                }
-                Navigator.pop(context, report);
-                logger.i("Saved report");
-              },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Map<String, Object> jsonMap = {};
+                      for (var i = 0; i < report.layout.fields.length; i++) {
+                        jsonMap[report.layout.fields[i].title] = {
+                          'fieldType': report.layout.fields[i].fieldType,
+                          'fieldTitle': report.layout.fields[i].title,
+                          'data': report.data[i].text
+                        };
+                      }
+                      logger.d(json.encode(jsonMap));
+                    },
+                    child: Text('export'),
+                  ),
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    child: Text('save'),
+                    onPressed: () {
+                      for (var i = 0; i < report.layout.fields.length; i++) {
+                        if (report.data.length <= i) {
+                          report.data.add(FieldData(text: controllers[i].text));
+                        } else {
+                          report.data[i].text = controllers[i].text;
+                        }
+                        logger.d(
+                            '${report.layout.fields[i].title}: ${controllers[i].text}');
+                      }
+                      Navigator.pop(context, report);
+                      logger.i("Saved report");
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],
