@@ -106,9 +106,6 @@ class ReportViewer extends StatelessWidget {
       controllers[i].text = report.data[i].text;
     }
 
-    // var report = Report(
-    //     layout: layout, title: 'Report ${DateTime.now().toString()}', data: []);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(report.title),
