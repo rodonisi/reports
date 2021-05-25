@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+
 import 'report_viewer.dart';
 import 'form_builder.dart';
-import 'package:logger/logger.dart';
+import 'report_structures.dart';
 
 class ReportList extends StatefulWidget {
   ReportList({Key key}) : super(key: key);

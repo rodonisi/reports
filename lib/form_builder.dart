@@ -3,17 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
 
-class FieldOptions {
-  FieldOptions({this.title, this.fieldType});
-  final String title;
-  final int fieldType;
-}
-
-class TextFieldOptions extends FieldOptions {
-  TextFieldOptions({String title, int fieldType, this.lines})
-      : super(title: title, fieldType: fieldType);
-  final int lines;
-}
+import 'report_structures.dart';
 
 class FormBuilder extends StatefulWidget {
   FormBuilder({Key key, this.title, this.layout}) : super(key: key);
