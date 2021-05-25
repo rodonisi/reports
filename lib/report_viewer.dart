@@ -1,29 +1,10 @@
-import 'package:flutter/material.dart';
-import 'form_builder.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:date_field/date_field.dart';
-import 'package:logger/logger.dart';
 import 'dart:convert';
 
-class FieldData {
-  FieldData({this.text});
+import 'package:flutter/material.dart';
+import 'package:date_field/date_field.dart';
+import 'package:logger/logger.dart';
 
-  String text;
-}
-
-class ReportLayout {
-  ReportLayout({this.fields});
-
-  final List<FieldOptions> fields;
-}
-
-class Report {
-  const Report({this.title, this.layout, this.data});
-
-  final String title;
-  final ReportLayout layout;
-  final List<FieldData> data;
-}
+import 'report_structures.dart';
 
 class ReportViewer extends StatelessWidget {
   ReportViewer({
@@ -99,6 +80,23 @@ class ReportViewer extends StatelessWidget {
     }
   }
 
+  Widget _buildPopupDialog(BuildContext context, text) {
+    return new AlertDialog(
+      title: const Text('JSON Export'),
+      content: Text(text),
+      actions: <Widget>[
+        new TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Close',
+              overflow: TextOverflow.ellipsis,
+            )),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     controllers.addAll(List.generate(
@@ -113,7 +111,7 @@ class ReportViewer extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: TextField(report.title),
+        title: Text(report.title),
       ),
       body: Stack(
         children: [
@@ -153,15 +151,10 @@ class ReportViewer extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Map<String, Object> jsonMap = {};
-                      for (var i = 0; i < report.layout.fields.length; i++) {
-                        jsonMap[report.layout.fields[i].title] = {
-                          'fieldType': report.layout.fields[i].fieldType,
-                          'fieldTitle': report.layout.fields[i].title,
-                          'data': report.data[i].text
-                        };
-                      }
-                      logger.d(json.encode(jsonMap));
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _buildPopupDialog(context, report.toJSON()));
                     },
                     child: Text('export'),
                   ),
