@@ -1,10 +1,16 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
-import 'report_viewer.dart';
-import 'form_builder.dart';
-import '../structures/report_structures.dart';
-import 'menu_drawer.dart';
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
+import 'package:reports/views/report_viewer.dart';
+import 'package:reports/views/form_builder.dart';
+import 'package:reports/views/menu_drawer.dart';
+import 'package:reports/structures/report_structures.dart';
 
 class ReportList extends StatefulWidget {
   ReportList({Key key}) : super(key: key);

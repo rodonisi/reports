@@ -1,10 +1,14 @@
-import 'dart:convert';
-
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
 
-import '../structures/report_structures.dart';
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
+import 'package:reports/structures/report_structures.dart';
 
 class ReportViewer extends StatelessWidget {
   ReportViewer({

@@ -1,8 +1,14 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
 import 'package:reports/views/layouts_list.dart';
-import 'report_list.dart';
-import 'form_builder.dart';
-import 'package:reports/views/layouts_list.dart';
+import 'package:reports/views/report_list.dart';
+import 'package:reports/views/form_builder.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({Key key}) : super(key: key);

@@ -1,7 +1,13 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
 import 'package:reports/structures/report_structures.dart';
 
 class LayoutsModel extends ChangeNotifier {

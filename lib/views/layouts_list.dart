@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:provider/provider.dart';
 
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
 import 'package:reports/models/layouts.dart';
 import 'package:reports/views/form_builder.dart';
 import 'package:reports/views/menu_drawer.dart';

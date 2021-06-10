@@ -1,8 +1,15 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
 import 'package:reports/views/form_builder.dart';
-import 'views/report_viewer.dart';
-import 'views/report_list.dart';
+import 'package:reports/views/report_viewer.dart';
+import 'package:reports/views/report_list.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/common/theme.dart';
 import 'package:reports/views/layouts_list.dart';

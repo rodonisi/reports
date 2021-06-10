@@ -1,12 +1,17 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+// -----------------------------------------------------------------------------
+// - Local Imports
+// -----------------------------------------------------------------------------
 import 'package:reports/models/layouts.dart';
 import 'package:reports/structures/report_structures.dart';
-import 'menu_drawer.dart';
 
 class FormBuilderArgs {
   FormBuilderArgs({this.name, this.fields, this.index});
