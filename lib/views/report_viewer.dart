@@ -2,92 +2,104 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
-import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/structures/report_structures.dart';
+import 'package:reports/models/reports.dart';
+
+// -----------------------------------------------------------------------------
+// - ReportViewer Widget Declaration
+// -----------------------------------------------------------------------------
+class ReportViewerArgs {
+  ReportViewerArgs({this.report, this.index});
+
+  final Report report;
+  final int index;
+}
 
 class ReportViewer extends StatelessWidget {
-  ReportViewer({
-    Key key,
-    // this.layout,
-    this.report,
-  }) : super(key: key);
+  ReportViewer({Key key}) : super(key: key);
 
-  static const String routeName = '/reportViewer';
-
-  // final ReportLayout layout;
-  final Report report;
-
-  // final Report report;
+  static const String routeName = '/report_viewer';
   final logger = Logger(
-    printer: PrettyPrinter(
-      printEmojis: true,
-      printTime: true,
-      colors: true,
-    ),
+    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
   );
-  final controllers = <TextEditingController>[];
+  final _controllers = <TextEditingController>[];
 
-  Widget _getField(FieldOptions options, int i) {
-    switch (options.fieldType) {
-      case 0:
-        return TextField(
-          controller: controllers[i],
-        );
-      case 1:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.time,
-          enabled: false,
-        );
-      case 2:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.date,
-          enabled: false,
-        );
-      case 3:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.dateAndTime,
-          enabled: false,
-        );
-      case 4:
-        return Row(
-          children: [
-            Expanded(
-                child: DateTimeFormField(
-              mode: DateTimeFieldPickerMode.time,
-              enabled: false,
-            )),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text('-'),
-            ),
-            Expanded(
-                child: DateTimeFormField(
-              mode: DateTimeFieldPickerMode.time,
-              enabled: false,
-            )),
-          ],
-        );
-      default:
-        return null;
+  @override
+  Widget build(BuildContext context) {
+    final args = ModalRoute.of(context).settings.arguments as ReportViewerArgs;
+
+    final report = args.report;
+
+    _controllers.addAll(List.generate(
+        report.layout.fields.length, (index) => TextEditingController()));
+
+    for (var i = 0; i < report.data.length; i++) {
+      _controllers[i].text = report.data[i].text;
     }
-  }
 
-  Widget _buildPopupDialog(BuildContext context, text) {
-    return new AlertDialog(
+    final List<Widget> shareAction = [];
+    if (args.index != null)
+      shareAction.add(
+        IconButton(
+          icon: Icon(Icons.share),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) => _ExportDialog(text: report.toJSON()));
+          },
+        ),
+      );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(report.title),
+        actions: shareAction,
+      ),
+      body: Stack(
+        children: [
+          ListView.builder(
+            padding: EdgeInsets.all(16.0),
+            shrinkWrap: true,
+            itemCount: report.layout.fields.length,
+            itemBuilder: (context, i) {
+              return _FormCard(
+                options: report.layout.fields[i],
+                controller: _controllers[i],
+              );
+            },
+          ),
+          SafeArea(
+            top: false,
+            bottom: true,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _SaveButton(
+                  controllers: _controllers,
+                  report: report,
+                  index: args.index,
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _ExportDialog Widget Declaration
+// -----------------------------------------------------------------------------
+class _ExportDialog extends StatelessWidget {
+  const _ExportDialog({Key key, this.text}) : super(key: key);
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
       title: const Text('JSON Export'),
       content: Text(text),
       actions: <Widget>[
@@ -102,89 +114,83 @@ class ReportViewer extends StatelessWidget {
       ],
     );
   }
+}
+
+// -----------------------------------------------------------------------------
+// - _FormCard Widget Declaration
+// -----------------------------------------------------------------------------
+class _FormCard extends StatelessWidget {
+  const _FormCard({Key key, this.options, this.controller}) : super(key: key);
+
+  final FieldOptions options;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    controllers.addAll(List.generate(
-        report.layout.fields.length, (index) => TextEditingController()));
-
-    for (var i = 0; i < report.data.length; i++) {
-      controllers[i].text = report.data[i].text;
+    Widget _getField() {
+      switch (options.fieldType) {
+        case 0:
+          return TextField(
+            controller: controller,
+          );
+        default:
+          return null;
+      }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(report.title),
-      ),
-      body: Stack(
-        children: [
-          ListView.builder(
-            padding: EdgeInsets.all(16.0),
-            shrinkWrap: true,
-            itemBuilder: (context, i) {
-              if (i < report.layout.fields.length) {
-                return Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(report.layout.fields[i].title),
-                              _getField(report.layout.fields[i], i)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return null;
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildPopupDialog(context, report.toJSON()));
-                    },
-                    child: Text('export'),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    child: Text('save'),
-                    onPressed: () {
-                      for (var i = 0; i < report.layout.fields.length; i++) {
-                        if (report.data.length <= i) {
-                          report.data.add(FieldData(text: controllers[i].text));
-                        } else {
-                          report.data[i].text = controllers[i].text;
-                        }
-                        logger.d(
-                            '${report.layout.fields[i].title}: ${controllers[i].text}');
-                      }
-                      Navigator.pop(context, report);
-                      logger.i("Saved report");
-                    },
-                  ),
-                ),
-              ],
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(options.title), _getField()],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _SaveButton Widget Implementation
+// -----------------------------------------------------------------------------
+class _SaveButton extends StatelessWidget {
+  _SaveButton({Key key, this.report, this.controllers, this.index})
+      : super(key: key);
+  final Report report;
+  final List<TextEditingController> controllers;
+  final int index;
+  final logger = Logger(
+    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: Text('save'),
+      onPressed: () {
+        for (var i = 0; i < report.layout.fields.length; i++) {
+          if (report.data.length <= i) {
+            report.data.add(FieldData(text: controllers[i].text));
+          } else {
+            report.data[i].text = controllers[i].text;
+          }
+          logger.d('${report.layout.fields[i].title}: ${controllers[i].text}');
+        }
+        var reports = context.read<ReportsModel>();
+        if (index != null)
+          reports.update(index, report);
+        else
+          reports.add(report);
+
+        Navigator.pop(context);
+        logger.i("Saved report");
+      },
     );
   }
 }

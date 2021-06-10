@@ -7,7 +7,7 @@ import 'package:reports/views/report_list.dart';
 import 'package:reports/views/layouts_list.dart';
 
 final routes = {
-  ReportList.routeName: (context) => ReportList(),
+  Reports.routeName: (context) => Reports(),
   Layouts.routeName: (context) => Layouts(),
   FormBuilder.routeName: (context) => FormBuilder(),
   ReportViewer.routeName: (context) => ReportViewer(),

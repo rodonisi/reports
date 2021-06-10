@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/report_list.dart';
-import 'package:reports/views/form_builder.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({Key key}) : super(key: key);
@@ -25,20 +24,23 @@ class MenuDrawer extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned(
-                    bottom: 12.0,
-                    left: 16.0,
-                    child: Text("Menu",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500))),
+                  bottom: 12.0,
+                  left: 16.0,
+                  child: Text(
+                    "Menu",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           ListTile(
             title: Text('Reports'),
             onTap: () =>
-                Navigator.pushReplacementNamed(context, ReportList.routeName),
+                Navigator.pushReplacementNamed(context, Reports.routeName),
           ),
           ListTile(
             title: Text('Layouts'),

@@ -7,9 +7,10 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/models/layouts.dart';
 import 'package:reports/common/theme.dart';
 import 'package:reports/common/routes.dart';
+import 'package:reports/models/layouts.dart';
+import 'package:reports/models/reports.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => LayoutsModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ReportsModel(),
         ),
       ],
       child: MaterialApp(
