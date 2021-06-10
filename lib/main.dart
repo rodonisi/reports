@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           ReportList.routeName: (context) => ReportList(),
           Layouts.routeName: (context) => Layouts(),
           FormBuilder.routeName: (context) => FormBuilder(),
+          ReportViewer.routeName: (context) => ReportViewer(),
         },
       ),
     );

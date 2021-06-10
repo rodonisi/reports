@@ -17,6 +17,8 @@ class ReportViewer extends StatelessWidget {
     this.report,
   }) : super(key: key);
 
+  static const String routeName = '/reportViewer';
+
   // final ReportLayout layout;
   final Report report;
 
