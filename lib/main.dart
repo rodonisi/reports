@@ -7,12 +7,9 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/views/form_builder.dart';
-import 'package:reports/views/report_viewer.dart';
-import 'package:reports/views/report_list.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/common/theme.dart';
-import 'package:reports/views/layouts_list.dart';
+import 'package:reports/common/routes.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,12 +31,7 @@ class MyApp extends StatelessWidget {
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
         initialRoute: '/reports',
-        routes: {
-          ReportList.routeName: (context) => ReportList(),
-          Layouts.routeName: (context) => Layouts(),
-          FormBuilder.routeName: (context) => FormBuilder(),
-          ReportViewer.routeName: (context) => ReportViewer(),
-        },
+        routes: routes,
       ),
     );
   }
