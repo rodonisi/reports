@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:reports/form_builder.dart';
-import 'report_viewer.dart';
-import 'report_list.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/views/form_builder.dart';
+import 'views/report_viewer.dart';
+import 'views/report_list.dart';
+import 'package:reports/models/layouts.dart';
+import 'package:reports/common/theme.dart';
+import 'package:reports/views/layouts_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,16 +15,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Reports',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LayoutsModel(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Reports',
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.system,
+        initialRoute: '/reports',
+        routes: {
+          ReportList.routeName: (context) => ReportList(),
+          Layouts.routeName: (context) => Layouts(),
+          FormBuilder.routeName: (context) => FormBuilder(),
+        },
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      themeMode: ThemeMode.system,
-      home: ReportList(),
     );
   }
 }

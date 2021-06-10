@@ -3,10 +3,13 @@ import 'package:logger/logger.dart';
 
 import 'report_viewer.dart';
 import 'form_builder.dart';
-import 'report_structures.dart';
+import '../structures/report_structures.dart';
+import 'menu_drawer.dart';
 
 class ReportList extends StatefulWidget {
   ReportList({Key key}) : super(key: key);
+
+  static const String routeName = '/reports';
 
   @override
   _ReportListState createState() => _ReportListState();
@@ -72,32 +75,11 @@ class _ReportListState extends State<ReportList> {
     }
   }
 
-  _pushLayout(BuildContext context) async {
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FormBuilder(layout: _layout.fields),
-        ));
-
-    // After the Selection Screen returns a result, hide any previous snackbars
-    // and show the new result.
-    if (result != null) {
-      setState(() {
-        _layout = ReportLayout(fields: result);
-      });
-      _logger.i('Updated layout');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('report list'),
-        leading: IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () => _pushLayout(context),
-        ),
       ),
       body: ListView.separated(
         itemCount: _reports.length,
@@ -114,8 +96,10 @@ class _ReportListState extends State<ReportList> {
         separatorBuilder: (context, i) => Divider(),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => _navigateAndDisplaySelection(context)),
+        child: Icon(Icons.add),
+        onPressed: () => _navigateAndDisplaySelection(context),
+      ),
+      drawer: MenuDrawer(),
     );
   }
 }

@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
-import 'report_structures.dart';
+import 'package:reports/models/layouts.dart';
+import 'package:reports/structures/report_structures.dart';
+import 'menu_drawer.dart';
+
+class FormBuilderArgs {
+  FormBuilderArgs({this.name, this.fields, this.index});
+
+  final String name;
+  final List<FieldOptions> fields;
+  final int index;
+}
 
 class FormBuilder extends StatefulWidget {
-  FormBuilder({Key key, this.title, this.layout}) : super(key: key);
-
-  final String title;
-  List<FieldOptions> layout;
+  FormBuilder({Key key}) : super(key: key);
+  static const String routeName = '/formBuilder';
 
   @override
   _FormBuilderState createState() => _FormBuilderState();
@@ -17,6 +26,9 @@ class FormBuilder extends StatefulWidget {
 
 class _FormBuilderState extends State<FormBuilder> {
   final logger = Logger(printer: PrettyPrinter(methodCount: 0));
+  List<FieldOptions> _fields = [];
+  var _name = '';
+
   Widget _getField(FieldOptions options) {
     switch (options.fieldType) {
       case 0:
@@ -84,7 +96,7 @@ class _FormBuilderState extends State<FormBuilder> {
         new TextButton(
           onPressed: () {
             setState(() {
-              widget.layout.add(FieldOptions(
+              _fields.add(FieldOptions(
                 title: textFieldController.text,
                 fieldType: type,
               ));
@@ -101,16 +113,23 @@ class _FormBuilderState extends State<FormBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    final _args = ModalRoute.of(context).settings.arguments as FormBuilderArgs;
+    if (_args != null) {
+      _name = _args.name;
+      _fields = _args.fields;
+      logger.d('index: ${_args.index}');
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("layout builder"),
+        title: Text("fields builder"),
       ),
       body: Stack(children: [
         ListView.builder(
             padding: EdgeInsets.all(16.0),
             shrinkWrap: true,
             itemBuilder: (context, i) {
-              if (i < widget.layout.length) {
+              if (i < _fields.length) {
                 return Card(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
@@ -120,8 +139,8 @@ class _FormBuilderState extends State<FormBuilder> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(widget.layout[i].title),
-                              _getField(widget.layout[i])
+                              Text(_fields[i].title),
+                              _getField(_fields[i])
                             ],
                           ),
                         ),
@@ -131,7 +150,7 @@ class _FormBuilderState extends State<FormBuilder> {
                           highlightColor: Colors.transparent,
                           onPressed: () {
                             setState(() {
-                              widget.layout.removeAt(i);
+                              _fields.removeAt(i);
                             });
                           },
                         ),
@@ -143,14 +162,24 @@ class _FormBuilderState extends State<FormBuilder> {
 
               return null;
             }),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: ElevatedButton(
-            child: Text('save'),
-            onPressed: () {
-              Navigator.pop(context, widget.layout);
-              logger.i("Saved layout");
-            },
+        SafeArea(
+          bottom: true,
+          top: false,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              child: Text('save'),
+              onPressed: () {
+                var layout = context.read<LayoutsModel>();
+                final newLayout = ReportLayout(name: _name, fields: _fields);
+                if (_args.index != null)
+                  layout.update(_args.index, newLayout);
+                else
+                  layout.add(newLayout);
+                Navigator.pop(context);
+                logger.d("Saved layout");
+              },
+            ),
           ),
         ),
       ]),

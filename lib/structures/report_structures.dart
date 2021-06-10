@@ -19,8 +19,9 @@ class FieldData {
 }
 
 class ReportLayout {
-  ReportLayout({this.fields});
+  ReportLayout({this.name, this.fields});
 
+  final String name;
   final List<FieldOptions> fields;
 }
 

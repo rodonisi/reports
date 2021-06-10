@@ -8,6 +8,7 @@
 
 # Phase 1: Adding features
 * [ ] Clean code
+* [ ] Menu list + template management
 * [ ] Multiple templates
   * [ ] Create new templates
   * [ ] Edit existing templates
