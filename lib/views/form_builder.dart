@@ -3,7 +3,6 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:date_field/date_field.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/structures/report_structures.dart';
 
+// -----------------------------------------------------------------------------
+// - FormBuilderArgs Class Implementation
+// -----------------------------------------------------------------------------
 class FormBuilderArgs {
   FormBuilderArgs({this.name, this.fields, this.index});
 
@@ -21,6 +23,9 @@ class FormBuilderArgs {
   final int index;
 }
 
+// -----------------------------------------------------------------------------
+// - FormBuilder Widget Implementation
+// -----------------------------------------------------------------------------
 class FormBuilder extends StatefulWidget {
   FormBuilder({Key key}) : super(key: key);
   static const String routeName = '/formBuilder';
@@ -32,57 +37,6 @@ class FormBuilder extends StatefulWidget {
 class _FormBuilderState extends State<FormBuilder> {
   final logger = Logger(printer: PrettyPrinter(methodCount: 0));
   List<FieldOptions> _fields = [];
-  var _name = '';
-
-  Widget _getField(FieldOptions options) {
-    switch (options.fieldType) {
-      case 0:
-        return TextField(
-          enabled: false,
-        );
-      case 1:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.time,
-          enabled: false,
-        );
-      case 2:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.date,
-        );
-      case 3:
-        return DateTimeFormField(
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.event_note),
-          ),
-          mode: DateTimeFieldPickerMode.dateAndTime,
-        );
-      case 4:
-        return Row(
-          children: [
-            Expanded(
-                child: DateTimeFormField(
-              mode: DateTimeFieldPickerMode.time,
-            )),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text('-'),
-            ),
-            Expanded(
-                child: DateTimeFormField(
-              mode: DateTimeFieldPickerMode.time,
-            )),
-          ],
-        );
-      default:
-        return null;
-    }
-  }
 
   Widget _buildPopupDialog(BuildContext context, int type) {
     final textFieldController = TextEditingController();
@@ -116,124 +70,182 @@ class _FormBuilderState extends State<FormBuilder> {
     );
   }
 
+  void _removeField(int i) {
+    setState(() {
+      _fields.removeAt(i);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final _args = ModalRoute.of(context).settings.arguments as FormBuilderArgs;
-    if (_args != null) {
-      _name = _args.name;
-      _fields = _args.fields;
-      logger.d('index: ${_args.index}');
-    }
+    _fields = _args.fields;
+    final nameController = TextEditingController.fromValue(
+      TextEditingValue(
+        text: _args.name,
+      ),
+    );
+    final index = _args.index;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("fields builder"),
+        centerTitle: false,
+        title: _AppBarTextField(
+          controller: nameController,
+        ),
       ),
       body: Stack(children: [
         ListView.builder(
             padding: EdgeInsets.all(16.0),
             shrinkWrap: true,
+            itemCount: _fields.length,
             itemBuilder: (context, i) {
-              if (i < _fields.length) {
-                return Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(_fields[i].title),
-                              _getField(_fields[i])
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onPressed: () {
-                            setState(() {
-                              _fields.removeAt(i);
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return null;
+              return _FormCard(
+                options: _fields[i],
+                index: i,
+                removeFunc: _removeField,
+              );
             }),
         SafeArea(
           bottom: true,
           top: false,
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              child: Text('save'),
-              onPressed: () {
-                var layout = context.read<LayoutsModel>();
-                final newLayout = ReportLayout(name: _name, fields: _fields);
-                if (_args.index != null)
-                  layout.update(_args.index, newLayout);
-                else
-                  layout.add(newLayout);
-                Navigator.pop(context);
-                logger.d("Saved layout");
-              },
+            child: _SaveButton(
+              fields: _fields,
+              index: index,
+              name: nameController.text,
             ),
           ),
         ),
       ]),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        activeLabel: Text('close'),
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.list),
-            label: 'Text field',
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context, 0),
-            ),
+      floatingActionButton: _Dial(buildPopupDialog: _buildPopupDialog),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _SaveButton Widget Implementation
+// -----------------------------------------------------------------------------
+class _SaveButton extends StatelessWidget {
+  _SaveButton({Key key, this.name, this.fields, this.index}) : super(key: key);
+  final name;
+  final fields;
+  final index;
+  final logger = Logger(
+    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: Text('Save'),
+      onPressed: () {
+        var layout = context.read<LayoutsModel>();
+        final newLayout = ReportLayout(name: name, fields: fields);
+        if (index != null)
+          layout.update(index, newLayout);
+        else
+          layout.add(newLayout);
+        Navigator.pop(context);
+        logger.d("Saved layout");
+      },
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _Dial Widget Implementation
+// -----------------------------------------------------------------------------
+class _Dial extends StatelessWidget {
+  const _Dial({Key key, this.buildPopupDialog}) : super(key: key);
+  final buildPopupDialog;
+
+  @override
+  Widget build(BuildContext context) {
+    return SpeedDial(
+      icon: Icons.add,
+      activeIcon: Icons.close,
+      activeLabel: Text('close'),
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.list),
+          label: 'Text field',
+          onTap: () => showDialog(
+            context: context,
+            builder: (BuildContext context) => buildPopupDialog(context, 0),
           ),
-          SpeedDialChild(
-            child: Icon(Icons.list),
-            label: 'Time',
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context, 1),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _FormCard Widget Implementation
+// -----------------------------------------------------------------------------
+class _FormCard extends StatelessWidget {
+  const _FormCard({Key key, this.options, this.index, this.removeFunc})
+      : super(key: key);
+  final FieldOptions options;
+  final int index;
+  final removeFunc;
+
+  Widget _getField() {
+    switch (options.fieldType) {
+      case 0:
+        return TextField(
+          enabled: false,
+        );
+      default:
+        return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(options.title), _getField()],
+              ),
             ),
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.list),
-            label: 'Date',
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context, 2),
+            IconButton(
+              icon: Icon(Icons.delete_forever),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onPressed: () => removeFunc(index),
             ),
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.list),
-            label: 'DateTime',
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context, 3),
-            ),
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.list),
-            label: 'TimeRange',
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context, 4),
-            ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _AppBarTextField Widget Implementation
+// -----------------------------------------------------------------------------
+class _AppBarTextField extends StatelessWidget {
+  const _AppBarTextField({Key key, this.controller}) : super(key: key);
+  final TextEditingController controller;
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+      ),
+      // textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20.0,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

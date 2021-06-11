@@ -11,6 +11,9 @@ import 'package:reports/models/layouts.dart';
 import 'package:reports/views/form_builder.dart';
 import 'package:reports/views/menu_drawer.dart';
 
+// -----------------------------------------------------------------------------
+// - Layouts Widget Implementation
+// -----------------------------------------------------------------------------
 class Layouts extends StatelessWidget {
   const Layouts({Key key}) : super(key: key);
 
@@ -18,15 +21,22 @@ class Layouts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _layoutsProvider = context.watch<LayoutsModel>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Layouts'),
         actions: [
           IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => Navigator.pushNamed(
-                  context, FormBuilder.routeName,
-                  arguments: FormBuilderArgs(name: 'test', fields: []))),
+            icon: Icon(Icons.add),
+            onPressed: () => Navigator.pushNamed(
+              context,
+              FormBuilder.routeName,
+              arguments: FormBuilderArgs(
+                name: 'Layout ${_layoutsProvider.layouts.length}',
+                fields: [],
+              ),
+            ),
+          ),
         ],
       ),
       drawer: MenuDrawer(),
@@ -35,22 +45,25 @@ class Layouts extends StatelessWidget {
   }
 }
 
+// -----------------------------------------------------------------------------
+// - _LayoutList Widget Implementation
+// -----------------------------------------------------------------------------
 class _LayoutsList extends StatelessWidget {
   const _LayoutsList({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var _layouts = context.watch<LayoutsModel>();
+    var layouts = context.watch<LayoutsModel>();
     return ListView.builder(
-      itemCount: _layouts.layouts.length,
+      itemCount: layouts.layouts.length,
       itemBuilder: (context, index) => ListTile(
-        title: Text(_layouts.layouts[index].name),
+        title: Text(layouts.layouts[index].name),
         onTap: () => Navigator.pushNamed(
           context,
           FormBuilder.routeName,
           arguments: FormBuilderArgs(
-              name: _layouts.layouts[index].name,
-              fields: _layouts.layouts[index].fields,
+              name: layouts.layouts[index].name,
+              fields: layouts.layouts[index].fields,
               index: index),
         ),
       ),
