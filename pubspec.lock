@@ -49,14 +49,14 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   date_field:
     dependency: "direct main"
     description:
       name: date_field
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -75,7 +75,7 @@ packages:
       name: flutter_speed_dial
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
