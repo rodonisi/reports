@@ -36,7 +36,7 @@ class Report {
   ReportLayout layout;
   final List<FieldData> data;
 
-  toJSON() {
+  String toJSON() {
     Map<String, Object> jsonMap = {};
     for (var i = 0; i < layout.fields.length; i++) {
       jsonMap[layout.fields[i].title] = {
