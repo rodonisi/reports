@@ -77,12 +77,9 @@ class _ReportViewerState extends State<ReportViewer> {
         actions: shareAction,
         bottom: PreferredSize(
           preferredSize: Size(0.0, 30.0),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(.0, .0, .0, 10.0),
-            child: _LayoutSelector(
-              report: report,
-              refreshCallback: _setStateCallback,
-            ),
+          child: _LayoutSelector(
+            report: report,
+            refreshCallback: _setStateCallback,
           ),
         ),
       ),
