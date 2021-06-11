@@ -3,12 +3,12 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:reports/common/logger.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/structures/report_structures.dart';
 
@@ -35,7 +35,6 @@ class FormBuilder extends StatefulWidget {
 }
 
 class _FormBuilderState extends State<FormBuilder> {
-  final logger = Logger(printer: PrettyPrinter(methodCount: 0));
   List<FieldOptions> _fields = [];
 
   Widget _buildPopupDialog(BuildContext context, int type) {
@@ -132,9 +131,6 @@ class _SaveButton extends StatelessWidget {
   final name;
   final fields;
   final index;
-  final logger = Logger(
-    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
-  );
 
   @override
   Widget build(BuildContext context) {

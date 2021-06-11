@@ -2,12 +2,12 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:reports/common/logger.dart';
 import 'package:reports/structures/report_structures.dart';
 import 'package:reports/models/reports.dart';
 
@@ -25,9 +25,6 @@ class ReportViewer extends StatelessWidget {
   ReportViewer({Key? key}) : super(key: key);
 
   static const String routeName = '/report_viewer';
-  final logger = Logger(
-    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
-  );
   final _controllers = <TextEditingController>[];
 
   @override
@@ -171,9 +168,6 @@ class _SaveButton extends StatelessWidget {
   final Report report;
   final List<TextEditingController> controllers;
   final int? index;
-  final logger = Logger(
-    printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +180,7 @@ class _SaveButton extends StatelessWidget {
           } else {
             report.data[i].text = controllers[i].text;
           }
-          logger.d('${report.layout.fields[i].title}: ${controllers[i].text}');
+          logger.v('${report.layout.fields[i].title}: ${controllers[i].text}');
         }
         var reports = context.read<ReportsModel>();
         if (index != null)
@@ -195,7 +189,7 @@ class _SaveButton extends StatelessWidget {
           reports.add(report);
 
         Navigator.pop(context);
-        logger.i("Saved report");
+        logger.d("Saved report");
       },
     );
   }
