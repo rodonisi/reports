@@ -10,7 +10,7 @@ import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/report_list.dart';
 
 class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({Key key}) : super(key: key);
+  const MenuDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -15,14 +15,14 @@ import 'package:reports/models/reports.dart';
 // - ReportViewer Widget Declaration
 // -----------------------------------------------------------------------------
 class ReportViewerArgs {
-  ReportViewerArgs({this.report, this.index});
+  ReportViewerArgs({required this.report, this.index});
 
   final Report report;
-  final int index;
+  final int? index;
 }
 
 class ReportViewer extends StatelessWidget {
-  ReportViewer({Key key}) : super(key: key);
+  ReportViewer({Key? key}) : super(key: key);
 
   static const String routeName = '/report_viewer';
   final logger = Logger(
@@ -32,7 +32,7 @@ class ReportViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context).settings.arguments as ReportViewerArgs;
+    final args = ModalRoute.of(context)!.settings.arguments as ReportViewerArgs;
 
     final report = args.report;
 
@@ -95,7 +95,7 @@ class ReportViewer extends StatelessWidget {
 // - _ExportDialog Widget Declaration
 // -----------------------------------------------------------------------------
 class _ExportDialog extends StatelessWidget {
-  const _ExportDialog({Key key, this.text}) : super(key: key);
+  const _ExportDialog({Key? key, required this.text}) : super(key: key);
   final String text;
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,8 @@ class _ExportDialog extends StatelessWidget {
 // - _FormCard Widget Declaration
 // -----------------------------------------------------------------------------
 class _FormCard extends StatelessWidget {
-  const _FormCard({Key key, this.options, this.controller}) : super(key: key);
+  const _FormCard({Key? key, required this.options, required this.controller})
+      : super(key: key);
 
   final FieldOptions options;
   final TextEditingController controller;
@@ -134,7 +135,8 @@ class _FormCard extends StatelessWidget {
             controller: controller,
           );
         default:
-          return null;
+          throw ArgumentError.value(
+              options.fieldType, 'unsupported field type');
       }
     }
 
@@ -160,11 +162,15 @@ class _FormCard extends StatelessWidget {
 // - _SaveButton Widget Implementation
 // -----------------------------------------------------------------------------
 class _SaveButton extends StatelessWidget {
-  _SaveButton({Key key, this.report, this.controllers, this.index})
+  _SaveButton(
+      {Key? key,
+      required this.report,
+      required this.controllers,
+      required this.index})
       : super(key: key);
   final Report report;
   final List<TextEditingController> controllers;
-  final int index;
+  final int? index;
   final logger = Logger(
     printer: PrettyPrinter(printEmojis: true, printTime: true, colors: true),
   );
@@ -184,7 +190,7 @@ class _SaveButton extends StatelessWidget {
         }
         var reports = context.read<ReportsModel>();
         if (index != null)
-          reports.update(index, report);
+          reports.update(index!, report);
         else
           reports.add(report);
 

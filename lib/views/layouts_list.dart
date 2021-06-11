@@ -15,7 +15,7 @@ import 'package:reports/views/menu_drawer.dart';
 // - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
 class Layouts extends StatelessWidget {
-  const Layouts({Key key}) : super(key: key);
+  const Layouts({Key? key}) : super(key: key);
 
   static const String routeName = '/layouts';
 
@@ -49,7 +49,7 @@ class Layouts extends StatelessWidget {
 // - _LayoutList Widget Implementation
 // -----------------------------------------------------------------------------
 class _LayoutsList extends StatelessWidget {
-  const _LayoutsList({Key key}) : super(key: key);
+  const _LayoutsList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

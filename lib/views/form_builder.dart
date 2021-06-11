@@ -16,18 +16,18 @@ import 'package:reports/structures/report_structures.dart';
 // - FormBuilderArgs Class Implementation
 // -----------------------------------------------------------------------------
 class FormBuilderArgs {
-  FormBuilderArgs({this.name, this.fields, this.index});
+  FormBuilderArgs({required this.name, required this.fields, this.index});
 
   final String name;
   final List<FieldOptions> fields;
-  final int index;
+  final int? index;
 }
 
 // -----------------------------------------------------------------------------
 // - FormBuilder Widget Implementation
 // -----------------------------------------------------------------------------
 class FormBuilder extends StatefulWidget {
-  FormBuilder({Key key}) : super(key: key);
+  FormBuilder({Key? key}) : super(key: key);
   static const String routeName = '/formBuilder';
 
   @override
@@ -78,7 +78,7 @@ class _FormBuilderState extends State<FormBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final _args = ModalRoute.of(context).settings.arguments as FormBuilderArgs;
+    final _args = ModalRoute.of(context)!.settings.arguments as FormBuilderArgs;
     _fields = _args.fields;
     final nameController = TextEditingController.fromValue(
       TextEditingValue(
@@ -128,7 +128,7 @@ class _FormBuilderState extends State<FormBuilder> {
 // - _SaveButton Widget Implementation
 // -----------------------------------------------------------------------------
 class _SaveButton extends StatelessWidget {
-  _SaveButton({Key key, this.name, this.fields, this.index}) : super(key: key);
+  _SaveButton({Key? key, this.name, this.fields, this.index}) : super(key: key);
   final name;
   final fields;
   final index;
@@ -158,7 +158,7 @@ class _SaveButton extends StatelessWidget {
 // - _Dial Widget Implementation
 // -----------------------------------------------------------------------------
 class _Dial extends StatelessWidget {
-  const _Dial({Key key, this.buildPopupDialog}) : super(key: key);
+  const _Dial({Key? key, this.buildPopupDialog}) : super(key: key);
   final buildPopupDialog;
 
   @override
@@ -185,8 +185,12 @@ class _Dial extends StatelessWidget {
 // - _FormCard Widget Implementation
 // -----------------------------------------------------------------------------
 class _FormCard extends StatelessWidget {
-  const _FormCard({Key key, this.options, this.index, this.removeFunc})
-      : super(key: key);
+  const _FormCard({
+    Key? key,
+    required this.options,
+    required this.index,
+    required this.removeFunc,
+  }) : super(key: key);
   final FieldOptions options;
   final int index;
   final removeFunc;
@@ -198,7 +202,7 @@ class _FormCard extends StatelessWidget {
           enabled: false,
         );
       default:
-        return null;
+        throw ArgumentError.value(options.fieldType, 'unsupported field type');
     }
   }
 
@@ -232,7 +236,8 @@ class _FormCard extends StatelessWidget {
 // - _AppBarTextField Widget Implementation
 // -----------------------------------------------------------------------------
 class _AppBarTextField extends StatelessWidget {
-  const _AppBarTextField({Key key, this.controller}) : super(key: key);
+  const _AppBarTextField({Key? key, required this.controller})
+      : super(key: key);
   final TextEditingController controller;
   @override
   Widget build(BuildContext context) {

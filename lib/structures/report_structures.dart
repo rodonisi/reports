@@ -4,32 +4,33 @@
 import 'dart:convert';
 
 class FieldOptions {
-  FieldOptions({this.title, this.fieldType});
+  FieldOptions({required this.title, required this.fieldType});
   final String title;
   final int fieldType;
 }
 
 class TextFieldOptions extends FieldOptions {
-  TextFieldOptions({String title, int fieldType, this.lines})
+  TextFieldOptions(
+      {required String title, required int fieldType, required this.lines})
       : super(title: title, fieldType: fieldType);
   final int lines;
 }
 
 class FieldData {
-  FieldData({this.text});
+  FieldData({required this.text});
 
   String text;
 }
 
 class ReportLayout {
-  ReportLayout({this.name, this.fields});
+  ReportLayout({required this.name, required this.fields});
 
   final String name;
   final List<FieldOptions> fields;
 }
 
 class Report {
-  const Report({this.title, this.layout, this.data});
+  const Report({required this.title, required this.layout, required this.data});
 
   final String title;
   final ReportLayout layout;
