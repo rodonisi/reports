@@ -205,27 +205,22 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () {
-        final newReport = Report(
-          data: [],
-          layout: report.layout,
-          title: titleController.text,
-        );
+        report.title = titleController.text;
 
         for (var i = 0; i < report.layout.fields.length; i++) {
-          if (newReport.data.length <= i) {
-            newReport.data.add(FieldData(text: controllers[i].text));
+          if (report.data.length <= i) {
+            report.data.add(FieldData(text: controllers[i].text));
           } else {
-            newReport.data[i].text = controllers[i].text;
+            report.data[i].text = controllers[i].text;
           }
-          logger
-              .v('${newReport.layout.fields[i].title}: ${controllers[i].text}');
+          logger.v('${report.layout.fields[i].title}: ${controllers[i].text}');
         }
 
         var reports = context.read<ReportsModel>();
         if (index != null)
-          reports.update(index!, newReport);
+          reports.update(index!, report);
         else
-          reports.add(newReport);
+          reports.add(report);
 
         Navigator.pop(context);
         logger.d("Saved report");

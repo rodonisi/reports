@@ -32,6 +32,7 @@ class ReportLayout {
 class Report {
   Report({required this.title, required this.layout, required this.data});
 
+  String title;
   ReportLayout layout;
   final List<FieldData> data;
 
