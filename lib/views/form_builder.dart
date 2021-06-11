@@ -17,10 +17,9 @@ import 'package:reports/widgets/app_bar_text_field.dart';
 // - FormBuilderArgs Class Implementation
 // -----------------------------------------------------------------------------
 class FormBuilderArgs {
-  FormBuilderArgs({required this.name, required this.fields, this.index});
+  FormBuilderArgs({required this.layout, this.index});
 
-  final String name;
-  final List<FieldOptions> fields;
+  final ReportLayout layout;
   final int? index;
 }
 
@@ -36,7 +35,7 @@ class FormBuilder extends StatefulWidget {
 }
 
 class _FormBuilderState extends State<FormBuilder> {
-  List<FieldOptions> _fields = [];
+  late ReportLayout _layout;
 
   Widget _buildPopupDialog(BuildContext context, int type) {
     final textFieldController = TextEditingController();
@@ -55,7 +54,7 @@ class _FormBuilderState extends State<FormBuilder> {
         new TextButton(
           onPressed: () {
             setState(() {
-              _fields.add(FieldOptions(
+              _layout.fields.add(FieldOptions(
                 title: textFieldController.text,
                 fieldType: type,
               ));
@@ -72,20 +71,34 @@ class _FormBuilderState extends State<FormBuilder> {
 
   void _removeField(int i) {
     setState(() {
-      _fields.removeAt(i);
+      _layout.fields.removeAt(i);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final _args = ModalRoute.of(context)!.settings.arguments as FormBuilderArgs;
-    _fields = _args.fields;
+    _layout = _args.layout;
     final nameController = TextEditingController.fromValue(
       TextEditingValue(
-        text: _args.name,
+        text: _layout.name,
       ),
     );
     final index = _args.index;
+    final isNew = index == null;
+
+    final List<Widget> shareAction = [];
+    if (!isNew)
+      shareAction.add(
+        IconButton(
+          icon: Icon(Icons.share),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) => _ExportDialog(text: _layout.toJSON()));
+          },
+        ),
+      );
 
     return Scaffold(
       appBar: AppBar(
@@ -93,15 +106,16 @@ class _FormBuilderState extends State<FormBuilder> {
         title: AppBarTextField(
           controller: nameController,
         ),
+        actions: shareAction,
       ),
       body: Stack(children: [
         ListView.builder(
             padding: EdgeInsets.all(16.0),
             shrinkWrap: true,
-            itemCount: _fields.length,
+            itemCount: _layout.fields.length,
             itemBuilder: (context, i) {
               return _FormCard(
-                options: _fields[i],
+                options: _layout.fields[i],
                 index: i,
                 removeFunc: _removeField,
               );
@@ -112,7 +126,7 @@ class _FormBuilderState extends State<FormBuilder> {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: _SaveButton(
-              fields: _fields,
+              fields: _layout.fields,
               index: index,
               nameController: nameController,
             ),
@@ -231,6 +245,31 @@ class _FormCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _ExportDialog Widget Declaration
+// -----------------------------------------------------------------------------
+class _ExportDialog extends StatelessWidget {
+  const _ExportDialog({Key? key, required this.text}) : super(key: key);
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('JSON Export'),
+      content: SelectableText(text),
+      actions: <Widget>[
+        new TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Close',
+              overflow: TextOverflow.ellipsis,
+            )),
+      ],
     );
   }
 }

@@ -127,7 +127,7 @@ class _ExportDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('JSON Export'),
-      content: Text(text),
+      content: SelectableText(text),
       actions: <Widget>[
         new TextButton(
             onPressed: () {

@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:reports/structures/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/views/form_builder.dart';
 import 'package:reports/views/menu_drawer.dart';
@@ -32,8 +33,10 @@ class Layouts extends StatelessWidget {
               context,
               FormBuilder.routeName,
               arguments: FormBuilderArgs(
-                name: 'Layout ${_layoutsProvider.layouts.length}',
-                fields: [],
+                layout: ReportLayout(
+                  name: 'Layout ${_layoutsProvider.layouts.length}',
+                  fields: [],
+                ),
               ),
             ),
           ),
@@ -53,18 +56,16 @@ class _LayoutsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var layouts = context.watch<LayoutsModel>();
+    var layoutsProvider = context.watch<LayoutsModel>();
     return ListView.builder(
-      itemCount: layouts.layouts.length,
+      itemCount: layoutsProvider.layouts.length,
       itemBuilder: (context, index) => ListTile(
-        title: Text(layouts.layouts[index].name),
+        title: Text(layoutsProvider.layouts[index].name),
         onTap: () => Navigator.pushNamed(
           context,
           FormBuilder.routeName,
           arguments: FormBuilderArgs(
-              name: layouts.layouts[index].name,
-              fields: layouts.layouts[index].fields,
-              index: index),
+              layout: layoutsProvider.layouts[index], index: index),
         ),
       ),
     );
