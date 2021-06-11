@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/structures/report_structures.dart';
+import 'package:reports/widgets/app_bar_text_field.dart';
 
 // -----------------------------------------------------------------------------
 // - FormBuilderArgs Class Implementation
@@ -89,7 +90,7 @@ class _FormBuilderState extends State<FormBuilder> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: _AppBarTextField(
+        title: AppBarTextField(
           controller: nameController,
         ),
       ),
@@ -113,7 +114,7 @@ class _FormBuilderState extends State<FormBuilder> {
             child: _SaveButton(
               fields: _fields,
               index: index,
-              name: nameController.text,
+              nameController: nameController,
             ),
           ),
         ),
@@ -127,10 +128,15 @@ class _FormBuilderState extends State<FormBuilder> {
 // - _SaveButton Widget Implementation
 // -----------------------------------------------------------------------------
 class _SaveButton extends StatelessWidget {
-  _SaveButton({Key? key, this.name, this.fields, this.index}) : super(key: key);
-  final name;
-  final fields;
-  final index;
+  _SaveButton(
+      {Key? key,
+      required this.nameController,
+      required this.fields,
+      this.index})
+      : super(key: key);
+  final TextEditingController nameController;
+  final List<FieldOptions> fields;
+  final int? index;
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +144,10 @@ class _SaveButton extends StatelessWidget {
       child: Text('Save'),
       onPressed: () {
         var layout = context.read<LayoutsModel>();
-        final newLayout = ReportLayout(name: name, fields: fields);
+        final newLayout =
+            ReportLayout(name: nameController.text, fields: fields);
         if (index != null)
-          layout.update(index, newLayout);
+          layout.update(index!, newLayout);
         else
           layout.add(newLayout);
         Navigator.pop(context);
@@ -223,30 +230,6 @@ class _FormCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// - _AppBarTextField Widget Implementation
-// -----------------------------------------------------------------------------
-class _AppBarTextField extends StatelessWidget {
-  const _AppBarTextField({Key? key, required this.controller})
-      : super(key: key);
-  final TextEditingController controller;
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-      ),
-      // textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-        fontWeight: FontWeight.w500,
       ),
     );
   }

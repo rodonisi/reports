@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/structures/report_structures.dart';
 import 'package:reports/models/reports.dart';
+import 'package:reports/widgets/app_bar_text_field.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportViewer Widget Declaration
@@ -22,16 +23,23 @@ class ReportViewerArgs {
 }
 
 class ReportViewer extends StatelessWidget {
+  static const String routeName = '/report_viewer';
+
   ReportViewer({Key? key}) : super(key: key);
 
-  static const String routeName = '/report_viewer';
   final _controllers = <TextEditingController>[];
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ReportViewerArgs;
+    final _args =
+        ModalRoute.of(context)!.settings.arguments as ReportViewerArgs;
 
-    final report = args.report;
+    final report = _args.report;
+    final titleController = TextEditingController.fromValue(
+      TextEditingValue(
+        text: report.title,
+      ),
+    );
 
     _controllers.addAll(List.generate(
         report.layout.fields.length, (index) => TextEditingController()));
@@ -41,7 +49,7 @@ class ReportViewer extends StatelessWidget {
     }
 
     final List<Widget> shareAction = [];
-    if (args.index != null)
+    if (_args.index != null)
       shareAction.add(
         IconButton(
           icon: Icon(Icons.share),
@@ -55,7 +63,7 @@ class ReportViewer extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(report.title),
+        title: AppBarTextField(controller: titleController),
         actions: shareAction,
       ),
       body: Stack(
@@ -77,9 +85,10 @@ class ReportViewer extends StatelessWidget {
             child: Align(
                 alignment: Alignment.bottomCenter,
                 child: _SaveButton(
+                  titleController: titleController,
                   controllers: _controllers,
                   report: report,
-                  index: args.index,
+                  index: _args.index,
                 )),
           ),
         ],
@@ -161,10 +170,12 @@ class _FormCard extends StatelessWidget {
 class _SaveButton extends StatelessWidget {
   _SaveButton(
       {Key? key,
+      required this.titleController,
       required this.report,
       required this.controllers,
       required this.index})
       : super(key: key);
+  final TextEditingController titleController;
   final Report report;
   final List<TextEditingController> controllers;
   final int? index;
@@ -172,21 +183,29 @@ class _SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      child: Text('save'),
+      child: Text('Save'),
       onPressed: () {
+        final newReport = Report(
+          data: [],
+          layout: report.layout,
+          title: titleController.text,
+        );
+
         for (var i = 0; i < report.layout.fields.length; i++) {
-          if (report.data.length <= i) {
-            report.data.add(FieldData(text: controllers[i].text));
+          if (newReport.data.length <= i) {
+            newReport.data.add(FieldData(text: controllers[i].text));
           } else {
-            report.data[i].text = controllers[i].text;
+            newReport.data[i].text = controllers[i].text;
           }
-          logger.v('${report.layout.fields[i].title}: ${controllers[i].text}');
+          logger
+              .v('${newReport.layout.fields[i].title}: ${controllers[i].text}');
         }
+
         var reports = context.read<ReportsModel>();
         if (index != null)
-          reports.update(index!, report);
+          reports.update(index!, newReport);
         else
-          reports.add(report);
+          reports.add(newReport);
 
         Navigator.pop(context);
         logger.d("Saved report");
