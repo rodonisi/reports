@@ -6,21 +6,37 @@ import 'package:flutter/material.dart';
 // -----------------------------------------------------------------------------
 // - AppBarTextField Widget Declaration
 // -----------------------------------------------------------------------------
-class AppBarTextField extends StatelessWidget {
-  const AppBarTextField({Key? key, required this.controller}) : super(key: key);
+
+class AppBarTextField extends StatefulWidget {
+  AppBarTextField({Key? key, required this.controller}) : super(key: key);
+
   final TextEditingController controller;
   @override
+  _AppBarTextFieldState createState() => _AppBarTextFieldState();
+}
+
+class _AppBarTextFieldState extends State<AppBarTextField> {
+  bool isEditing = false;
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-      ),
-      // textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-        fontWeight: FontWeight.w500,
+    return Focus(
+      onFocusChange: (hasFocus) => setState(() => isEditing = hasFocus),
+      child: TextField(
+        controller: widget.controller,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          suffixIcon: isEditing
+              ? IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () => widget.controller.clear(),
+                )
+              : null,
+        ),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
