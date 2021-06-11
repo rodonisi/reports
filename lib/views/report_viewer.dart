@@ -44,6 +44,7 @@ class _ReportViewerState extends State<ReportViewer> {
     final _args =
         ModalRoute.of(context)!.settings.arguments as ReportViewerArgs;
 
+    final isNew = _args.index == null;
     final report = _args.report;
     final titleController = TextEditingController.fromValue(
       TextEditingValue(
@@ -59,7 +60,7 @@ class _ReportViewerState extends State<ReportViewer> {
     }
 
     final List<Widget> shareAction = [];
-    if (_args.index != null)
+    if (!isNew)
       shareAction.add(
         IconButton(
           icon: Icon(Icons.share),
@@ -75,13 +76,15 @@ class _ReportViewerState extends State<ReportViewer> {
       appBar: AppBar(
         title: AppBarTextField(controller: titleController),
         actions: shareAction,
-        bottom: PreferredSize(
-          preferredSize: Size(0.0, 30.0),
-          child: _LayoutSelector(
-            report: report,
-            refreshCallback: _setStateCallback,
-          ),
-        ),
+        bottom: isNew
+            ? PreferredSize(
+                preferredSize: Size(0.0, 30.0),
+                child: _LayoutSelector(
+                  report: report,
+                  refreshCallback: _setStateCallback,
+                ),
+              )
+            : null,
       ),
       body: Stack(
         children: [
