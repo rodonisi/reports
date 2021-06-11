@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/layouts.dart';
 import 'package:reports/structures/report_structures.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
@@ -22,12 +23,21 @@ class ReportViewerArgs {
   final int? index;
 }
 
-class ReportViewer extends StatelessWidget {
-  static const String routeName = '/report_viewer';
-
+class ReportViewer extends StatefulWidget {
   ReportViewer({Key? key}) : super(key: key);
 
+  static const String routeName = '/report_viewer';
+
+  @override
+  _ReportViewerState createState() => _ReportViewerState();
+}
+
+class _ReportViewerState extends State<ReportViewer> {
   final _controllers = <TextEditingController>[];
+
+  void _setStateCallback() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +75,16 @@ class ReportViewer extends StatelessWidget {
       appBar: AppBar(
         title: AppBarTextField(controller: titleController),
         actions: shareAction,
+        bottom: PreferredSize(
+          preferredSize: Size(0.0, 30.0),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(.0, .0, .0, 10.0),
+            child: _LayoutSelector(
+              report: report,
+              refreshCallback: _setStateCallback,
+            ),
+          ),
+        ),
       ),
       body: Stack(
         children: [
@@ -211,5 +231,39 @@ class _SaveButton extends StatelessWidget {
         logger.d("Saved report");
       },
     );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - _LayoutSelector Widget Implementation
+// -----------------------------------------------------------------------------
+
+class _LayoutSelector extends StatefulWidget {
+  _LayoutSelector(
+      {Key? key, required this.report, required this.refreshCallback})
+      : super(key: key);
+
+  final Report report;
+  final refreshCallback;
+
+  @override
+  __LayoutSelectorState createState() => __LayoutSelectorState();
+}
+
+class __LayoutSelectorState extends State<_LayoutSelector> {
+  @override
+  Widget build(BuildContext context) {
+    var layoutsProvider = context.watch<LayoutsModel>();
+    var titleMap = layoutsProvider.layouts
+        .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
+              child: Text(e.name),
+              onTap: () => widget.report.layout = e,
+              value: e.name,
+            ))
+        .toList();
+    return DropdownButton(
+        items: titleMap,
+        value: widget.report.layout.name,
+        onChanged: (value) => widget.refreshCallback());
   }
 }

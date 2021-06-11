@@ -30,10 +30,9 @@ class ReportLayout {
 }
 
 class Report {
-  const Report({required this.title, required this.layout, required this.data});
+  Report({required this.title, required this.layout, required this.data});
 
-  final String title;
-  final ReportLayout layout;
+  ReportLayout layout;
   final List<FieldData> data;
 
   toJSON() {
