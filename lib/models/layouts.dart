@@ -43,8 +43,8 @@ class LayoutsModel extends ChangeNotifier {
 
   void loadFromFiles() async {
     final layouts = await getLocalDirFiles(layoutsDirectory);
-    for (var file in layouts) {
-      add(ReportLayout.fromJson(readFile(file)));
-    }
+    for (var file in layouts) add(ReportLayout.fromJson(readFile(file)));
+
+    notifyListeners();
   }
 }
