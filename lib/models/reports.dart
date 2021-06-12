@@ -8,7 +8,7 @@ import 'package:logger/logger.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/structures/report_structures.dart';
+import 'package:reports/common/report_structures.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportsModel Class Declaration

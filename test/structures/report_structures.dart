@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:reports/structures/report_structures.dart';
+import 'package:reports/common/report_structures.dart';
 
 void main() {
   final String simpleLayoutJSON =

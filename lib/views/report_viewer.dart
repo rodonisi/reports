@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/logger.dart';
 import 'package:reports/models/layouts.dart';
-import 'package:reports/structures/report_structures.dart';
+import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
 

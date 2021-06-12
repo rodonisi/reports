@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/structures/report_structures.dart';
+import 'package:reports/common/report_structures.dart';
 
 class LayoutsModel extends ChangeNotifier {
   final List<ReportLayout> _layouts = [];
