@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/logger.dart';
-import 'package:reports/models/layouts.dart';
+import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
 
@@ -204,7 +205,7 @@ class _SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       child: Text('Save'),
-      onPressed: () {
+      onPressed: () async {
         report.title = titleController.text;
 
         for (var i = 0; i < report.layout.fields.length; i++) {
@@ -221,6 +222,10 @@ class _SaveButton extends StatelessWidget {
           reports.update(index!, report);
         else
           reports.add(report);
+
+        final file = await writeFile(
+            '$reportsDirectory/${report.title}', report.toJSON());
+        logger.d('written file: ${file.path}');
 
         Navigator.pop(context);
         logger.d("Saved report");

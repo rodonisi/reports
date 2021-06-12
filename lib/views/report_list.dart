@@ -26,22 +26,23 @@ class Reports extends StatelessWidget {
       appBar: AppBar(
         title: Text('report list'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          var layouts = context.read<LayoutsModel>();
-          Navigator.pushNamed(
-            context,
-            ReportViewer.routeName,
-            arguments: ReportViewerArgs(
-              report: Report(
-                title: 'Report ${DateTime.now().toString()}',
-                layout: layouts.layouts[0],
-                data: [],
+      floatingActionButton: Consumer<LayoutsModel>(
+        builder: (context, layoutsProvider, child) => FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              ReportViewer.routeName,
+              arguments: ReportViewerArgs(
+                report: Report(
+                  title: 'Report ${DateTime.now().toString()}',
+                  layout: layoutsProvider.layouts[0],
+                  data: [],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
       drawer: MenuDrawer(),
       body: _ReportList(),
