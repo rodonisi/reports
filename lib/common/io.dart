@@ -26,7 +26,7 @@ Future<String> get getLocalDocsPath async {
 Future<List<File>> getLocalDirFiles(String dirPath) async {
   List<File> files = [];
   final basePath = await getLocalDocsPath;
-  final dir = Directory(basePath + dirPath);
+  final dir = await Directory(basePath + dirPath).create(recursive: true);
 
   for (var entry in dir.listSync()) {
     if (entry is File) {
@@ -34,6 +34,8 @@ Future<List<File>> getLocalDirFiles(String dirPath) async {
       logger.d('Found file ${entry.path}');
     }
   }
+
+  files.sort((a, b) => a.path.compareTo(b.path));
 
   return files;
 }
