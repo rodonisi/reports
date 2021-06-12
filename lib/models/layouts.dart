@@ -8,8 +8,13 @@ import 'package:logger/logger.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/common/io.dart';
 
 class LayoutsModel extends ChangeNotifier {
+  LayoutsModel() {
+    loadFromFiles();
+  }
+
   final List<ReportLayout> _layouts = [];
   final _logger = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -34,5 +39,12 @@ class LayoutsModel extends ChangeNotifier {
     _logger.d('Updated layout: ${layout.name} at position $index');
 
     notifyListeners();
+  }
+
+  void loadFromFiles() async {
+    final layouts = await getLocalDirFiles(layoutsDirectory);
+    for (var file in layouts) {
+      add(ReportLayout.fromJson(readFile(file)));
+    }
   }
 }

@@ -9,8 +9,9 @@ import 'package:provider/provider.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/logger.dart';
-import 'package:reports/models/layouts.dart';
+import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
 
 // -----------------------------------------------------------------------------
@@ -156,7 +157,7 @@ class _SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       child: Text('Save'),
-      onPressed: () {
+      onPressed: () async {
         var layout = context.read<LayoutsModel>();
         final newLayout =
             ReportLayout(name: nameController.text, fields: fields);
@@ -164,6 +165,10 @@ class _SaveButton extends StatelessWidget {
           layout.update(index!, newLayout);
         else
           layout.add(newLayout);
+
+        final file = await writeFile(
+            '$layoutsDirectory/${newLayout.name}', newLayout.toJSON());
+        logger.d('written file: ${file.path}');
         Navigator.pop(context);
         logger.d("Saved layout");
       },
