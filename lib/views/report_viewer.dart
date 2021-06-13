@@ -206,6 +206,7 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
+        final oldTitle = report.title;
         report.title = titleController.text;
 
         for (var i = 0; i < report.layout.fields.length; i++) {
@@ -223,9 +224,8 @@ class _SaveButton extends StatelessWidget {
         else
           reports.add(report);
 
-        final file = await writeFile(
+        renameAndWriteFile('$reportsDirectory/$oldTitle',
             '$reportsDirectory/${report.title}', report.toJSON());
-        logger.d('written file: ${file.path}');
 
         Navigator.pop(context);
         logger.d("Saved report");
