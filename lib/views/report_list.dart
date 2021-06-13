@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class Reports extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('report list'),
+        title: Text('Reports'),
       ),
       floatingActionButton: Consumer<LayoutsModel>(
         builder: (context, layoutsProvider, child) => FloatingActionButton(
