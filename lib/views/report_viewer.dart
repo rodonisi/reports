@@ -13,6 +13,7 @@ import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportViewer Widget Declaration
@@ -64,11 +65,10 @@ class _ReportViewerState extends State<ReportViewer> {
     if (!isNew)
       shareAction.add(
         IconButton(
-          icon: Icon(Icons.share),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) => _ExportDialog(text: report.toJSON()));
+          icon: Icon(Icons.adaptive.share),
+          onPressed: () async {
+            final reportsDir = await getReportsDirectory;
+            Share.shareFiles(['$reportsDir/${report.title}.json']);
           },
         ),
       );

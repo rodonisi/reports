@@ -13,6 +13,7 @@ import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - FormBuilderArgs Class Implementation
@@ -92,11 +93,12 @@ class _FormBuilderState extends State<FormBuilder> {
     if (!isNew)
       shareAction.add(
         IconButton(
-          icon: Icon(Icons.share),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) => _ExportDialog(text: _layout.toJSON()));
+          icon: Icon(Icons.adaptive.share),
+          onPressed: () async {
+            final layoutsDir = await getLayoutsDirectory;
+            Share.shareFiles(
+              ['$layoutsDir/${_layout.name}.json'],
+            );
           },
         ),
       );

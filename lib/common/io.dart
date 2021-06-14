@@ -24,6 +24,16 @@ Future<String> get getLocalDocsPath async {
   return dir.path;
 }
 
+Future<String> get getLayoutsDirectory async {
+  final basePath = await getLocalDocsPath;
+  return basePath + layoutsDirectory;
+}
+
+Future<String> get getReportsDirectory async {
+  final basePath = await getLocalDocsPath;
+  return basePath + reportsDirectory;
+}
+
 Future<List<File>> getLocalDirFiles(String dirPath) async {
   List<File> files = [];
   final basePath = await getLocalDocsPath;
