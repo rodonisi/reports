@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -13,7 +14,6 @@ import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
-import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportViewer Widget Declaration
