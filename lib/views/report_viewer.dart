@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/widgets/form_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
@@ -94,7 +95,7 @@ class _ReportViewerState extends State<ReportViewer> {
             shrinkWrap: true,
             itemCount: report.layout.fields.length,
             itemBuilder: (context, i) {
-              return _FormCard(
+              return _FormViewerCard(
                 options: report.layout.fields[i],
                 controller: _controllers[i],
               );
@@ -144,10 +145,11 @@ class _ExportDialog extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// - _FormCard Widget Declaration
+// - _FormViewerCard Widget Declaration
 // -----------------------------------------------------------------------------
-class _FormCard extends StatelessWidget {
-  const _FormCard({Key? key, required this.options, required this.controller})
+class _FormViewerCard extends StatelessWidget {
+  const _FormViewerCard(
+      {Key? key, required this.options, required this.controller})
       : super(key: key);
 
   final FieldOptions options;
@@ -155,27 +157,15 @@ class _FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _getField() {
-      switch (options.fieldType) {
-        case 0:
-          return TextField(
-            controller: controller,
-          );
-        default:
-          throw ArgumentError.value(
-              options.fieldType, 'unsupported field type');
-      }
-    }
-
     return Card(
       child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(options.title), _getField()],
+              child: FormTileContent(
+                options: options,
+                controller: controller,
               ),
             ),
           ],

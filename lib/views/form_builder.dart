@@ -14,6 +14,7 @@ import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:reports/widgets/form_tile.dart';
 
 // -----------------------------------------------------------------------------
 // - FormBuilderArgs Class Implementation
@@ -39,36 +40,8 @@ class FormBuilder extends StatefulWidget {
 class _FormBuilderState extends State<FormBuilder> {
   late ReportLayout _layout;
 
-  Widget _buildPopupDialog(BuildContext context, int type) {
-    final textFieldController = TextEditingController();
-    return new AlertDialog(
-      title: const Text('Field Title'),
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: textFieldController,
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        new TextButton(
-          onPressed: () {
-            setState(() {
-              _layout.fields.add(FieldOptions(
-                title: textFieldController.text,
-                fieldType: type,
-              ));
-              logger.v(
-                  'Add new field:\n  > type: $type\n  > title ${textFieldController.text}');
-            });
-            Navigator.of(context).pop();
-          },
-          child: const Text('Add'),
-        ),
-      ],
-    );
+  void _addField(FieldOptions options) {
+    setState(() => _layout.fields.add(options));
   }
 
   void _removeField(int i) {
@@ -117,10 +90,9 @@ class _FormBuilderState extends State<FormBuilder> {
             shrinkWrap: true,
             itemCount: _layout.fields.length,
             itemBuilder: (context, i) {
-              return _FormCard(
+              return _FormBuilderCard(
                 options: _layout.fields[i],
-                index: i,
-                removeFunc: _removeField,
+                removeFunc: () => _removeField(i),
               );
             }),
         SafeArea(
@@ -136,7 +108,7 @@ class _FormBuilderState extends State<FormBuilder> {
           ),
         ),
       ]),
-      floatingActionButton: _Dial(buildPopupDialog: _buildPopupDialog),
+      floatingActionButton: _Dial(addFieldFunc: _addField),
     );
   }
 }
@@ -182,8 +154,8 @@ class _SaveButton extends StatelessWidget {
 // - _Dial Widget Implementation
 // -----------------------------------------------------------------------------
 class _Dial extends StatelessWidget {
-  const _Dial({Key? key, this.buildPopupDialog}) : super(key: key);
-  final buildPopupDialog;
+  const _Dial({Key? key, required this.addFieldFunc}) : super(key: key);
+  final Function(FieldOptions) addFieldFunc;
 
   @override
   Widget build(BuildContext context) {
@@ -195,10 +167,7 @@ class _Dial extends StatelessWidget {
         SpeedDialChild(
           child: Icon(Icons.list),
           label: 'Text field',
-          onTap: () => showDialog(
-            context: context,
-            builder: (BuildContext context) => buildPopupDialog(context, 0),
-          ),
+          onTap: () => addFieldFunc(TextFieldOptions()),
         ),
       ],
     );
@@ -206,50 +175,63 @@ class _Dial extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// - _FormCard Widget Implementation
+// - _FormBuilderCard Widget Implementation
 // -----------------------------------------------------------------------------
-class _FormCard extends StatelessWidget {
-  const _FormCard({
+
+class _FormBuilderCard extends StatefulWidget {
+  const _FormBuilderCard({
     Key? key,
     required this.options,
-    required this.index,
     required this.removeFunc,
   }) : super(key: key);
   final FieldOptions options;
-  final int index;
-  final removeFunc;
+  final Function() removeFunc;
 
-  Widget _getField() {
-    switch (options.fieldType) {
-      case 0:
-        return TextField(
-          enabled: false,
-        );
-      default:
-        throw ArgumentError.value(options.fieldType, 'unsupported field type');
-    }
-  }
+  @override
+  __FormBuilderCardState createState() => __FormBuilderCardState();
+}
+
+class __FormBuilderCardState extends State<_FormBuilderCard>
+    with TickerProviderStateMixin {
+  final _animationDuration = 150;
+  bool isOpts = true;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(options.title), _getField()],
+    return GestureDetector(
+      onTap: () => setState(() => isOpts = !isOpts),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: AnimatedSize(
+                  duration: Duration(milliseconds: _animationDuration),
+                  reverseDuration: Duration(milliseconds: _animationDuration),
+                  vsync: this,
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: _animationDuration),
+                    reverseDuration: Duration(milliseconds: 0),
+                    child: isOpts
+                        ? FormTileContent(
+                            options: widget.options,
+                            enabled: false,
+                          )
+                        : FormTileOptions(
+                            options: widget.options,
+                          ),
+                  ),
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.delete_forever),
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: () => removeFunc(index),
-            ),
-          ],
+              IconButton(
+                icon: Icon(Icons.delete_forever),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () => widget.removeFunc(),
+              ),
+            ],
+          ),
         ),
       ),
     );

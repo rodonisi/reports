@@ -4,19 +4,46 @@
 import 'dart:convert';
 
 class FieldOptions {
-  final String title;
-  final int fieldType;
-  FieldOptions({required this.title, required this.fieldType});
-
   static const String nameID = 'field_name';
   static const String typeID = 'field_type';
+
+  String title;
+  int fieldType;
+
+  FieldOptions({required this.title, required this.fieldType});
+
+  FieldOptions.fromMap(Map<String, dynamic> map)
+      : title = map[nameID],
+        fieldType = map[typeID];
+
+  Map<String, dynamic> asMap() {
+    final Map<String, dynamic> map = {};
+    map[nameID] = title;
+    map[typeID] = fieldType;
+
+    return map;
+  }
 }
 
 class TextFieldOptions extends FieldOptions {
-  final int lines;
-  TextFieldOptions(
-      {required String title, required int fieldType, required this.lines})
-      : super(title: title, fieldType: fieldType);
+  static const String linesID = 'lines';
+
+  int lines;
+
+  TextFieldOptions({String title = 'Text', this.lines = 1})
+      : super(title: title, fieldType: 0);
+
+  TextFieldOptions.fromMap(Map<String, dynamic> map)
+      : lines = map[linesID],
+        super.fromMap(map);
+
+  @override
+  Map<String, dynamic> asMap() {
+    final map = super.asMap();
+    map[linesID] = lines;
+
+    return map;
+  }
 }
 
 class FieldData {
@@ -44,10 +71,15 @@ class ReportLayout {
         final index = int.tryParse(key);
         if (index != null) {
           final fieldMap = value as Map<String, dynamic>;
-          final options = FieldOptions(
-            title: fieldMap[FieldOptions.nameID]!,
-            fieldType: fieldMap[FieldOptions.typeID]!,
-          );
+          final FieldOptions options;
+          switch (value[FieldOptions.typeID]) {
+            case 0:
+              options = TextFieldOptions.fromMap(fieldMap);
+              break;
+            default:
+              throw ArgumentError.value(value[FieldOptions.typeID].fieldType,
+                  'unsupported field type');
+          }
           fields.add(options);
         }
       }
@@ -103,10 +135,7 @@ Map<String, dynamic> _serialize(
   Map<String, dynamic> serialized = {};
 
   for (var i = 0; i < layout.fields.length; i++) {
-    serialized[i.toString()] = {
-      FieldOptions.nameID: layout.fields[i].title,
-      FieldOptions.typeID: layout.fields[i].fieldType,
-    };
+    serialized[i.toString()] = layout.fields[i].asMap();
     if (data != null)
       (serialized[i.toString()]! as Map<String, dynamic>)[FieldData.dataID] =
           data[i].text;
