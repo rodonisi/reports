@@ -57,7 +57,7 @@ class _LayoutsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var layoutsProvider = context.watch<LayoutsModel>();
-    return ListView.builder(
+    return ListView.separated(
       itemCount: layoutsProvider.layouts.length,
       itemBuilder: (context, index) => ListTile(
         title: Text(layoutsProvider.layouts[index].name),
@@ -68,6 +68,7 @@ class _LayoutsList extends StatelessWidget {
               layout: layoutsProvider.layouts[index], index: index),
         ),
       ),
+      separatorBuilder: (context, index) => Divider(),
     );
   }
 }
