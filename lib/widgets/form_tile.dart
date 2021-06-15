@@ -34,7 +34,13 @@ class FormTileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text(options.title), _getField()],
+      children: [
+        Text(
+          options.title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        _getField()
+      ],
     );
   }
 }
