@@ -86,7 +86,7 @@ class _TextFieldTileOptions extends StatelessWidget {
         ),
         Divider(),
         Text(
-          'Field Title',
+          'Title',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         TextFormField(
