@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/common/reports_icon_icons.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/views/report_viewer.dart';
@@ -66,6 +67,7 @@ class _ReportList extends StatelessWidget {
       itemBuilder: (context, i) {
         return ListTile(
           title: Text(reportsProvider.reports[i].title),
+          leading: Icon(ReportsIcon.report),
           onTap: () => Navigator.pushNamed(context, ReportViewer.routeName,
               arguments: ReportViewerArgs(
                 report: reportsProvider.reports[i],

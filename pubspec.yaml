@@ -34,6 +34,7 @@ dependencies:
   provider: ^5.0.0
   path_provider: ^2.0.2
   share_plus: ^2.1.2
+  flutter_launcher_icons: ^0.9.0
 
 dev_dependencies:
   flutter_test:
@@ -44,7 +45,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+    - family:  ReportsIcon
+      fonts:
+      - asset: fonts/ReportsIcon.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -80,3 +84,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
