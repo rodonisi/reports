@@ -9,7 +9,6 @@ import 'package:share_plus/share_plus.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/logger.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
