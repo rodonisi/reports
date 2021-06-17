@@ -3,11 +3,13 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/reports_icons_icons.dart';
+import 'package:reports/common/io.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/views/form_builder.dart';
 import 'package:reports/views/menu_drawer.dart';
@@ -58,18 +60,35 @@ class _LayoutsList extends StatelessWidget {
     var layoutsProvider = context.watch<LayoutsModel>();
     return ListView.separated(
       itemCount: layoutsProvider.layouts.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(layoutsProvider.layouts[index]),
-        leading: Icon(ReportsIcons.layout),
-        onTap: () => Navigator.pushNamed(
-          context,
-          FormBuilder.routeName,
-          arguments: FormBuilderArgs(
-            name: layoutsProvider.layouts[index],
-            index: index,
+      itemBuilder: (context, index) {
+        final item = layoutsProvider.layouts[index];
+        return Slidable(
+          key: Key(item),
+          actionPane: SlidableDrawerActionPane(),
+          secondaryActions: [
+            IconSlideAction(
+              icon: Icons.delete,
+              color: Colors.red,
+              onTap: () {
+                deleteFile('$layoutsDirectory/$item');
+                layoutsProvider.removeAt(index);
+              },
+            )
+          ],
+          child: ListTile(
+            title: Text(layoutsProvider.layouts[index]),
+            leading: Icon(ReportsIcons.layout),
+            onTap: () => Navigator.pushNamed(
+              context,
+              FormBuilder.routeName,
+              arguments: FormBuilderArgs(
+                name: layoutsProvider.layouts[index],
+                index: index,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
       separatorBuilder: (context, index) => Divider(),
     );
   }

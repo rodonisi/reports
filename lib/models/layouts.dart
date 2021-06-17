@@ -38,6 +38,14 @@ class LayoutsModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Remove the layout at the given index and notify its listeners.
+  void removeAt(int index) {
+    logger.d('Removed layout ${_layouts[index]} at index $index');
+    _layouts.removeAt(index);
+
+    notifyListeners();
+  }
+
   /// Update the layout at the given index.
   void update(int index, String layout) {
     _layouts[index] = layout;
