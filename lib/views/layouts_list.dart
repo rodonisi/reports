@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/views/form_builder.dart';
