@@ -60,7 +60,7 @@ class _FormBuilderState extends State<FormBuilder> {
   @override
   void initState() {
     // Read layout from file
-    final futureReport = readNamedReport(widget.args.name);
+    final futureReport = readNamedLayout(widget.args.name);
 
     // Add completition callback for when the file has been read.
     futureReport.then((value) {
