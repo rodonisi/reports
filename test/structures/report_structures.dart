@@ -12,13 +12,13 @@ void main() {
     test('encode layout', () {
       final layout = ReportLayout(
         name: 'layout',
-        fields: [FieldOptions(title: 'field', fieldType: 0)],
+        fields: [TextFieldOptions(title: 'field', lines: 1)],
       );
       expect(layout.toJSON(), simpleLayoutJSON);
     });
     test('roundtrip layout', () {
       expect(
-          ReportLayout.fromJson(simpleLayoutJSON).toJSON(), simpleLayoutJSON);
+          ReportLayout.fromJSON(simpleLayoutJSON).toJSON(), simpleLayoutJSON);
     });
   });
 
@@ -26,9 +26,14 @@ void main() {
     test('encode report', () {
       final layout = ReportLayout(
         name: 'layout',
-        fields: [FieldOptions(title: 'field', fieldType: 0)],
+        fields: [
+          TextFieldOptions(
+            title: 'field',
+            lines: 1,
+          )
+        ],
       );
-      final data = [FieldData(text: 'value')];
+      final data = [TextFieldData(data: 'value')];
       final report = Report(title: 'report', layout: layout, data: data);
       expect(report.toJSON(), simpleReportJSON);
     });
