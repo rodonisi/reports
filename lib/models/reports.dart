@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
-
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
-import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 
 // -----------------------------------------------------------------------------
 // - Local Imports
