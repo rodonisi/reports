@@ -44,6 +44,7 @@ class ReportsModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Remove the report at the given index and notify the listeners.
   void removeAt(int index) {
     logger.d('Removed report ${_reports[index]} at index $index');
     _reports.removeAt(index);
