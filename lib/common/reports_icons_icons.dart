@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/ReportsIcons.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
@@ -21,7 +21,10 @@ class ReportsIcons {
   static const _kFontFam = 'ReportsIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData report = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData layout = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData layout_detailed = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData report =
+      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData layout =
+      IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData layout_detailed =
+      IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

@@ -16,6 +16,8 @@ import 'package:reports/views/menu_drawer.dart';
 // -----------------------------------------------------------------------------
 // - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Displays all the layouts stored in the app in a list.
 class Layouts extends StatelessWidget {
   const Layouts({Key? key}) : super(key: key);
 
@@ -67,7 +69,9 @@ class _LayoutsList extends StatelessWidget {
           context,
           FormBuilder.routeName,
           arguments: FormBuilderArgs(
-              layout: layoutsProvider.layouts[index], index: index),
+            layout: layoutsProvider.layouts[index],
+            index: index,
+          ),
         ),
       ),
       separatorBuilder: (context, index) => Divider(),

@@ -7,6 +7,8 @@ import 'package:reports/common/report_structures.dart';
 // -----------------------------------------------------------------------------
 // - FormTileContent Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Creates the form card content for the given type.
 class FormTileContent extends StatelessWidget {
   const FormTileContent(
       {Key? key, required this.options, this.enabled = true, this.controller})
@@ -48,6 +50,8 @@ class FormTileContent extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // - FormTileOptions Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Creates the options for the form card of the given type.
 class FormTileOptions extends StatelessWidget {
   const FormTileOptions({Key? key, required this.options}) : super(key: key);
 

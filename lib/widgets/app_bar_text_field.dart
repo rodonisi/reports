@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // - AppBarTextField Widget Declaration
 // -----------------------------------------------------------------------------
 
+/// A text field with no decorations and a clear button.
 class AppBarTextField extends StatefulWidget {
   AppBarTextField({Key? key, required this.controller}) : super(key: key);
 

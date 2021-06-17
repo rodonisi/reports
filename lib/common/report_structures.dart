@@ -3,7 +3,10 @@
 // -----------------------------------------------------------------------------
 import 'dart:convert';
 
-class FieldOptions {
+/// Base class to store field options. Contains all the options common for all
+/// the types of fields. Each extending class has to implement `fromMap` and
+/// `toMap` methods to convert the options to JSON.
+abstract class FieldOptions {
   static const String nameID = 'field_name';
   static const String typeID = 'field_type';
 
@@ -12,10 +15,12 @@ class FieldOptions {
 
   FieldOptions({required this.title, required this.fieldType});
 
+  /// Convert the field options to a serializabel map.
   FieldOptions.fromMap(Map<String, dynamic> map)
       : title = map[nameID],
         fieldType = map[typeID];
 
+  /// Initialize a FieldOptions instance from a JSON map.
   Map<String, dynamic> asMap() {
     final Map<String, dynamic> map = {};
     map[nameID] = title;
@@ -25,6 +30,7 @@ class FieldOptions {
   }
 }
 
+/// Class containing the options specific to a text field.
 class TextFieldOptions extends FieldOptions {
   static const String linesID = 'lines';
 
@@ -46,13 +52,26 @@ class TextFieldOptions extends FieldOptions {
   }
 }
 
-class FieldData {
-  String text;
-  FieldData({required this.text});
-
+/// Base class for a field's data
+abstract class FieldData {
   static const String dataID = 'data';
+
+  String toString();
 }
 
+/// A text field's data.
+class TextFieldData extends FieldData {
+  String data;
+  TextFieldData({required this.data});
+
+  @override
+  String toString() {
+    return data;
+  }
+}
+
+/// Representation of a report layout. A report layout always contains a name,
+/// as well as a list of FieldOptions, representing the fields in the layout.
 class ReportLayout {
   String name;
   List<FieldOptions> fields;
@@ -60,14 +79,20 @@ class ReportLayout {
 
   static const String nameID = 'layout_name';
 
-  ReportLayout.fromJson(String jsonString)
+  /// Initialize a layout from a JSON string.
+  ReportLayout.fromJSON(String jsonString)
       : this.name = '',
         this.fields = [] {
+    // Decode the JSON string.
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+
+    // Iterate over the decoded JSON map.
     jsonMap.forEach((key, value) {
+      // Get the layout name.
       if (key == nameID)
         name = value as String;
       else {
+        // Get a layout field.
         final index = int.tryParse(key);
         if (index != null) {
           final fieldMap = value as Map<String, dynamic>;
@@ -86,6 +111,7 @@ class ReportLayout {
     });
   }
 
+  /// Convert the layout to a JSON string.
   String toJSON() {
     Map<String, dynamic> jsonMap = {};
     jsonMap[nameID] = name;
@@ -94,33 +120,42 @@ class ReportLayout {
   }
 }
 
+/// Representation of a report. Each report contains a title, a layout, and some
+/// data for each of the fields in the layout.
 class Report {
+  static const String titleID = 'report_title';
+
   String title;
   ReportLayout layout;
   final List<FieldData> data;
   Report({required this.title, required this.layout, required this.data});
 
-  static const String titleID = 'report_title';
-
+  /// Initialize a report from a JSON string.
   Report.fromJSON(String jsonString)
       : this.title = '',
-        this.layout = ReportLayout.fromJson(jsonString),
+        this.layout = ReportLayout.fromJSON(jsonString),
         data = [] {
+    // Decode the json string.
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+
+    // Iterate over the decoded json map.
     jsonMap.forEach((key, value) {
+      // Get the report title.
       if (key == titleID)
         this.title = value as String;
       else {
+        // Get a field.
         final index = int.tryParse(key);
         if (index != null) {
           final fieldMap = value as Map<String, dynamic>;
-          final mapData = FieldData(text: fieldMap[FieldData.dataID]!);
+          final mapData = TextFieldData(data: fieldMap[FieldData.dataID]!);
           data.add(mapData);
         }
       }
     });
   }
 
+  /// Convert the report to a JSON string.
   String toJSON() {
     Map<String, dynamic> jsonMap = {};
     jsonMap['report_title'] = title;
@@ -130,15 +165,20 @@ class Report {
   }
 }
 
+/// Serialize a layout and its data (if present).
 Map<String, dynamic> _serialize(
     {required ReportLayout layout, List<FieldData>? data}) {
   Map<String, dynamic> serialized = {};
 
+  // Iterate over the layout fields.
   for (var i = 0; i < layout.fields.length; i++) {
+    // Create a new nested map for the field options.
     serialized[i.toString()] = layout.fields[i].asMap();
+
+    // Add the data to the nested map if present.
     if (data != null)
       (serialized[i.toString()]! as Map<String, dynamic>)[FieldData.dataID] =
-          data[i].text;
+          data[i].toString();
   }
 
   return serialized;

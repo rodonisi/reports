@@ -19,6 +19,8 @@ import 'package:reports/widgets/form_tile.dart';
 // -----------------------------------------------------------------------------
 // - FormBuilderArgs Class Implementation
 // -----------------------------------------------------------------------------
+
+/// Arguments class for the form builder.
 class FormBuilderArgs {
   FormBuilderArgs({required this.layout, this.index});
 
@@ -29,6 +31,8 @@ class FormBuilderArgs {
 // -----------------------------------------------------------------------------
 // - FormBuilder Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Displays a form builder.
 class FormBuilder extends StatefulWidget {
   FormBuilder({Key? key}) : super(key: key);
   static const String routeName = '/formBuilder';
@@ -52,16 +56,22 @@ class _FormBuilderState extends State<FormBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final _args = ModalRoute.of(context)!.settings.arguments as FormBuilderArgs;
-    _layout = _args.layout;
+    // Controller for the layout name text field.
     final nameController = TextEditingController.fromValue(
       TextEditingValue(
         text: _layout.name,
       ),
     );
+
+    // Get the arguments passed through the navigator.
+    final _args = ModalRoute.of(context)!.settings.arguments as FormBuilderArgs;
+
+    // Extract arguments.
+    _layout = _args.layout;
     final index = _args.index;
     final isNew = index == null;
 
+    // Add the share action only if we're viewing an existing report.
     final List<Widget> shareAction = [];
     if (!isNew)
       shareAction.add(
@@ -132,19 +142,25 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
-        var layout = context.read<LayoutsModel>();
+        // Get the provider.
+        final layoutsProvider = context.read<LayoutsModel>();
+
+        // Initialize a new layout object.
         final newLayout =
             ReportLayout(name: nameController.text, fields: fields);
-        if (index != null)
-          layout.update(index!, newLayout);
-        else
-          layout.add(newLayout);
 
+        // Update or add the layout
+        if (index != null)
+          layoutsProvider.update(index!, newLayout);
+        else
+          layoutsProvider.add(newLayout);
+
+        // Write the layout to file.
         final file = await writeFile(
             '$layoutsDirectory/${newLayout.name}', newLayout.toJSON());
+
         logger.d('written file: ${file.path}');
         Navigator.pop(context);
-        logger.d("Saved layout");
       },
     );
   }
@@ -177,7 +193,6 @@ class _Dial extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // - _FormBuilderCard Widget Implementation
 // -----------------------------------------------------------------------------
-
 class _FormBuilderCard extends StatefulWidget {
   const _FormBuilderCard({
     Key? key,
@@ -234,31 +249,6 @@ class __FormBuilderCardState extends State<_FormBuilderCard>
           ),
         ),
       ),
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// - _ExportDialog Widget Declaration
-// -----------------------------------------------------------------------------
-class _ExportDialog extends StatelessWidget {
-  const _ExportDialog({Key? key, required this.text}) : super(key: key);
-  final String text;
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('JSON Export'),
-      content: SelectableText(text),
-      actions: <Widget>[
-        new TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Close',
-              overflow: TextOverflow.ellipsis,
-            )),
-      ],
     );
   }
 }

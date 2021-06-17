@@ -17,8 +17,10 @@ import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
 
 // -----------------------------------------------------------------------------
-// - ReportViewer Widget Declaration
+// - ReportViewerArgs Class Implementation
 // -----------------------------------------------------------------------------
+
+/// Arguments class for the report viewer.
 class ReportViewerArgs {
   ReportViewerArgs({required this.name, this.index});
 
@@ -26,6 +28,11 @@ class ReportViewerArgs {
   final int? index;
 }
 
+// -----------------------------------------------------------------------------
+// - ReportViewer Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays the report viewer for a new or existing report.
 class ReportViewer extends StatefulWidget {
   static const String routeName = '/report_viewer';
 
@@ -38,8 +45,9 @@ class ReportViewer extends StatefulWidget {
 
 class _ReportViewerState extends State<ReportViewer> {
   late Report report;
-  bool loaded = false;
   final controllers = <TextEditingController>[];
+  // Keep track of when the report file has been read.
+  bool loaded = false;
 
   void _setStateCallback() {
     setState(() {});
@@ -47,7 +55,10 @@ class _ReportViewerState extends State<ReportViewer> {
 
   @override
   void initState() {
+    // Read the report from file
     final futureReport = readNamedReport(widget.args.name);
+
+    // Add completition callback for when the file has been read.
     futureReport.then((value) {
       setState(() {
         report = Report.fromJSON(value);
@@ -70,26 +81,33 @@ class _ReportViewerState extends State<ReportViewer> {
 
   @override
   Widget build(BuildContext context) {
+    // If the report file is not available yet, just display a progrss
+    // indicator.
     if (!loaded)
       return Center(
         child: CircularProgressIndicator.adaptive(),
       );
 
+    // Determine whether we're viewing an existing report or creating a new one.
     final isNew = widget.args.index == null;
 
+    // Declare a controller for the tile.
     final titleController = TextEditingController.fromValue(
       TextEditingValue(
         text: report.title,
       ),
     );
 
+    // Generate a controller for each of the fields.
     controllers.addAll(List.generate(
         report.layout.fields.length, (index) => TextEditingController()));
 
+    // Set the controllers' text to that of the existing data.
     for (var i = 0; i < report.data.length; i++) {
-      controllers[i].text = report.data[i].text;
+      controllers[i].text = (report.data[i] as TextFieldData).data;
     }
 
+    // Add a share action if we're viewing an existing report.
     final List<Widget> shareAction = [];
     if (!isNew)
       shareAction.add(
@@ -148,31 +166,6 @@ class _ReportViewerState extends State<ReportViewer> {
 }
 
 // -----------------------------------------------------------------------------
-// - _ExportDialog Widget Declaration
-// -----------------------------------------------------------------------------
-class _ExportDialog extends StatelessWidget {
-  const _ExportDialog({Key? key, required this.text}) : super(key: key);
-  final String text;
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('JSON Export'),
-      content: SelectableText(text),
-      actions: <Widget>[
-        new TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Close',
-              overflow: TextOverflow.ellipsis,
-            )),
-      ],
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
 // - _FormViewerCard Widget Declaration
 // -----------------------------------------------------------------------------
 class _FormViewerCard extends StatelessWidget {
@@ -224,29 +217,35 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
+        // Store the old title to determine whether it has been updated.
         final oldTitle = report.title;
+        // Update the title.
         report.title = titleController.text;
 
+        // Iterate over the fields.
         for (var i = 0; i < report.layout.fields.length; i++) {
+          // Add a new entry to the data list if it does not exist.
           if (report.data.length <= i) {
-            report.data.add(FieldData(text: controllers[i].text));
+            report.data.add(TextFieldData(data: controllers[i].text));
           } else {
-            report.data[i].text = controllers[i].text;
+            // Update the existing entry otherwise.
+            (report.data[i] as TextFieldData).data = controllers[i].text;
           }
           logger.v('${report.layout.fields[i].title}: ${controllers[i].text}');
         }
 
-        var reports = context.read<ReportsModel>();
+        // Update or add the report in the provider.
+        var reportsProvider = context.read<ReportsModel>();
         if (index != null)
-          reports.update(index!, report);
+          reportsProvider.update(index!, report);
         else
-          reports.add(report.title);
+          reportsProvider.add(report.title);
 
+        // Write the report to file.
         renameAndWriteFile('$reportsDirectory/$oldTitle',
             '$reportsDirectory/${report.title}', report.toJSON());
 
         Navigator.pop(context);
-        logger.d("Saved report");
       },
     );
   }

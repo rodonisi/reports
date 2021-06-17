@@ -10,6 +10,11 @@ import 'package:reports/common/logger.dart';
 import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/report_list.dart';
 
+// -----------------------------------------------------------------------------
+// - MenuDrawer Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Creates the menu drawer for the app.
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({Key? key}) : super(key: key);
 

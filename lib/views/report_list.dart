@@ -17,9 +17,11 @@ import 'package:reports/views/menu_drawer.dart';
 // -----------------------------------------------------------------------------
 // - ReportList Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Displays all the reports stored in the app in a list.
 class Reports extends StatelessWidget {
-  const Reports({Key? key}) : super(key: key);
   static const routeName = "/reports";
+  const Reports({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +64,14 @@ class _ReportList extends StatelessWidget {
         return ListTile(
           title: Text(reportsProvider.reports[i]),
           leading: Icon(ReportsIcons.report),
-          onTap: () => Navigator.pushNamed(context, ReportViewer.routeName,
-              arguments: ReportViewerArgs(
-                name: reportsProvider.reports[i],
-                index: i,
-              )),
+          onTap: () => Navigator.pushNamed(
+            context,
+            ReportViewer.routeName,
+            arguments: ReportViewerArgs(
+              name: reportsProvider.reports[i],
+              index: i,
+            ),
+          ),
         );
       },
       separatorBuilder: (context, i) => Divider(),
