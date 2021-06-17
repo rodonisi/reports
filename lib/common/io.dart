@@ -60,14 +60,26 @@ Future<List<File>> getLocalDirFiles(String dirPath) async {
   return files;
 }
 
+/// Read a file given its path in the app's document directory.
+Future<String> readFromPath(String path) async {
+  final basePath = await getLocalDocsPath;
+
+  final file = File(basePath + path);
+  return file.readAsString();
+}
+
+/// Read a layout file given its name.
+Future<String> readNamedLayout(String name) async {
+  logger.d('Reading layout: $name');
+
+  return readFromPath('$layoutsDirectory/$name.json');
+}
+
 /// Read a report file given its name.
 Future<String> readNamedReport(String name) async {
   logger.d('Reading report: $name');
 
-  final basePath = await getLocalDocsPath;
-  final file = File('$basePath$reportsDirectory/$name.json');
-
-  return file.readAsString();
+  return readFromPath('$reportsDirectory/$name.json');
 }
 
 /// Synchronously read a file.

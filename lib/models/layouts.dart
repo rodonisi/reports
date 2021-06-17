@@ -2,11 +2,11 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
 
@@ -17,31 +17,31 @@ class LayoutsModel extends ChangeNotifier {
     loadFromFiles();
   }
 
-  final List<ReportLayout> _layouts = [];
+  final List<String> _layouts = [];
 
   /// Get the layouts list stored in the provider.
-  List<ReportLayout> get layouts => _layouts;
+  List<String> get layouts => _layouts;
 
   /// Add a layout to the provider and notify its listeners.
-  void add(ReportLayout layout) {
+  void add(String layout) {
     _layouts.add(layout);
-    logger.d('Added layout: ${layout.name}');
+    logger.d('Added layout: $layout');
 
     notifyListeners();
   }
 
   /// Remove a layout from the provider and notfiy its listeners.
-  void remove(ReportLayout layout) {
+  void remove(String layout) {
     _layouts.remove(layout);
-    logger.d('Removed layout: ${layout.name}');
+    logger.d('Removed layout: $layout');
 
     notifyListeners();
   }
 
   /// Update the layout at the given index.
-  void update(int index, ReportLayout layout) {
+  void update(int index, String layout) {
     _layouts[index] = layout;
-    logger.d('Updated layout: ${layout.name} at position $index');
+    logger.d('Updated layout: $layout at position $index');
 
     notifyListeners();
   }
@@ -49,7 +49,7 @@ class LayoutsModel extends ChangeNotifier {
   /// Load the layouts stored in the layouts directory.
   void loadFromFiles() async {
     final layouts = await getLocalDirFiles(layoutsDirectory);
-    for (var file in layouts) add(ReportLayout.fromJSON(readFile(file)));
+    for (var file in layouts) add(p.basenameWithoutExtension(file.path));
 
     notifyListeners();
   }

@@ -36,10 +36,7 @@ class Layouts extends StatelessWidget {
               context,
               FormBuilder.routeName,
               arguments: FormBuilderArgs(
-                layout: ReportLayout(
-                  name: 'Layout ${_layoutsProvider.layouts.length}',
-                  fields: [],
-                ),
+                name: 'Layout ${_layoutsProvider.layouts.length}',
               ),
             ),
           ),
@@ -63,13 +60,13 @@ class _LayoutsList extends StatelessWidget {
     return ListView.separated(
       itemCount: layoutsProvider.layouts.length,
       itemBuilder: (context, index) => ListTile(
-        title: Text(layoutsProvider.layouts[index].name),
+        title: Text(layoutsProvider.layouts[index]),
         leading: Icon(ReportsIcons.layout_detailed),
         onTap: () => Navigator.pushNamed(
           context,
           FormBuilder.routeName,
           arguments: FormBuilderArgs(
-            layout: layoutsProvider.layouts[index],
+            name: layoutsProvider.layouts[index],
             index: index,
           ),
         ),

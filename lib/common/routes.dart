@@ -15,7 +15,9 @@ import 'package:reports/views/layouts_list.dart';
 final routes = {
   Reports.routeName: (context) => Reports(),
   Layouts.routeName: (context) => Layouts(),
-  FormBuilder.routeName: (context) => FormBuilder(),
+  FormBuilder.routeName: (context) => FormBuilder(
+        args: ModalRoute.of(context)!.settings.arguments as FormBuilderArgs,
+      ),
   ReportViewer.routeName: (context) => ReportViewer(
         args: ModalRoute.of(context)!.settings.arguments as ReportViewerArgs,
       ),

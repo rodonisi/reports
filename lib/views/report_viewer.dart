@@ -64,12 +64,15 @@ class _ReportViewerState extends State<ReportViewer> {
         report = Report.fromJSON(value);
         loaded = true;
       });
-    }).catchError((error, stackTrace) {
+    }).catchError((error, stackTrace) async {
+      final layoutProvider = context.read<LayoutsModel>();
+
+      // Read the first available layout.
+      final layoutString = await readNamedLayout(layoutProvider.layouts[0]);
       setState(() {
-        final layoutProvider = context.read<LayoutsModel>();
         report = Report(
           title: widget.args.name,
-          layout: layoutProvider.layouts[0],
+          layout: ReportLayout.fromJSON(layoutString),
           data: [],
         );
         loaded = true;
@@ -272,15 +275,23 @@ class __LayoutSelectorState extends State<_LayoutSelector> {
   Widget build(BuildContext context) {
     var layoutsProvider = context.watch<LayoutsModel>();
     var titleMap = layoutsProvider.layouts
-        .map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
-              child: Text(e.name),
-              onTap: () => widget.report.layout = e,
-              value: e.name,
-            ))
+        .map<DropdownMenuItem<String>>(
+          (e) => DropdownMenuItem<String>(
+            child: Text(e),
+            value: e,
+          ),
+        )
         .toList();
-    return DropdownButton(
+    return DropdownButton<String>(
         items: titleMap,
         value: widget.report.layout.name,
-        onChanged: (value) => widget.refreshCallback());
+        onChanged: (value) async {
+          // Load layout.
+          final layoutString = await readNamedLayout(value!);
+          // Update layout.
+          widget.report.layout = ReportLayout.fromJSON(layoutString);
+          // Refresh parent widget.
+          widget.refreshCallback();
+        });
   }
 }

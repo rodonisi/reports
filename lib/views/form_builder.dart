@@ -22,9 +22,9 @@ import 'package:reports/widgets/form_tile.dart';
 
 /// Arguments class for the form builder.
 class FormBuilderArgs {
-  FormBuilderArgs({required this.layout, this.index});
+  FormBuilderArgs({required this.name, this.index});
 
-  final ReportLayout layout;
+  final String name;
   final int? index;
 }
 
@@ -34,42 +34,70 @@ class FormBuilderArgs {
 
 /// Displays a form builder.
 class FormBuilder extends StatefulWidget {
-  FormBuilder({Key? key}) : super(key: key);
   static const String routeName = '/formBuilder';
+
+  final FormBuilderArgs args;
+  FormBuilder({Key? key, required this.args}) : super(key: key);
 
   @override
   _FormBuilderState createState() => _FormBuilderState();
 }
 
 class _FormBuilderState extends State<FormBuilder> {
-  late ReportLayout _layout;
+  late ReportLayout layout;
+  bool loaded = false;
 
   void _addField(FieldOptions options) {
-    setState(() => _layout.fields.add(options));
+    setState(() => layout.fields.add(options));
   }
 
   void _removeField(int i) {
     setState(() {
-      _layout.fields.removeAt(i);
+      layout.fields.removeAt(i);
     });
   }
 
   @override
+  void initState() {
+    // Read layout from file
+    final futureReport = readNamedReport(widget.args.name);
+
+    // Add completition callback for when the file has been read.
+    futureReport.then((value) {
+      setState(() {
+        layout = ReportLayout.fromJSON(value);
+        loaded = true;
+      });
+    }).catchError((error, stackTrace) {
+      setState(() {
+        layout = ReportLayout(
+          name: widget.args.name,
+          fields: [],
+        );
+        loaded = true;
+      });
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // If the layout is not yet available just return a progress indicator.
+    if (!loaded)
+      return Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+
     // Controller for the layout name text field.
     final nameController = TextEditingController.fromValue(
       TextEditingValue(
-        text: _layout.name,
+        text: layout.name,
       ),
     );
 
-    // Get the arguments passed through the navigator.
-    final _args = ModalRoute.of(context)!.settings.arguments as FormBuilderArgs;
-
-    // Extract arguments.
-    _layout = _args.layout;
-    final index = _args.index;
-    final isNew = index == null;
+    // Determine whether this is a new layout.
+    final isNew = widget.args.index == null;
 
     // Add the share action only if we're viewing an existing report.
     final List<Widget> shareAction = [];
@@ -80,7 +108,7 @@ class _FormBuilderState extends State<FormBuilder> {
           onPressed: () async {
             final layoutsDir = await getLayoutsDirectory;
             Share.shareFiles(
-              ['$layoutsDir/${_layout.name}.json'],
+              ['$layoutsDir/${layout.name}.json'],
             );
           },
         ),
@@ -98,10 +126,10 @@ class _FormBuilderState extends State<FormBuilder> {
         ListView.builder(
             padding: EdgeInsets.all(16.0),
             shrinkWrap: true,
-            itemCount: _layout.fields.length,
+            itemCount: layout.fields.length,
             itemBuilder: (context, i) {
               return _FormBuilderCard(
-                options: _layout.fields[i],
+                options: layout.fields[i],
                 removeFunc: () => _removeField(i),
               );
             }),
@@ -111,8 +139,8 @@ class _FormBuilderState extends State<FormBuilder> {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: _SaveButton(
-              fields: _layout.fields,
-              index: index,
+              layout: layout,
+              index: widget.args.index,
               nameController: nameController,
             ),
           ),
@@ -130,11 +158,11 @@ class _SaveButton extends StatelessWidget {
   _SaveButton(
       {Key? key,
       required this.nameController,
-      required this.fields,
+      required this.layout,
       this.index})
       : super(key: key);
   final TextEditingController nameController;
-  final List<FieldOptions> fields;
+  final ReportLayout layout;
   final int? index;
 
   @override
@@ -142,24 +170,23 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
+// Save the old name to determine whether it has been updated.
+        final oldName = layout.name;
+        layout.name = nameController.text;
+
         // Get the provider.
         final layoutsProvider = context.read<LayoutsModel>();
 
-        // Initialize a new layout object.
-        final newLayout =
-            ReportLayout(name: nameController.text, fields: fields);
-
         // Update or add the layout
         if (index != null)
-          layoutsProvider.update(index!, newLayout);
+          layoutsProvider.update(index!, layout.name);
         else
-          layoutsProvider.add(newLayout);
+          layoutsProvider.add(layout.name);
 
         // Write the layout to file.
-        final file = await writeFile(
-            '$layoutsDirectory/${newLayout.name}', newLayout.toJSON());
+        renameAndWriteFile('$layoutsDirectory/$oldName',
+            '$layoutsDirectory/${layout.name}', layout.toJSON());
 
-        logger.d('written file: ${file.path}');
         Navigator.pop(context);
       },
     );
