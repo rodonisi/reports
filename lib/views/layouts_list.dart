@@ -61,7 +61,7 @@ class _LayoutsList extends StatelessWidget {
       itemCount: layoutsProvider.layouts.length,
       itemBuilder: (context, index) => ListTile(
         title: Text(layoutsProvider.layouts[index]),
-        leading: Icon(ReportsIcons.layout_detailed),
+        leading: Icon(ReportsIcons.layout),
         onTap: () => Navigator.pushNamed(
           context,
           FormBuilder.routeName,
