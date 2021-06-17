@@ -20,46 +20,74 @@ import 'package:reports/widgets/app_bar_text_field.dart';
 // - ReportViewer Widget Declaration
 // -----------------------------------------------------------------------------
 class ReportViewerArgs {
-  ReportViewerArgs({required this.report, this.index});
+  ReportViewerArgs({required this.name, this.index});
 
-  final Report report;
+  final String name;
   final int? index;
 }
 
 class ReportViewer extends StatefulWidget {
-  ReportViewer({Key? key}) : super(key: key);
-
   static const String routeName = '/report_viewer';
+
+  final ReportViewerArgs args;
+  ReportViewer({Key? key, required this.args}) : super(key: key);
 
   @override
   _ReportViewerState createState() => _ReportViewerState();
 }
 
 class _ReportViewerState extends State<ReportViewer> {
-  final _controllers = <TextEditingController>[];
+  late Report report;
+  bool loaded = false;
+  final controllers = <TextEditingController>[];
 
   void _setStateCallback() {
     setState(() {});
   }
 
   @override
-  Widget build(BuildContext context) {
-    final _args =
-        ModalRoute.of(context)!.settings.arguments as ReportViewerArgs;
+  void initState() {
+    final futureReport = readNamedReport(widget.args.name);
+    futureReport.then((value) {
+      setState(() {
+        report = Report.fromJSON(value);
+        loaded = true;
+      });
+    }).catchError((error, stackTrace) {
+      setState(() {
+        final layoutProvider = context.read<LayoutsModel>();
+        report = Report(
+          title: widget.args.name,
+          layout: layoutProvider.layouts[0],
+          data: [],
+        );
+        loaded = true;
+      });
+    });
 
-    final isNew = _args.index == null;
-    final report = _args.report;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!loaded)
+      return Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+
+    final isNew = widget.args.index == null;
+
     final titleController = TextEditingController.fromValue(
       TextEditingValue(
         text: report.title,
       ),
     );
 
-    _controllers.addAll(List.generate(
+    controllers.addAll(List.generate(
         report.layout.fields.length, (index) => TextEditingController()));
 
     for (var i = 0; i < report.data.length; i++) {
-      _controllers[i].text = report.data[i].text;
+      controllers[i].text = report.data[i].text;
     }
 
     final List<Widget> shareAction = [];
@@ -97,7 +125,7 @@ class _ReportViewerState extends State<ReportViewer> {
             itemBuilder: (context, i) {
               return _FormViewerCard(
                 options: report.layout.fields[i],
-                controller: _controllers[i],
+                controller: controllers[i],
               );
             },
           ),
@@ -108,9 +136,9 @@ class _ReportViewerState extends State<ReportViewer> {
                 alignment: Alignment.bottomCenter,
                 child: _SaveButton(
                   titleController: titleController,
-                  controllers: _controllers,
+                  controllers: controllers,
                   report: report,
-                  index: _args.index,
+                  index: widget.args.index,
                 )),
           ),
         ],
@@ -212,7 +240,7 @@ class _SaveButton extends StatelessWidget {
         if (index != null)
           reports.update(index!, report);
         else
-          reports.add(report);
+          reports.add(report.title);
 
         renameAndWriteFile('$reportsDirectory/$oldTitle',
             '$reportsDirectory/${report.title}', report.toJSON());

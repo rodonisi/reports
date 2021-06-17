@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 
 // -----------------------------------------------------------------------------
 // - Packages
@@ -20,26 +21,26 @@ class ReportsModel extends ChangeNotifier {
   }
 
   final _logger = Logger(printer: PrettyPrinter(methodCount: 0));
-  final List<Report> _reports = [];
+  final List<String> _reports = [];
 
-  List<Report> get reports => _reports;
+  List<String> get reports => _reports;
 
-  void add(Report report) {
+  void add(String report) {
     _reports.add(report);
-    _logger.d('Added report: ${report.title}');
+    _logger.d('Added report: $report');
 
     notifyListeners();
   }
 
-  void remove(Report report) {
+  void remove(String report) {
     _reports.remove(report);
-    _logger.d('Removed report: ${report.title}');
+    _logger.d('Removed report: $report');
 
     notifyListeners();
   }
 
   void update(int index, Report report) {
-    _reports[index] = report;
+    _reports[index] = report.title;
     _logger.d('Updated layout: ${report.title} at position $index');
 
     notifyListeners();
@@ -47,7 +48,7 @@ class ReportsModel extends ChangeNotifier {
 
   void loadFromFiles() async {
     final reports = await getLocalDirFiles(reportsDirectory);
-    for (var file in reports) add(Report.fromJSON(readFile(file)));
+    for (var file in reports) add(p.basenameWithoutExtension(file.path));
 
     notifyListeners();
   }

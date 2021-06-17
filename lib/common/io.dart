@@ -51,6 +51,13 @@ Future<List<File>> getLocalDirFiles(String dirPath) async {
   return files;
 }
 
+Future<String> readNamedReport(String name) async {
+  logger.d('Reading report: $name');
+  final basePath = await getLocalDocsPath;
+  final file = File('$basePath$reportsDirectory/$name.json');
+  return file.readAsString();
+}
+
 String readFile(File file) {
   return file.readAsStringSync();
 }

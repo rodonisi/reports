@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
@@ -35,13 +34,8 @@ class Reports extends StatelessWidget {
             Navigator.pushNamed(
               context,
               ReportViewer.routeName,
-              arguments: ReportViewerArgs(
-                report: Report(
-                  title: 'Report ${DateTime.now().toString()}',
-                  layout: layoutsProvider.layouts[0],
-                  data: [],
-                ),
-              ),
+              arguments:
+                  ReportViewerArgs(name: 'Report ${DateTime.now().toString()}'),
             );
           },
         ),
@@ -66,11 +60,11 @@ class _ReportList extends StatelessWidget {
       itemCount: reportsProvider.reports.length,
       itemBuilder: (context, i) {
         return ListTile(
-          title: Text(reportsProvider.reports[i].title),
+          title: Text(reportsProvider.reports[i]),
           leading: Icon(ReportsIcons.report),
           onTap: () => Navigator.pushNamed(context, ReportViewer.routeName,
               arguments: ReportViewerArgs(
-                report: reportsProvider.reports[i],
+                name: reportsProvider.reports[i],
                 index: i,
               )),
         );
