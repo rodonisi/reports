@@ -4,11 +4,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/reports_icons_icons.dart';
+import 'package:reports/common/io.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/views/report_viewer.dart';
@@ -51,9 +53,15 @@ class Reports extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // - _ReportList Widget Implementation
 // -----------------------------------------------------------------------------
-class _ReportList extends StatelessWidget {
-  const _ReportList({Key? key}) : super(key: key);
 
+class _ReportList extends StatefulWidget {
+  _ReportList({Key? key}) : super(key: key);
+
+  @override
+  __ReportListState createState() => __ReportListState();
+}
+
+class __ReportListState extends State<_ReportList> {
   @override
   Widget build(BuildContext context) {
     var reportsProvider = context.watch<ReportsModel>();
@@ -61,15 +69,30 @@ class _ReportList extends StatelessWidget {
     return ListView.separated(
       itemCount: reportsProvider.reports.length,
       itemBuilder: (context, i) {
-        return ListTile(
-          title: Text(reportsProvider.reports[i]),
-          leading: Icon(ReportsIcons.report),
-          onTap: () => Navigator.pushNamed(
-            context,
-            ReportViewer.routeName,
-            arguments: ReportViewerArgs(
-              name: reportsProvider.reports[i],
-              index: i,
+        final item = reportsProvider.reports[i];
+        return Slidable(
+          key: Key(item),
+          actionPane: SlidableDrawerActionPane(),
+          secondaryActions: [
+            IconSlideAction(
+              icon: Icons.delete,
+              color: Colors.red,
+              onTap: () {
+                deleteFile('$reportsDirectory/$item');
+                reportsProvider.removeAt(i);
+              },
+            )
+          ],
+          child: ListTile(
+            title: Text(item),
+            leading: Icon(ReportsIcons.report),
+            onTap: () => Navigator.pushNamed(
+              context,
+              ReportViewer.routeName,
+              arguments: ReportViewerArgs(
+                name: item,
+                index: i,
+              ),
             ),
           ),
         );

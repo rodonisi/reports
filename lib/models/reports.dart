@@ -44,6 +44,13 @@ class ReportsModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAt(int index) {
+    logger.d('Removed report ${_reports[index]} at index $index');
+    _reports.removeAt(index);
+
+    notifyListeners();
+  }
+
   /// Update an existing report contained in the provider.
   void update(int index, Report report) {
     _reports[index] = report.title;
