@@ -4,9 +4,9 @@ import 'package:reports/common/report_structures.dart';
 
 void main() {
   final String simpleLayoutJSON =
-      '{"layout_name":"layout","0":{"field_name":"field","field_type":0}}';
+      '{"layout_name":"layout","0":{"field_name":"field","field_type":0,"lines":1}}';
   final String simpleReportJSON =
-      '{"report_title":"report","0":{"field_name":"field","field_type":0,"data":"value"}}';
+      '{"report_title":"report","0":{"field_name":"field","field_type":0,"lines":1,"data":"value"}}';
 
   group('layout tests', () {
     test('encode layout', () {
