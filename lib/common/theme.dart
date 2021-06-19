@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 /// Contains the ThemeData for the light theme of the app.
 final lightTheme = ThemeData(
+  primaryColor: Colors.white,
   primarySwatch: Colors.blue,
   brightness: Brightness.light,
 );
