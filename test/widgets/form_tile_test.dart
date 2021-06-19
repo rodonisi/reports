@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:reports/common/report_structures.dart';
+import 'package:reports/widgets/form_tile.dart';
+
+Widget _wrapWidget(Widget widget) {
+  return MaterialApp(
+    home: Scaffold(
+      body: widget,
+    ),
+  );
+}
+
+void main() {
+  testWidgets(
+    'Test text field FormTileContent layout',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        _wrapWidget(
+          FormTileContent(
+            options: TextFieldOptions(),
+          ),
+        ),
+      );
+
+      final findText = find.byType(Text);
+      final findTextField = find.byType(TextField);
+
+      expect(findText, findsOneWidget);
+      expect(findTextField, findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Test text field FormTileContent enabled',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        _wrapWidget(
+          FormTileContent(
+            enabled: false,
+            options: TextFieldOptions(),
+          ),
+        ),
+      );
+
+      // The text field should be disabled if the enabled argument is set to
+      // false;
+      final findTextField = find.byType(TextField);
+      final textFieldEnabled =
+          (findTextField.evaluate().first.widget as TextField).enabled;
+
+      expect(textFieldEnabled, false);
+    },
+  );
+
+  testWidgets(
+    'Test text field options layout',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        _wrapWidget(
+          FormTileOptions(
+            options: TextFieldOptions(),
+          ),
+        ),
+      );
+
+      final findText = find.byType(Text);
+      final findDivider = find.byType(Divider);
+      final findTextField = find.byType(TextFormField);
+
+      expect(findText, findsNWidgets(3));
+      expect(find.text('Text Field Options'), findsOneWidget);
+      expect(find.text('Title'), findsOneWidget);
+      expect(find.text('Lines'), findsOneWidget);
+      expect(findDivider, findsOneWidget);
+      expect(findTextField, findsNWidgets(2));
+    },
+  );
+}
