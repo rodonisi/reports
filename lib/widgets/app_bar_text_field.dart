@@ -20,6 +20,7 @@ class _AppBarTextFieldState extends State<AppBarTextField> {
   bool isEditing = false;
   @override
   Widget build(BuildContext context) {
+    final bodyColor = Theme.of(context).textTheme.bodyText1!.color;
     return Focus(
       onFocusChange: (hasFocus) => setState(() => isEditing = hasFocus),
       child: TextField(
@@ -28,13 +29,16 @@ class _AppBarTextFieldState extends State<AppBarTextField> {
           border: InputBorder.none,
           suffixIcon: isEditing
               ? IconButton(
-                  icon: Icon(Icons.clear),
+                  icon: Icon(
+                    Icons.clear,
+                    color: bodyColor,
+                  ),
                   onPressed: () => widget.controller.clear(),
                 )
               : null,
         ),
         style: TextStyle(
-          color: Colors.white,
+          color: bodyColor,
           fontSize: 20.0,
           fontWeight: FontWeight.w500,
         ),
