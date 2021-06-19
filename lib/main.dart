@@ -34,13 +34,22 @@ class MyApp extends StatelessWidget {
           create: (context) => ReportsModel(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Reports',
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: ThemeMode.system,
-        initialRoute: '/reports',
-        routes: routes,
+      child: GestureDetector(
+        onTap: () {
+          // Get current focus.
+          final currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus)
+            currentFocus.focusedChild!.unfocus();
+        },
+        child: MaterialApp(
+          title: 'Reports',
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: ThemeMode.system,
+          initialRoute: '/reports',
+          routes: routes,
+        ),
       ),
     );
   }
