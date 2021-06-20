@@ -3,35 +3,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/common/theme.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
 
+import '../utilities.dart';
+
 Widget get _getBasicWidget {
-  return MaterialApp(
-    home: Scaffold(
-      body: AppBarTextField(
-        controller: TextEditingController(),
-      ),
+  return wrapWidgetScaffold(
+    widget: AppBarTextField(
+      controller: TextEditingController(),
     ),
   );
 }
 
 Widget get _getLightWidget {
-  return MaterialApp(
-    theme: lightTheme,
-    home: Scaffold(
-      body: AppBarTextField(
-        controller: TextEditingController(),
-      ),
+  return wrapWidgetScaffold(
+    widget: AppBarTextField(
+      controller: TextEditingController(),
     ),
+    theme: lightTheme,
   );
 }
 
 Widget get _getDarkWidget {
-  return MaterialApp(
-    theme: darkTheme,
-    home: Scaffold(
-      body: AppBarTextField(
-        controller: TextEditingController(),
-      ),
+  return wrapWidgetScaffold(
+    widget: AppBarTextField(
+      controller: TextEditingController(),
     ),
+    theme: darkTheme,
   );
 }
 

@@ -3,21 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/form_tile.dart';
 
-Widget _wrapWidget(Widget widget) {
-  return MaterialApp(
-    home: Scaffold(
-      body: widget,
-    ),
-  );
-}
+import '../utilities.dart';
 
 void main() {
   testWidgets(
     'Test text field FormTileContent layout',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        _wrapWidget(
-          FormTileContent(
+        wrapWidgetScaffold(
+          widget: FormTileContent(
             options: TextFieldOptions(),
           ),
         ),
@@ -35,8 +29,8 @@ void main() {
     'Test text field FormTileContent enabled',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        _wrapWidget(
-          FormTileContent(
+        wrapWidgetScaffold(
+          widget: FormTileContent(
             enabled: false,
             options: TextFieldOptions(),
           ),
@@ -57,8 +51,8 @@ void main() {
     'Test text field options layout',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        _wrapWidget(
-          FormTileOptions(
+        wrapWidgetScaffold(
+          widget: FormTileOptions(
             options: TextFieldOptions(),
           ),
         ),
