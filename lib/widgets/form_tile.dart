@@ -2,6 +2,7 @@
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:reports/common/report_structures.dart';
 
 // -----------------------------------------------------------------------------
@@ -26,6 +27,8 @@ class FormTileContent extends StatelessWidget {
           enabled: enabled,
           maxLines: textOpts.lines,
           controller: controller,
+          keyboardType:
+              textOpts.numeric ? TextInputType.number : TextInputType.text,
         );
       default:
         throw ArgumentError.value(options.fieldType, 'unsupported field type');
@@ -109,6 +112,51 @@ class _TextFieldTileOptions extends StatelessWidget {
           onChanged: (value) => options.lines = int.parse(value),
           keyboardType: TextInputType.number,
         ),
+        _SwitchOption(
+          title: 'Numeric Keyboard',
+          getter: options.getNumeric,
+          setter: options.setNumeric,
+        ),
+      ],
+    );
+  }
+}
+
+class _SwitchOption extends StatefulWidget {
+  _SwitchOption({
+    Key? key,
+    required this.title,
+    required this.getter,
+    required this.setter,
+  }) : super(key: key);
+
+  final String title;
+  final getter;
+  final setter;
+
+  @override
+  __SwitchOptionState createState() => __SwitchOptionState();
+}
+
+class __SwitchOptionState extends State<_SwitchOption> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          widget.title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Spacer(),
+        Switch.adaptive(
+            value: widget.getter(),
+            onChanged: (val) {
+              setState(() {
+                widget.setter(val);
+              });
+            })
       ],
     );
   }

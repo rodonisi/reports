@@ -33,20 +33,33 @@ abstract class FieldOptions {
 /// Class containing the options specific to a text field.
 class TextFieldOptions extends FieldOptions {
   static const String linesID = 'lines';
+  static const String numericID = 'numeric';
 
   int lines;
+  bool numeric;
 
-  TextFieldOptions({String title = 'Text', this.lines = 1})
+  TextFieldOptions(
+      {String title = 'Text', this.lines = 1, this.numeric = false})
       : super(title: title, fieldType: 0);
+
+  bool getNumeric() {
+    return numeric;
+  }
+
+  void setNumeric(bool value) {
+    numeric = value;
+  }
 
   TextFieldOptions.fromMap(Map<String, dynamic> map)
       : lines = map[linesID],
+        numeric = map[numericID],
         super.fromMap(map);
 
   @override
   Map<String, dynamic> asMap() {
     final map = super.asMap();
     map[linesID] = lines;
+    map[numericID] = numeric;
 
     return map;
   }
