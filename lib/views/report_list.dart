@@ -97,7 +97,7 @@ class __ReportListState extends State<_ReportList> {
           ),
         );
       },
-      separatorBuilder: (context, i) => Divider(),
+      separatorBuilder: (context, i) => Divider(height: 0.0),
     );
   }
 }

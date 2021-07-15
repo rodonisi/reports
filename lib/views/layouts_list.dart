@@ -89,7 +89,7 @@ class _LayoutsList extends StatelessWidget {
           ),
         );
       },
-      separatorBuilder: (context, index) => Divider(),
+      separatorBuilder: (context, index) => Divider(height: 0.0),
     );
   }
 }
