@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:reports/common/reports_icons_icons.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -21,6 +22,7 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         top: true,
@@ -29,19 +31,19 @@ class MenuDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             ListTile(
-              title: Text('Reports'),
+              title: Text(localizations.reportsTitle),
               leading: Icon(ReportsIcons.report),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Reports.routeName),
             ),
             ListTile(
-              title: Text('Layouts'),
+              title: Text(localizations.layoutsTitle),
               leading: Icon(ReportsIcons.layout),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Layouts.routeName),
             ),
             ListTile(
-              title: Text('Settings'),
+              title: Text(localizations.settingsTitle),
               leading: Icon(Icons.settings),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Settings.routeName),

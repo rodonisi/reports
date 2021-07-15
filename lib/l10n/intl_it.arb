@@ -1,0 +1,35 @@
+{
+  "@@locale": "it",
+  "buttonSave": "Salva",
+  "@buttonSave": {
+    "description": "Save button string"
+  },
+  "layoutsTitle": "Strutture",
+  "@layoutsTitle": {
+    "description": "The layouts list view title"
+  },
+  "reportsTitle": "Rapporti",
+  "@reportsTitle": {
+    "description": "The reports list view title"
+  },
+  "settingsDBBackup": "Backup su Dropbox",
+  "@settingsDBBackup": {
+    "description": "Enable Dropbox backup option string"
+  },
+  "settingsDBLocation": "Posizione Backup",
+  "@settingsDBLocation": {
+    "description": "Dropbox backup location option string "
+  },
+  "settingsSignIn": "Accedi",
+  "@settingsSignIn": {
+    "description": "Dropbox sign in button string"
+  },
+  "settingsSignOut": "Esci",
+  "@settingsSignOut": {
+    "description": "Dropbox sign out button string"
+  },
+  "settingsTitle": "Impostazioni",
+  "@settingsTitle": {
+    "description": "The settings view title\n"
+  }
+}

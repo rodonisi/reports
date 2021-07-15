@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -29,7 +30,7 @@ class Reports extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reports'),
+        title: Text(AppLocalizations.of(context)!.reportsTitle),
       ),
       floatingActionButton: Consumer<LayoutsModel>(
         builder: (context, layoutsProvider, child) => FloatingActionButton(

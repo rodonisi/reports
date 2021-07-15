@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -29,7 +30,7 @@ class Layouts extends StatelessWidget {
     var _layoutsProvider = context.watch<LayoutsModel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Layouts'),
+        title: Text(AppLocalizations.of(context)!.layoutsTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.add),

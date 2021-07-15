@@ -5,6 +5,7 @@ import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -39,9 +40,10 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text(localizations.settingsTitle),
       ),
       drawer: MenuDrawer(),
       body: FutureBuilder<SharedPreferences>(
@@ -72,6 +74,7 @@ class _DBSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     var dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
 
     if (dbEnabled == null) {
@@ -81,7 +84,7 @@ class _DBSettings extends StatelessWidget {
     // The list of Dropbox-related settings.
     final dbSettingsList = <Widget>[
       SwitchListTile.adaptive(
-        title: Text('Backup to Dropbox'),
+        title: Text(localizations.settingsDBBackup),
         secondary: Icon(FontAwesomeIcons.dropbox),
         value: dbEnabled,
         onChanged: (value) async {
@@ -127,6 +130,7 @@ class _DBLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     // TODO: Find a better way to establish this.
     final isAuthorized = prefs.getBool(Preferences.dropboxAuthorized);
 
@@ -143,7 +147,7 @@ class _DBLoginButton extends StatelessWidget {
                   prefs.setBool(Preferences.dropboxAuthorized, true);
                   setState(() {});
                 },
-                child: Text('Sign in'),
+                child: Text(localizations.settingsSignIn),
               ),
             ),
           ],
@@ -162,7 +166,7 @@ class _DBLoginButton extends StatelessWidget {
                 await dbUnlink();
                 setState(() {});
               },
-              child: Text('Sign out'),
+              child: Text(localizations.settingsSignOut),
             ),
           ),
         ],
@@ -181,7 +185,7 @@ class _DBPathTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Backup Location'),
+      title: Text(AppLocalizations.of(context)!.settingsDBLocation),
       leading: Icon(Icons.folder),
       trailing: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
       onTap: () => Navigator.pushNamed(context, DropboxChooser.routeName,
