@@ -2,6 +2,7 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:reports/common/reports_icons_icons.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -29,11 +30,13 @@ class MenuDrawer extends StatelessWidget {
           children: [
             ListTile(
               title: Text('Reports'),
+              leading: Icon(ReportsIcons.report),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Reports.routeName),
             ),
             ListTile(
               title: Text('Layouts'),
+              leading: Icon(ReportsIcons.layout),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Layouts.routeName),
             ),
