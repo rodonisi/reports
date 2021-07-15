@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/io.dart';
+import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
@@ -169,7 +172,9 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
-// Save the old name to determine whether it has been updated.
+        final prefs = await SharedPreferences.getInstance();
+
+        // Save the old name to determine whether it has been updated.
         final oldName = layout.name;
         layout.name = nameController.text;
 
@@ -183,8 +188,17 @@ class _SaveButton extends StatelessWidget {
           layoutsProvider.add(layout.name);
 
         // Write the layout to file.
-        renameAndWriteFile('$layoutsDirectory/$oldName',
+        final file = renameAndWriteFile('$layoutsDirectory/$oldName',
             '$layoutsDirectory/${layout.name}', layout.toJSON());
+
+        // Backup the newly created file to dropbox if option is enabled.
+        final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
+        if (dbEnabled != null && dbEnabled) {
+          // Wait for the file to be written
+          await file;
+          // Backup to dropbox.
+          dbBackupFile('${layout.name}.json', layoutsDirectory);
+        }
 
         Navigator.pop(context);
       },

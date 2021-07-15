@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/widgets/form_tile.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/common/io.dart';
+import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
@@ -220,6 +223,8 @@ class _SaveButton extends StatelessWidget {
     return ElevatedButton(
       child: Text('Save'),
       onPressed: () async {
+        final prefs = await SharedPreferences.getInstance();
+
         // Store the old title to determine whether it has been updated.
         final oldTitle = report.title;
         // Update the title.
@@ -245,8 +250,17 @@ class _SaveButton extends StatelessWidget {
           reportsProvider.add(report.title);
 
         // Write the report to file.
-        renameAndWriteFile('$reportsDirectory/$oldTitle',
+        final file = renameAndWriteFile('$reportsDirectory/$oldTitle',
             '$reportsDirectory/${report.title}', report.toJSON());
+
+        // Backup the newly created file to dropbox if option is enabled.
+        final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
+        if (dbEnabled != null && dbEnabled) {
+          // Wait for the file to be written
+          await file;
+          // Backup to dropbox.
+          dbBackupFile('${report.title}.json', reportsDirectory);
+        }
 
         Navigator.pop(context);
       },

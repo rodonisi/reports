@@ -128,9 +128,10 @@ Future<File> renameOrCreate(String oldPath, String newPath) async {
 
 /// Rename and write a file. If no file with the old path exists, a new one is
 /// created and written instead.
-void renameAndWriteFile(String oldPath, String newPath, String content) async {
+Future<void> renameAndWriteFile(
+    String oldPath, String newPath, String content) async {
   final file = await renameOrCreate(oldPath, newPath);
-  file.writeAsString(content);
+  await file.writeAsString(content);
   logger.d('Written file ${file.path}');
 }
 

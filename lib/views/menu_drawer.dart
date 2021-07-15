@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/logger.dart';
 import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/report_list.dart';
+import 'package:reports/views/settings.dart';
 
 // -----------------------------------------------------------------------------
 // - MenuDrawer Widget Implementation
@@ -39,7 +39,9 @@ class MenuDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text('Settings'),
-              onTap: () => logger.d('Settings view'),
+              leading: Icon(Icons.settings),
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, Settings.routeName),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import ObjectiveDropboxOfficial
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -10,4 +11,18 @@ import Flutter
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+
+   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    DBClientsManager.handleRedirectURL(url) {authResult in
+      if authResult!.isSuccess() {
+        print("dropbox auth success")
+      } else if authResult!.isCancel() {
+        print("dropbox auth cancel")
+      } else if authResult!.isError() {
+        print("dropbox auth error \(authResult!.errorDescription)")
+      }
+    }
+    return true
+  }
 }
+

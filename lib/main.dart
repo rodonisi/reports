@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,9 @@ void main() {
   // Only allow portrait mode
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // Initialize Dropbox.
+  Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
 
   // Run app
   runApp(MyApp());
