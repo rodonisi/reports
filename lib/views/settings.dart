@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/logger.dart';
 import 'package:reports/common/preferences.dart';
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
