@@ -79,6 +79,7 @@ class TextFieldOptions extends FieldOptions {
   }
 }
 
+/// Contains the options specific to a section field.
 class SectionFieldOptions extends FieldOptions {
   SectionFieldOptions({String title = 'Section'})
       : super(title: title, fieldType: FieldTypes.section);
