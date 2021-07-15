@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - FormTileContent Widget Implementation
@@ -99,11 +100,12 @@ class _TextFieldTileOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Text Field Options',
+          localization.layoutTextFieldOptionsHeader,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
@@ -111,7 +113,7 @@ class _TextFieldTileOptions extends StatelessWidget {
         ),
         Divider(),
         Text(
-          'Title',
+          localization.layoutFieldOptionsTitle,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         TextFormField(
@@ -122,7 +124,7 @@ class _TextFieldTileOptions extends StatelessWidget {
           height: 20.0,
         ),
         Text(
-          'Lines',
+          localization.layoutTextFieldOptionsLines,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         TextFormField(
@@ -131,7 +133,7 @@ class _TextFieldTileOptions extends StatelessWidget {
           keyboardType: TextInputType.number,
         ),
         _SwitchOption(
-          title: 'Numeric Keyboard',
+          title: localization.layoutTextFieldOptionsNumeric,
           getter: options.getNumeric,
           setter: options.setNumeric,
         ),

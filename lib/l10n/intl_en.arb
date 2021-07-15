@@ -39,5 +39,21 @@
   "layoutSectionFieldName": "Section",
   "@layoutSectionFieldName": {
     "description": "Layout section field name"
+  },
+  "layoutFieldOptionsTitle": "Title",
+  "@layoutTextFieldOptionsTitle": {
+    "description": "Field options title string"
+  },
+  "layoutTextFieldOptionsHeader": "Text Field Options",
+  "@layoutTextFieldOptionsHeader": {
+    "description": "Text field options header string"
+  },
+  "layoutTextFieldOptionsLines": "Lines",
+  "@layoutTextFieldOptionsLines": {
+    "description": "Text field options lines string"
+  },
+  "layoutTextFieldOptionsNumeric": "Numeric Keyboard",
+  "@layoutTextFieldOptionsNumeric": {
+    "description": "Text field options numeric keyboard string"
   }
 }

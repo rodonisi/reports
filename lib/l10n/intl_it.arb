@@ -9,5 +9,9 @@
   "settingsSignOut": "Esci",
   "settingsTitle": "Impostazioni",
   "layoutTextFieldName": "Testo",
-  "layoutSectionFieldName": "Titolo"
+  "layoutSectionFieldName": "Titolo",
+  "layoutFieldOptionsTitle": "Titolo",
+  "layoutTextFieldOptionsHeader": "Opzioni Testo",
+  "layoutTextFieldOptionsLines": "Righe",
+  "layoutTextFieldOptionsNumeric": "Tastiera Numerica"
 }
