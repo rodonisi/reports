@@ -3,6 +3,17 @@
 // -----------------------------------------------------------------------------
 import 'dart:convert';
 
+/// Contains all the field types keys.
+class FieldTypes {
+  static const String textField = 'text_field';
+  static const String section = 'section';
+  static const String subsection = 'subsection';
+}
+
+// -----------------------------------------------------------------------------
+// - Options Structures
+// -----------------------------------------------------------------------------
+
 /// Base class to store field options. Contains all the options common for all
 /// the types of fields. Each extending class has to implement `fromMap` and
 /// `toMap` methods to convert the options to JSON.
@@ -65,6 +76,10 @@ class TextFieldOptions extends FieldOptions {
   }
 }
 
+// -----------------------------------------------------------------------------
+// - Field Data Structures
+// -----------------------------------------------------------------------------
+
 /// Base class for a field's data
 abstract class FieldData {
   static const String dataID = 'data';
@@ -82,6 +97,10 @@ class TextFieldData extends FieldData {
     return data;
   }
 }
+
+// -----------------------------------------------------------------------------
+// Layout Structure
+// -----------------------------------------------------------------------------
 
 /// Representation of a report layout. A report layout always contains a name,
 /// as well as a list of FieldOptions, representing the fields in the layout.
@@ -132,6 +151,10 @@ class ReportLayout {
     return jsonEncode(jsonMap);
   }
 }
+
+// -----------------------------------------------------------------------------
+// - Report Structure
+// -----------------------------------------------------------------------------
 
 /// Representation of a report. Each report contains a title, a layout, and some
 /// data for each of the fields in the layout.
