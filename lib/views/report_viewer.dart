@@ -185,6 +185,12 @@ class _FormViewerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (options is SectionFieldOptions)
+      return FormTileContent(
+        options: options,
+        enabled: false,
+      );
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(16.0),

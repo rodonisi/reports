@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -216,6 +217,7 @@ class _Dial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
@@ -225,6 +227,11 @@ class _Dial extends StatelessWidget {
           child: Icon(Icons.list),
           label: 'Text field',
           onTap: () => addFieldFunc(TextFieldOptions()),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.list),
+          label: localization.layoutSectionFieldName,
+          onTap: () => addFieldFunc(SectionFieldOptions()),
         ),
       ],
     );
@@ -254,6 +261,21 @@ class __FormBuilderCardState extends State<_FormBuilderCard>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.options is SectionFieldOptions)
+      return Row(
+        children: [
+          Expanded(
+            child: FormTileContent(options: widget.options),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onPressed: () => widget.removeFunc(),
+          ),
+        ],
+      );
+
     return GestureDetector(
       onTap: () => setState(() => isOpts = !isOpts),
       child: Card(

@@ -4,13 +4,21 @@ import 'package:reports/common/report_structures.dart';
 
 void main() {
   final String simpleLayoutJSON =
-      '{"layout_name":"layout","0":{"field_name":"field","field_type":0,"lines":1,"numeric":false}}';
+      '{"layout_name":"layout","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false}}';
   final simpleLayout = ReportLayout(
     name: 'layout',
     fields: [TextFieldOptions(title: 'field', lines: 1, numeric: false)],
   );
+
+  final String sectionLayoutJSON =
+      '{"layout_name":"layout","0":{"field_name":"section","field_type":"section","font_size":32.0}}';
+  final sectionLayout = ReportLayout(
+    name: 'layout',
+    fields: [SectionFieldOptions(title: 'section')],
+  );
+
   final String simpleReportJSON =
-      '{"report_title":"report","0":{"field_name":"field","field_type":0,"lines":1,"numeric":false,"data":"value"}}';
+      '{"report_title":"report","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
   final simpleReport = Report(
       title: 'report',
       layout: simpleLayout,
@@ -27,6 +35,9 @@ void main() {
     test('roundtrip layout', () {
       expect(
           ReportLayout.fromJSON(simpleLayoutJSON).toJSON(), simpleLayoutJSON);
+    });
+    test('section layout', () {
+      expect(sectionLayout.toJSON(), sectionLayoutJSON);
     });
   });
 

@@ -3,11 +3,14 @@
 // -----------------------------------------------------------------------------
 import 'dart:convert';
 
+// -----------------------------------------------------------------------------
+// - Field Types
+// -----------------------------------------------------------------------------
+
 /// Contains all the field types keys.
 class FieldTypes {
   static const String textField = 'text_field';
   static const String section = 'section';
-  static const String subsection = 'subsection';
 }
 
 // -----------------------------------------------------------------------------
@@ -22,7 +25,7 @@ abstract class FieldOptions {
   static const String typeID = 'field_type';
 
   String title;
-  int fieldType;
+  String fieldType;
 
   FieldOptions({required this.title, required this.fieldType});
 
@@ -51,7 +54,7 @@ class TextFieldOptions extends FieldOptions {
 
   TextFieldOptions(
       {String title = 'Text', this.lines = 1, this.numeric = false})
-      : super(title: title, fieldType: 0);
+      : super(title: title, fieldType: FieldTypes.textField);
 
   bool getNumeric() {
     return numeric;
@@ -71,6 +74,23 @@ class TextFieldOptions extends FieldOptions {
     final map = super.asMap();
     map[linesID] = lines;
     map[numericID] = numeric;
+
+    return map;
+  }
+}
+
+class SectionFieldOptions extends FieldOptions {
+  SectionFieldOptions({String title = 'Section'})
+      : super(title: title, fieldType: FieldTypes.section);
+  static const String fontSizeID = 'font_size';
+  final fontSize = 32.0;
+
+  SectionFieldOptions.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+
+  @override
+  Map<String, dynamic> asMap() {
+    final map = super.asMap();
+    map[fontSizeID] = fontSize;
 
     return map;
   }
@@ -99,7 +119,7 @@ class TextFieldData extends FieldData {
 }
 
 // -----------------------------------------------------------------------------
-// Layout Structure
+// - Layout Structure
 // -----------------------------------------------------------------------------
 
 /// Representation of a report layout. A report layout always contains a name,
@@ -130,7 +150,10 @@ class ReportLayout {
           final fieldMap = value as Map<String, dynamic>;
           final FieldOptions options;
           switch (value[FieldOptions.typeID]) {
-            case 0:
+            case FieldTypes.section:
+              options = SectionFieldOptions.fromMap(fieldMap);
+              break;
+            case FieldTypes.textField:
               options = TextFieldOptions.fromMap(fieldMap);
               break;
             default:

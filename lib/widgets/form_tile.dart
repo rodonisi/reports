@@ -21,7 +21,23 @@ class FormTileContent extends StatelessWidget {
 
   Widget _getField() {
     switch (options.fieldType) {
-      case 0:
+      case FieldTypes.section:
+        final secOpts = options as SectionFieldOptions;
+        final secController = TextEditingController();
+        secController.text = secOpts.title;
+        return TextFormField(
+          enabled: enabled,
+          initialValue: secOpts.title,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+          ),
+          style: TextStyle(
+            fontSize: secOpts.fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+          onChanged: (val) => secOpts.title = val,
+        );
+      case FieldTypes.textField:
         final textOpts = options as TextFieldOptions;
         return TextField(
           enabled: enabled,
@@ -37,6 +53,8 @@ class FormTileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (options is SectionFieldOptions) return _getField();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -63,7 +81,7 @@ class FormTileOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (options.fieldType) {
-      case 0:
+      case FieldTypes.textField:
         return _TextFieldTileOptions(
           options: options as TextFieldOptions,
         );

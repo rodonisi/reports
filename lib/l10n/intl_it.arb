@@ -31,5 +31,6 @@
   "settingsTitle": "Impostazioni",
   "@settingsTitle": {
     "description": "The settings view title\n"
-  }
+  },
+  "layoutSectionFieldName": "Titolo"
 }
