@@ -32,6 +32,10 @@
   "@settingsTitle": {
     "description": "The settings view title\n"
   },
+  "layoutTextFieldName": "Text Field",
+  "@layoutTextFieldName": {
+    "description": "Layout text field name"
+  },
   "layoutSectionFieldName": "Section",
   "@layoutSectionFieldName": {
     "description": "Layout section field name"

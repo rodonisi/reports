@@ -225,7 +225,7 @@ class _Dial extends StatelessWidget {
       children: [
         SpeedDialChild(
           child: Icon(Icons.list),
-          label: 'Text field',
+          label: localization.layoutTextFieldName,
           onTap: () => addFieldFunc(TextFieldOptions()),
         ),
         SpeedDialChild(

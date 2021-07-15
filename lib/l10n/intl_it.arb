@@ -29,8 +29,6 @@
     "description": "Dropbox sign out button string"
   },
   "settingsTitle": "Impostazioni",
-  "@settingsTitle": {
-    "description": "The settings view title\n"
-  },
+  "layoutTextFieldName": "Testo",
   "layoutSectionFieldName": "Titolo"
 }
