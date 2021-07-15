@@ -127,16 +127,25 @@ class _FormBuilderState extends State<FormBuilder> {
         actions: shareAction,
       ),
       body: Stack(children: [
-        ListView.builder(
+        ReorderableListView.builder(
             padding: EdgeInsets.all(16.0),
             shrinkWrap: true,
             itemCount: layout.fields.length,
             itemBuilder: (context, i) {
               return _FormBuilderCard(
+              key: Key('layoutItem$i'),
                 options: layout.fields[i],
                 removeFunc: () => _removeField(i),
               );
-            }),
+          },
+          onReorder: (oldPos, newPos) {
+            final item = layout.fields.removeAt(oldPos);
+            if (newPos < layout.fields.length)
+              layout.fields.insert(newPos, item);
+            else
+              layout.fields.add(item);
+          },
+        ),
         SafeArea(
           bottom: true,
           top: false,
