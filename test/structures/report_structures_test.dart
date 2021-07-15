@@ -17,6 +17,18 @@ void main() {
     fields: [SectionFieldOptions(title: 'section')],
   );
 
+  final String subsectionLayoutJSON =
+      '{"layout_name":"layout","0":{"field_name":"section","field_type":"section","font_size":20.0}}';
+  final subsectionLayout = ReportLayout(
+    name: 'layout',
+    fields: [
+      SectionFieldOptions(
+        title: 'section',
+        fontSize: SectionFieldOptions.subsectionSize,
+      )
+    ],
+  );
+
   final String simpleReportJSON =
       '{"report_title":"report","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
   final simpleReport = Report(
@@ -38,6 +50,9 @@ void main() {
     });
     test('section layout', () {
       expect(sectionLayout.toJSON(), sectionLayoutJSON);
+    });
+    test('subsection layout', () {
+      expect(subsectionLayout.toJSON(), subsectionLayoutJSON);
     });
   });
 

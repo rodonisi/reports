@@ -13,5 +13,6 @@
   "layoutFieldOptionsTitle": "Titolo",
   "layoutTextFieldOptionsHeader": "Opzioni Testo",
   "layoutTextFieldOptionsLines": "Righe",
-  "layoutTextFieldOptionsNumeric": "Tastiera Numerica"
+  "layoutTextFieldOptionsNumeric": "Tastiera Numerica",
+  "subsection": "Sottotitolo"
 }

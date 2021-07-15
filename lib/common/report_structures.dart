@@ -81,12 +81,17 @@ class TextFieldOptions extends FieldOptions {
 
 /// Contains the options specific to a section field.
 class SectionFieldOptions extends FieldOptions {
-  SectionFieldOptions({String title = 'Section'})
-      : super(title: title, fieldType: FieldTypes.section);
   static const String fontSizeID = 'font_size';
-  final fontSize = 32.0;
+  static const double sectionSize = 32.0;
+  static const double subsectionSize = 20.0;
 
-  SectionFieldOptions.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  SectionFieldOptions({String title = 'Section', this.fontSize = sectionSize})
+      : super(title: title, fieldType: FieldTypes.section);
+  final fontSize;
+
+  SectionFieldOptions.fromMap(Map<String, dynamic> map)
+      : fontSize = map[fontSizeID],
+        super.fromMap(map);
 
   @override
   Map<String, dynamic> asMap() {

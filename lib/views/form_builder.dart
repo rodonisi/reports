@@ -128,15 +128,15 @@ class _FormBuilderState extends State<FormBuilder> {
       ),
       body: Stack(children: [
         ReorderableListView.builder(
-            padding: EdgeInsets.all(16.0),
-            shrinkWrap: true,
-            itemCount: layout.fields.length,
-            itemBuilder: (context, i) {
-              return _FormBuilderCard(
+          padding: EdgeInsets.all(16.0),
+          shrinkWrap: true,
+          itemCount: layout.fields.length,
+          itemBuilder: (context, i) {
+            return _FormBuilderCard(
               key: Key('layoutItem$i'),
-                options: layout.fields[i],
-                removeFunc: () => _removeField(i),
-              );
+              options: layout.fields[i],
+              removeFunc: () => _removeField(i),
+            );
           },
           onReorder: (oldPos, newPos) {
             final item = layout.fields.removeAt(oldPos);
@@ -236,6 +236,14 @@ class _Dial extends StatelessWidget {
           child: Icon(Icons.list),
           label: localization.layoutTextFieldName,
           onTap: () => addFieldFunc(TextFieldOptions()),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.list),
+          label: localization.subsection,
+          onTap: () => addFieldFunc(SectionFieldOptions(
+            title: localization.subsection,
+            fontSize: SectionFieldOptions.subsectionSize,
+          )),
         ),
         SpeedDialChild(
           child: Icon(Icons.list),

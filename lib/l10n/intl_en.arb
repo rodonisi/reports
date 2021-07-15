@@ -55,5 +55,9 @@
   "layoutTextFieldOptionsNumeric": "Numeric Keyboard",
   "@layoutTextFieldOptionsNumeric": {
     "description": "Text field options numeric keyboard string"
+  },
+  "subsection": "Subsection",
+  "@subsection": {
+    "description": "Subsection string"
   }
 }
