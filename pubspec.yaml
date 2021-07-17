@@ -41,6 +41,7 @@ dependencies:
   dropbox_client: ^0.8.0
   font_awesome_flutter: ^9.1.0
   intl: ^0.17.0
+  modal_bottom_sheet: ^2.0.0
 
 dev_dependencies:
   flutter_test:

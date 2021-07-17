@@ -130,6 +130,11 @@ class _ReportViewerState extends State<ReportViewer> {
     return Scaffold(
       appBar: AppBar(
         title: AppBarTextField(controller: titleController),
+        leading: IconButton(
+          icon: Icon(Icons.close_rounded),
+          color: Colors.red,
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: shareAction,
         bottom: isNew
             ? PreferredSize(

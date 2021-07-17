@@ -2,6 +2,7 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,6 +46,20 @@ class Layouts extends StatelessWidget {
         ],
       ),
       drawer: MenuDrawer(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => showCupertinoModalBottomSheet(
+          context: context,
+          bounce: true,
+          closeProgressThreshold: 0.4,
+          builder: (context) {
+            final args = FormBuilderArgs(
+              name: 'Layout ${_layoutsProvider.layouts.length}',
+            );
+            return FormBuilder(args: args);
+          },
+        ),
+      ),
       body: _LayoutsList(),
     );
   }
@@ -79,13 +94,17 @@ class _LayoutsList extends StatelessWidget {
           child: ListTile(
             title: Text(layoutsProvider.layouts[index]),
             leading: Icon(ReportsIcons.layout),
-            onTap: () => Navigator.pushNamed(
-              context,
-              FormBuilder.routeName,
-              arguments: FormBuilderArgs(
-                name: layoutsProvider.layouts[index],
-                index: index,
-              ),
+            onTap: () => showCupertinoModalBottomSheet(
+              context: context,
+              bounce: true,
+              closeProgressThreshold: 0.4,
+              builder: (context) {
+                final args = FormBuilderArgs(
+                  name: layoutsProvider.layouts[index],
+                  index: index,
+                );
+                return FormBuilder(args: args);
+              },
             ),
           ),
         );

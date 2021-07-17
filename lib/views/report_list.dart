@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,14 +36,16 @@ class Reports extends StatelessWidget {
       floatingActionButton: Consumer<LayoutsModel>(
         builder: (context, layoutsProvider, child) => FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              ReportViewer.routeName,
-              arguments:
-                  ReportViewerArgs(name: 'Report ${DateTime.now().toString()}'),
-            );
-          },
+          onPressed: () => showCupertinoModalBottomSheet(
+            context: context,
+            bounce: true,
+            closeProgressThreshold: 0.4,
+            builder: (context) {
+              final args =
+                  ReportViewerArgs(name: 'Report ${DateTime.now().toString()}');
+              return ReportViewer(args: args);
+            },
+          ),
         ),
       ),
       drawer: MenuDrawer(),
@@ -87,13 +90,14 @@ class __ReportListState extends State<_ReportList> {
           child: ListTile(
             title: Text(item),
             leading: Icon(ReportsIcons.report),
-            onTap: () => Navigator.pushNamed(
-              context,
-              ReportViewer.routeName,
-              arguments: ReportViewerArgs(
-                name: item,
-                index: i,
-              ),
+            onTap: () => showCupertinoModalBottomSheet(
+              context: context,
+              bounce: true,
+              closeProgressThreshold: 0.4,
+              builder: (context) {
+                final args = ReportViewerArgs(name: item, index: i);
+                return ReportViewer(args: args);
+              },
             ),
           ),
         );

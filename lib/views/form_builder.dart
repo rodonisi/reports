@@ -123,6 +123,11 @@ class _FormBuilderState extends State<FormBuilder> {
         title: AppBarTextField(
           controller: nameController,
         ),
+        leading: IconButton(
+          icon: Icon(Icons.close_rounded),
+          color: Colors.red,
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: shareAction,
       ),
       body: Stack(children: [
