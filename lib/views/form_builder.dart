@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,6 +50,7 @@ class FormBuilder extends StatefulWidget {
 class _FormBuilderState extends State<FormBuilder> {
   late ReportLayout layout;
   bool loaded = false;
+  final nameController = TextEditingController();
 
   void _addField(FieldOptions options) {
     setState(() => layout.fields.add(options));
@@ -92,12 +94,8 @@ class _FormBuilderState extends State<FormBuilder> {
         child: CircularProgressIndicator.adaptive(),
       );
 
-    // Controller for the layout name text field.
-    final nameController = TextEditingController.fromValue(
-      TextEditingValue(
-        text: layout.name,
-      ),
-    );
+    // Update the layout name.
+    nameController.text = layout.name;
 
     // Determine whether this is a new layout.
     final isNew = widget.args.index == null;
@@ -144,71 +142,44 @@ class _FormBuilderState extends State<FormBuilder> {
         SafeArea(
           bottom: true,
           top: false,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: _SaveButton(
-              layout: layout,
-              index: widget.args.index,
-              nameController: nameController,
-            ),
-          ),
+          child: Align(alignment: Alignment.bottomCenter, child: null),
         ),
       ]),
       floatingActionButton: _Dial(addFieldFunc: _addField),
+      bottomNavigationBar: SaveButton(onPressed: _save),
     );
   }
-}
 
-// -----------------------------------------------------------------------------
-// - _SaveButton Widget Implementation
-// -----------------------------------------------------------------------------
-class _SaveButton extends StatelessWidget {
-  _SaveButton(
-      {Key? key,
-      required this.nameController,
-      required this.layout,
-      this.index})
-      : super(key: key);
-  final TextEditingController nameController;
-  final ReportLayout layout;
-  final int? index;
+  void _save() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: Text(AppLocalizations.of(context)!.buttonSave),
-      onPressed: () async {
-        final prefs = await SharedPreferences.getInstance();
+    // Save the old name to determine whether it has been updated.
+    final oldName = layout.name;
+    layout.name = nameController.text;
 
-        // Save the old name to determine whether it has been updated.
-        final oldName = layout.name;
-        layout.name = nameController.text;
+    // Get the provider.
+    final layoutsProvider = context.read<LayoutsModel>();
 
-        // Get the provider.
-        final layoutsProvider = context.read<LayoutsModel>();
+    // Update or add the layout
+    if (widget.args.index != null)
+      layoutsProvider.update(widget.args.index!, layout.name);
+    else
+      layoutsProvider.add(layout.name);
 
-        // Update or add the layout
-        if (index != null)
-          layoutsProvider.update(index!, layout.name);
-        else
-          layoutsProvider.add(layout.name);
+    // Write the layout to file.
+    final file = renameAndWriteFile('$layoutsDirectory/$oldName',
+        '$layoutsDirectory/${layout.name}', layout.toJSON());
 
-        // Write the layout to file.
-        final file = renameAndWriteFile('$layoutsDirectory/$oldName',
-            '$layoutsDirectory/${layout.name}', layout.toJSON());
+    // Backup the newly created file to dropbox if option is enabled.
+    final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
+    if (dbEnabled != null && dbEnabled) {
+      // Wait for the file to be written
+      await file;
+      // Backup to dropbox.
+      dbBackupFile('${layout.name}.json', layoutsDirectory);
+    }
 
-        // Backup the newly created file to dropbox if option is enabled.
-        final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
-        if (dbEnabled != null && dbEnabled) {
-          // Wait for the file to be written
-          await file;
-          // Backup to dropbox.
-          dbBackupFile('${layout.name}.json', layoutsDirectory);
-        }
-
-        Navigator.pop(context);
-      },
-    );
+    Navigator.pop(context);
   }
 }
 
