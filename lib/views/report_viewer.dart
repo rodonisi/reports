@@ -58,20 +58,6 @@ class _ReportViewerState extends State<ReportViewer> {
     setState(() {});
   }
 
-  void _initControllers() {
-    // Init title controller
-    titleController.text = report.title;
-
-    // Generate a controller for each of the fields.
-    controllers.addAll(List.generate(
-        report.layout.fields.length, (index) => TextEditingController()));
-
-    // Set the controllers' text to that of the existing data.
-    for (var i = 0; i < report.data.length; i++) {
-      controllers[i].text = (report.data[i] as TextFieldData).data;
-    }
-  }
-
   @override
   void initState() {
     // Read the report from file
@@ -81,6 +67,7 @@ class _ReportViewerState extends State<ReportViewer> {
     futureReport.then((value) {
       setState(() {
         report = Report.fromJSON(value);
+        titleController.text = report.title;
         loaded = true;
       });
     }).catchError((error, stackTrace) async {
@@ -94,6 +81,7 @@ class _ReportViewerState extends State<ReportViewer> {
           layout: ReportLayout.fromJSON(layoutString),
           data: [],
         );
+        titleController.text = report.title;
         loaded = true;
       });
     });
@@ -109,8 +97,15 @@ class _ReportViewerState extends State<ReportViewer> {
       return Center(
         child: CircularProgressIndicator.adaptive(),
       );
-    // Initialize the text controllers
-    _initControllers();
+
+    // Generate a controller for each of the fields.
+    controllers.addAll(List.generate(
+        report.layout.fields.length, (index) => TextEditingController()));
+
+    // Set the controllers' text to that of the existing data.
+    for (var i = 0; i < report.data.length; i++) {
+      controllers[i].text = (report.data[i] as TextFieldData).data;
+    }
 
     // Determine whether we're viewing an existing report or creating a new one.
     final isNew = widget.args.index == null;

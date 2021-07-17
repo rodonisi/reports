@@ -71,6 +71,7 @@ class _FormBuilderState extends State<FormBuilder> {
     futureReport.then((value) {
       setState(() {
         layout = ReportLayout.fromJSON(value);
+        nameController.text = layout.name;
         loaded = true;
       });
     }).catchError((error, stackTrace) {
@@ -79,6 +80,7 @@ class _FormBuilderState extends State<FormBuilder> {
           name: widget.args.name,
           fields: [],
         );
+        nameController.text = layout.name;
         loaded = true;
       });
     });
@@ -93,9 +95,6 @@ class _FormBuilderState extends State<FormBuilder> {
       return Center(
         child: CircularProgressIndicator.adaptive(),
       );
-
-    // Update the layout name.
-    nameController.text = layout.name;
 
     // Determine whether this is a new layout.
     final isNew = widget.args.index == null;
