@@ -32,18 +32,6 @@ class Layouts extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.layoutsTitle),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => Navigator.pushNamed(
-              context,
-              FormBuilder.routeName,
-              arguments: FormBuilderArgs(
-                name: 'Layout ${_layoutsProvider.layouts.length}',
-              ),
-            ),
-          ),
-        ],
       ),
       drawer: MenuDrawer(),
       floatingActionButton: FloatingActionButton(
