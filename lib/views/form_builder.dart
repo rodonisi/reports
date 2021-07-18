@@ -159,6 +159,21 @@ class _FormBuilderState extends State<FormBuilder> {
   }
 
   void _save() async {
+    if (layout.fields.length == 0) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Layout cannot be empty!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('close'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     final prefs = await SharedPreferences.getInstance();
 
     // Save the old name to determine whether it has been updated.
