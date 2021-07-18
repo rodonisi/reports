@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reports/widgets/controlled_text_field.dart';
 
 // -----------------------------------------------------------------------------
 // - FormTileContent Widget Implementation
@@ -24,9 +25,7 @@ class FormTileContent extends StatelessWidget {
     switch (options.fieldType) {
       case FieldTypes.section:
         final secOpts = options as SectionFieldOptions;
-        final secController = TextEditingController();
-        secController.text = secOpts.title;
-        return TextFormField(
+        return ControlledTextField(
           enabled: enabled,
           initialValue: secOpts.title,
           decoration: InputDecoration(
@@ -116,7 +115,7 @@ class _TextFieldTileOptions extends StatelessWidget {
           localization.layoutFieldOptionsTitle,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        TextFormField(
+        ControlledTextField(
           initialValue: options.title,
           onChanged: (value) => options.title = value,
         ),
@@ -127,7 +126,7 @@ class _TextFieldTileOptions extends StatelessWidget {
           localization.layoutTextFieldOptionsLines,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        TextFormField(
+        ControlledTextField(
           initialValue: options.lines.toString(),
           onChanged: (value) => options.lines = int.parse(value),
           keyboardType: TextInputType.number,
