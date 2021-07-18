@@ -59,5 +59,13 @@
   "subsection": "Subsection",
   "@subsection": {
     "description": "Subsection string"
+  },
+  "layoutCannotBeEmpty": "Layout cannot be empty!",
+  "@layoutCannotBeEmpty": {
+    "description": "Prompt message when trying to save an empty layout"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button string"
   }
 }

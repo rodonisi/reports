@@ -162,15 +162,18 @@ class _FormBuilderState extends State<FormBuilder> {
     if (layout.fields.length == 0) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Layout cannot be empty!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('close'),
-            ),
-          ],
-        ),
+        builder: (context) {
+          final localizations = AppLocalizations.of(context)!;
+          return AlertDialog(
+            title: Text(localizations.layoutCannotBeEmpty),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(localizations.close),
+              ),
+            ],
+          );
+        },
       );
       return;
     }

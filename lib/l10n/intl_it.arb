@@ -14,5 +14,7 @@
   "layoutTextFieldOptionsHeader": "Opzioni Testo",
   "layoutTextFieldOptionsLines": "Righe",
   "layoutTextFieldOptionsNumeric": "Tastiera Numerica",
-  "subsection": "Sottotitolo"
+  "subsection": "Sottotitolo",
+  "layoutCannotBeEmpty": "La struttura non può essere vuota!",
+  "close": "Chiudi"
 }
