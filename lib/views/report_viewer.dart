@@ -3,8 +3,6 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reports/widgets/form_tile.dart';
-import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +17,8 @@ import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:reports/widgets/form_tile.dart';
+import 'package:reports/widgets/save_button.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportViewerArgs Class Implementation
