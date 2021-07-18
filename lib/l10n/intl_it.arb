@@ -16,5 +16,6 @@
   "layoutTextFieldOptionsNumeric": "Tastiera Numerica",
   "subsection": "Sottotitolo",
   "layoutCannotBeEmpty": "La struttura non può essere vuota!",
-  "close": "Chiudi"
+  "close": "Chiudi",
+  "reportRequiresLayout": "Impossibile creare un rapporto senza una struttura!"
 }

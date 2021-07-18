@@ -33,21 +33,32 @@ class Reports extends StatelessWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.reportsTitle),
       ),
-      floatingActionButton: Consumer<LayoutsModel>(
-        builder: (context, layoutsProvider, child) => FloatingActionButton(
+      floatingActionButton:
+          Consumer<LayoutsModel>(builder: (context, layoutsProvider, child) {
+        return FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () => showCupertinoModalBottomSheet(
-            context: context,
-            bounce: true,
-            closeProgressThreshold: 0.4,
-            builder: (context) {
-              final args =
-                  ReportViewerArgs(name: 'Report ${DateTime.now().toString()}');
-              return ReportViewer(args: args);
-            },
-          ),
-        ),
-      ),
+          onPressed: () {
+            if (layoutsProvider.layouts.isNotEmpty)
+              showCupertinoModalBottomSheet(
+                context: context,
+                bounce: true,
+                closeProgressThreshold: 0.4,
+                builder: (context) {
+                  final args = ReportViewerArgs(
+                      name: 'Report ${DateTime.now().toString()}');
+                  return ReportViewer(args: args);
+                },
+              );
+            else
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      Text(AppLocalizations.of(context)!.reportRequiresLayout),
+                ),
+              );
+          },
+        );
+      }),
       drawer: MenuDrawer(),
       body: _ReportList(),
     );
