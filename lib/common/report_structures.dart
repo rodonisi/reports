@@ -2,6 +2,8 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'dart:convert';
+import 'dart:io';
+import 'package:intl/intl.dart';
 
 // -----------------------------------------------------------------------------
 // - Field Types
@@ -11,6 +13,7 @@ import 'dart:convert';
 class FieldTypes {
   static const String textField = 'text_field';
   static const String section = 'section';
+  static const String date = 'date_field';
 }
 
 // -----------------------------------------------------------------------------
@@ -102,6 +105,57 @@ class SectionFieldOptions extends FieldOptions {
   }
 }
 
+/// Contains the supported date formats and IDs for the date field.
+class DateFieldFormats {
+  static const String dateModeID = 'date';
+  static const String timeModeID = 'time';
+  static const String dateTimeModeID = 'date_and_time';
+
+  static DateFormat getFormat(String mode) {
+    final locale = Platform.localeName;
+    switch (mode) {
+      case dateModeID:
+        return DateFormat.yMMMMd(locale);
+      case timeModeID:
+        return DateFormat.jm(locale);
+      case dateTimeModeID:
+        return DateFormat.yMd(locale).add_jm();
+      default:
+        throw Exception('Unsupported mode $mode');
+    }
+  }
+}
+
+/// Contains the options specific to a date field.
+class DateFieldOptions extends FieldOptions {
+  static const String modeID = 'mode';
+  DateFieldOptions({
+    String title = 'Date',
+    this.mode = DateFieldFormats.dateModeID,
+  }) : super(title: title, fieldType: FieldTypes.date);
+
+  /// The date field mode. Must be one of the IDs defined in the
+  /// DateFieldFormats class.
+  String mode;
+
+  DateFieldOptions.fromMap(Map<String, dynamic> map)
+      : mode = map[modeID],
+        super.fromMap(map);
+
+  /// Get the DateFormat class from the current mode.
+  DateFormat get getFormat {
+    return DateFieldFormats.getFormat(mode);
+  }
+
+  @override
+  Map<String, dynamic> asMap() {
+    final map = super.asMap();
+    map[modeID] = mode;
+
+    return map;
+  }
+}
+
 // -----------------------------------------------------------------------------
 // - Field Data Structures
 // -----------------------------------------------------------------------------
@@ -121,6 +175,17 @@ class TextFieldData extends FieldData {
   @override
   String toString() {
     return data;
+  }
+}
+
+/// A date field's data.
+class DateFieldData extends FieldData {
+  DateTime data;
+  DateFieldData({required this.data});
+
+  @override
+  toString() {
+    return data.toString();
   }
 }
 
@@ -161,6 +226,9 @@ class ReportLayout {
               break;
             case FieldTypes.textField:
               options = TextFieldOptions.fromMap(fieldMap);
+              break;
+            case FieldTypes.date:
+              options = DateFieldOptions.fromMap(fieldMap);
               break;
             default:
               throw ArgumentError.value(value[FieldOptions.typeID].fieldType,
@@ -213,11 +281,21 @@ class Report {
         final index = int.tryParse(key);
         if (index != null) {
           final fieldMap = value as Map<String, dynamic>;
-          final mapData = TextFieldData(data: fieldMap[FieldData.dataID]!);
+          final mapData = getFieldData(
+              fieldMap[FieldOptions.typeID], fieldMap[FieldData.dataID]);
           data.add(mapData);
         }
       }
     });
+  }
+
+  FieldData getFieldData(String fieldType, String data) {
+    switch (fieldType) {
+      case FieldTypes.date:
+        return DateFieldData(data: DateTime.parse(data));
+      default:
+        return TextFieldData(data: data);
+    }
   }
 
   /// Convert the report to a JSON string.

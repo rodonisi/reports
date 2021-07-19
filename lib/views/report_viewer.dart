@@ -104,7 +104,22 @@ class _ReportViewerState extends State<ReportViewer> {
 
     // Set the controllers' text to that of the existing data.
     for (var i = 0; i < report.data.length; i++) {
-      controllers[i].text = (report.data[i] as TextFieldData).data;
+      if (report.layout.fields[i].fieldType == FieldTypes.textField &&
+          controllers[i].text.isEmpty)
+        controllers[i].text = (report.data[i] as TextFieldData).data;
+    }
+
+    // Initialize the data structures if not present.
+    if (report.data.length < report.layout.fields.length) {
+      for (var element in report.layout.fields) {
+        switch (element.fieldType) {
+          case FieldTypes.date:
+            report.data.add(DateFieldData(data: DateTime.now()));
+            break;
+          default:
+            report.data.add(TextFieldData(data: ''));
+        }
+      }
     }
 
     // Determine whether we're viewing an existing report or creating a new one.
@@ -150,6 +165,7 @@ class _ReportViewerState extends State<ReportViewer> {
           return _FormViewerCard(
             options: report.layout.fields[i],
             controller: controllers[i],
+            data: report.data[i],
           );
         },
       ),
@@ -167,14 +183,10 @@ class _ReportViewerState extends State<ReportViewer> {
 
     // Iterate over the fields.
     for (var i = 0; i < report.layout.fields.length; i++) {
-      // Add a new entry to the data list if it does not exist.
-      if (report.data.length <= i) {
-        report.data.add(TextFieldData(data: controllers[i].text));
-      } else {
-        // Update the existing entry otherwise.
+      // Store text fields controllers data
+      if (report.layout.fields[i].fieldType == FieldTypes.textField) {
         (report.data[i] as TextFieldData).data = controllers[i].text;
       }
-      logger.v('${report.layout.fields[i].title}: ${controllers[i].text}');
     }
 
     // Update or add the report in the provider.
@@ -205,11 +217,15 @@ class _ReportViewerState extends State<ReportViewer> {
 // - _FormViewerCard Widget Declaration
 // -----------------------------------------------------------------------------
 class _FormViewerCard extends StatelessWidget {
-  const _FormViewerCard(
-      {Key? key, required this.options, required this.controller})
-      : super(key: key);
+  const _FormViewerCard({
+    Key? key,
+    required this.options,
+    required this.controller,
+    required this.data,
+  }) : super(key: key);
 
   final FieldOptions options;
+  final FieldData data;
   final TextEditingController controller;
 
   @override
@@ -229,6 +245,7 @@ class _FormViewerCard extends StatelessWidget {
               child: FormTileContent(
                 options: options,
                 controller: controller,
+                data: data,
               ),
             ),
           ],

@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reports/common/report_structures.dart';
@@ -12,21 +13,31 @@ import 'package:reports/widgets/controlled_text_field.dart';
 // -----------------------------------------------------------------------------
 
 /// Creates the form card content for the given type.
-class FormTileContent extends StatelessWidget {
-  const FormTileContent(
-      {Key? key, required this.options, this.enabled = true, this.controller})
-      : super(key: key);
+class FormTileContent extends StatefulWidget {
+  const FormTileContent({
+    Key? key,
+    required this.options,
+    this.enabled = true,
+    this.controller,
+    this.data,
+  }) : super(key: key);
 
   final FieldOptions options;
+  final FieldData? data;
   final bool enabled;
   final TextEditingController? controller;
 
+  @override
+  _FormTileContentState createState() => _FormTileContentState();
+}
+
+class _FormTileContentState extends State<FormTileContent> {
   Widget _getField() {
-    switch (options.fieldType) {
+    switch (widget.options.fieldType) {
       case FieldTypes.section:
-        final secOpts = options as SectionFieldOptions;
+        final secOpts = widget.options as SectionFieldOptions;
         return ControlledTextField(
-          enabled: enabled,
+          enabled: widget.enabled,
           initialValue: secOpts.title,
           decoration: InputDecoration(
             border: InputBorder.none,
@@ -38,28 +49,41 @@ class FormTileContent extends StatelessWidget {
           onChanged: (val) => secOpts.title = val,
         );
       case FieldTypes.textField:
-        final textOpts = options as TextFieldOptions;
+        final textOpts = widget.options as TextFieldOptions;
         return TextField(
-          enabled: enabled,
+          enabled: widget.enabled,
           maxLines: textOpts.lines,
-          controller: controller,
+          controller: widget.controller,
           keyboardType:
               textOpts.numeric ? TextInputType.number : TextInputType.text,
         );
+      case FieldTypes.date:
+        final dateOpts = widget.options as DateFieldOptions;
+        final DateFieldData dateData = widget.data as DateFieldData? ??
+            DateFieldData(data: DateTime.now());
+
+        return DateTimeField(
+          onDateSelected: (value) => setState(() => dateData.data = value),
+          selectedDate: dateData.data,
+          enabled: widget.enabled,
+          dateFormat: dateOpts.getFormat,
+          mode: DateTimeFieldPickerMode.date,
+        );
       default:
-        throw ArgumentError.value(options.fieldType, 'unsupported field type');
+        throw ArgumentError.value(
+            widget.options.fieldType, 'unsupported field type');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (options is SectionFieldOptions) return _getField();
+    if (widget.options is SectionFieldOptions) return _getField();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          options.title,
+          widget.options.title,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         _getField()
@@ -85,10 +109,39 @@ class FormTileOptions extends StatelessWidget {
         return _TextFieldTileOptions(
           options: options as TextFieldOptions,
         );
+      case FieldTypes.date:
+        return _DateFieldTileOptions(
+          options: options as DateFieldOptions,
+        );
       default:
         throw ArgumentError.value(options.fieldType, 'unsupported field type');
     }
   }
+}
+
+List<Widget> _getCommonOptions(
+    BuildContext context, FieldOptions options, String title) {
+  final localization = AppLocalizations.of(context)!;
+  final opts = [
+    Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 16.0,
+      ),
+    ),
+    Divider(),
+    Text(
+      localization.layoutFieldOptionsTitle,
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+    ControlledTextField(
+      initialValue: options.title,
+      onChanged: (value) => options.title = value,
+    ),
+  ];
+
+  return opts;
 }
 
 class _TextFieldTileOptions extends StatelessWidget {
@@ -103,24 +156,10 @@ class _TextFieldTileOptions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          localization.layoutTextFieldOptionsHeader,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-          ),
-        ),
-        Divider(),
-        Text(
-          localization.layoutFieldOptionsTitle,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        ControlledTextField(
-          initialValue: options.title,
-          onChanged: (value) => options.title = value,
-        ),
-        Container(
-          height: 20.0,
+        ..._getCommonOptions(
+            context, options, localization.layoutTextFieldOptionsHeader),
+        SizedBox(
+          height: 16.0,
         ),
         Text(
           localization.layoutTextFieldOptionsLines,
@@ -135,6 +174,54 @@ class _TextFieldTileOptions extends StatelessWidget {
           title: localization.layoutTextFieldOptionsNumeric,
           getter: options.getNumeric,
           setter: options.setNumeric,
+        ),
+      ],
+    );
+  }
+}
+
+class _DateFieldTileOptions extends StatefulWidget {
+  _DateFieldTileOptions({Key? key, required this.options}) : super(key: key);
+
+  final DateFieldOptions options;
+
+  @override
+  __DateFieldTileOptionsState createState() => __DateFieldTileOptionsState();
+}
+
+class __DateFieldTileOptionsState extends State<_DateFieldTileOptions> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ..._getCommonOptions(context, widget.options, 'Date Field Options'),
+        SizedBox(
+          height: 20.0,
+        ),
+        Text(
+          'Mode',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        DropdownButton<String>(
+          isExpanded: true,
+          value: widget.options.mode,
+          underline: Container(color: Colors.grey, height: 1.0),
+          items: [
+            DropdownMenuItem(
+              child: Text('Date'),
+              value: DateFieldFormats.dateModeID,
+            ),
+            DropdownMenuItem(
+              child: Text('Time'),
+              value: DateFieldFormats.timeModeID,
+            ),
+            DropdownMenuItem(
+              child: Text('Date and Time'),
+              value: DateFieldFormats.dateTimeModeID,
+            )
+          ],
+          onChanged: (value) => setState(() => widget.options.mode = value!),
         ),
       ],
     );

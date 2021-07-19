@@ -225,6 +225,13 @@ class _Dial extends StatelessWidget {
       activeLabel: Text('close'),
       children: [
         SpeedDialChild(
+          child: Icon(Icons.calendar_today),
+          label: 'Date',
+          onTap: () => addFieldFunc(
+            DateFieldOptions(),
+          ),
+        ),
+        SpeedDialChild(
           child: Icon(Icons.list),
           label: localization.layoutTextFieldName,
           onTap: () => addFieldFunc(TextFieldOptions()),

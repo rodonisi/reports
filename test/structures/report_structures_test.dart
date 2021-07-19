@@ -29,12 +29,30 @@ void main() {
     ],
   );
 
+  final String dateLayoutJSON =
+      '{"layout_name":"layout","0":{"field_name":"date","field_type":"date_field","mode":"date"}}';
+  final dateLayout = ReportLayout(
+    name: 'layout',
+    fields: [
+      DateFieldOptions(
+        title: 'date',
+        mode: DateFieldFormats.dateModeID,
+      )
+    ],
+  );
+
   final String simpleReportJSON =
       '{"report_title":"report","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
   final simpleReport = Report(
       title: 'report',
       layout: simpleLayout,
       data: [TextFieldData(data: 'value')]);
+
+  final String dateReportJSON =
+      '{"report_title":"report","0":{"field_name":"date","field_type":"date_field","mode":"date","data":"2021-07-20 00:28:23.288288"}}';
+  final dateReport = Report(title: 'report', layout: dateLayout, data: [
+    DateFieldData(data: DateTime.parse('2021-07-20 00:28:23.288288'))
+  ]);
 
   group('layout tests', () {
     test('encode layout', () {
@@ -54,6 +72,12 @@ void main() {
     test('subsection layout', () {
       expect(subsectionLayout.toJSON(), subsectionLayoutJSON);
     });
+    test('date field layout', () {
+      expect(dateLayout.toJSON(), dateLayoutJSON);
+    });
+    test('date field layout', () {
+      expect(ReportLayout.fromJSON(dateLayoutJSON).toJSON(), dateLayoutJSON);
+    });
   });
 
   group('report tests', () {
@@ -62,6 +86,12 @@ void main() {
     });
     test('roundtrip report', () {
       expect(Report.fromJSON(simpleReportJSON).toJSON(), simpleReportJSON);
+    });
+    test('date report', () {
+      expect(dateReport.toJSON(), dateReportJSON);
+    });
+    test('roundtrip date', () {
+      expect(Report.fromJSON(dateReportJSON).toJSON(), dateReportJSON);
     });
   });
 }
