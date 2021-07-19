@@ -94,3 +94,5 @@ flutter_icons:
   image_path: "assets/icon/icon.png"
 flutter_intl:
   enabled: true
+  localizely:
+    project_id: 8355ffd5-25fe-4c57-89bd-2646b832031f
