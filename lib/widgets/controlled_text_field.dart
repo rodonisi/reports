@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ControlledTextField extends StatelessWidget {
+/// A textfield with embedded editing controller which accepts an initial value.
+class ControlledTextField extends StatefulWidget {
   ControlledTextField({
     Key? key,
     this.initialValue,
@@ -9,12 +10,8 @@ class ControlledTextField extends StatelessWidget {
     this.enabled,
     this.style,
     this.keyboardType,
-  })  : controller = TextEditingController(),
-        super(key: key) {
-    if (initialValue != null) controller.text = initialValue!;
-  }
+  }) : super(key: key);
 
-  final TextEditingController controller;
   final String? initialValue;
   final void Function(String)? onChanged;
   final InputDecoration? decoration;
@@ -23,14 +20,39 @@ class ControlledTextField extends StatelessWidget {
   final TextInputType? keyboardType;
 
   @override
+  _ControlledTextFieldState createState() => _ControlledTextFieldState();
+}
+
+class _ControlledTextFieldState extends State<ControlledTextField> {
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialValue != null) {
+      _controller.text = widget.initialValue!;
+      _controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: _controller.text.length));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      decoration: decoration,
-      enabled: enabled,
-      style: style,
-      keyboardType: keyboardType,
+      controller: _controller,
+      onChanged: widget.onChanged,
+      decoration: widget.decoration,
+      enabled: widget.enabled,
+      style: widget.style,
+      keyboardType: widget.keyboardType,
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
   }
 }
