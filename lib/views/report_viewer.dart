@@ -16,7 +16,7 @@ import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
 import 'package:reports/models/reports.dart';
-import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 import 'package:reports/widgets/save_button.dart';
 
@@ -49,9 +49,12 @@ class ReportViewer extends StatefulWidget {
 
 class _ReportViewerState extends State<ReportViewer> {
   late Report report;
-  final titleController = TextEditingController();
+
   // Keep track of when the report file has been read.
   bool loaded = false;
+
+  // Store the old title to determine whether it has been updated.
+  late String _oldTitle;
 
   void _setStateCallback() {
     setState(() {});
@@ -66,7 +69,7 @@ class _ReportViewerState extends State<ReportViewer> {
     futureReport.then((value) {
       setState(() {
         report = Report.fromJSON(value);
-        titleController.text = report.title;
+        _oldTitle = report.title;
         loaded = true;
       });
     }).catchError((error, stackTrace) async {
@@ -80,7 +83,7 @@ class _ReportViewerState extends State<ReportViewer> {
           layout: ReportLayout.fromJSON(layoutString),
           data: [],
         );
-        titleController.text = report.title;
+        _oldTitle = report.title;
         loaded = true;
       });
     });
@@ -128,7 +131,14 @@ class _ReportViewerState extends State<ReportViewer> {
 
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTextField(controller: titleController),
+        title: ControlledTextField(
+          decoration: InputDecoration(border: InputBorder.none),
+          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          hasClearButton: true,
+          maxLines: 1,
+          initialValue: report.title,
+          onChanged: (value) => report.title = value,
+        ),
         leading: IconButton(
           icon: Icon(Icons.close_rounded),
           color: Colors.red,
@@ -163,11 +173,6 @@ class _ReportViewerState extends State<ReportViewer> {
   void _saveReport() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Store the old title to determine whether it has been updated.
-    final oldTitle = report.title;
-    // Update the title.
-    report.title = titleController.text;
-
     // Update or add the report in the provider.
     var reportsProvider = context.read<ReportsModel>();
     if (widget.args.index != null)
@@ -176,7 +181,7 @@ class _ReportViewerState extends State<ReportViewer> {
       reportsProvider.add(report.title);
 
     // Write the report to file.
-    final file = renameAndWriteFile('$reportsDirectory/$oldTitle',
+    final file = renameAndWriteFile('$reportsDirectory/$_oldTitle',
         '$reportsDirectory/${report.title}', report.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.

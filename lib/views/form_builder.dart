@@ -17,7 +17,7 @@ import 'package:reports/common/io.dart';
 import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
-import 'package:reports/widgets/app_bar_text_field.dart';
+import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 
 // -----------------------------------------------------------------------------
@@ -50,7 +50,9 @@ class FormBuilder extends StatefulWidget {
 class _FormBuilderState extends State<FormBuilder> {
   late ReportLayout layout;
   bool loaded = false;
-  final nameController = TextEditingController();
+
+  // Keep track of when the report file has been read.
+  late String _oldName;
 
   void _addField(FieldOptions options) {
     setState(() => layout.fields.add(options));
@@ -71,7 +73,7 @@ class _FormBuilderState extends State<FormBuilder> {
     futureReport.then((value) {
       setState(() {
         layout = ReportLayout.fromJSON(value);
-        nameController.text = layout.name;
+        _oldName = layout.name;
         loaded = true;
       });
     }).catchError((error, stackTrace) {
@@ -80,7 +82,7 @@ class _FormBuilderState extends State<FormBuilder> {
           name: widget.args.name,
           fields: [],
         );
-        nameController.text = layout.name;
+        _oldName = layout.name;
         loaded = true;
       });
     });
@@ -117,8 +119,13 @@ class _FormBuilderState extends State<FormBuilder> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: AppBarTextField(
-          controller: nameController,
+        title: ControlledTextField(
+          decoration: InputDecoration(border: InputBorder.none),
+          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          hasClearButton: true,
+          maxLines: 1,
+          initialValue: layout.name,
+          onChanged: (value) => layout.name = value,
         ),
         leading: IconButton(
           icon: Icon(Icons.close_rounded),
@@ -179,10 +186,6 @@ class _FormBuilderState extends State<FormBuilder> {
     }
     final prefs = await SharedPreferences.getInstance();
 
-    // Save the old name to determine whether it has been updated.
-    final oldName = layout.name;
-    layout.name = nameController.text;
-
     // Get the provider.
     final layoutsProvider = context.read<LayoutsModel>();
 
@@ -193,7 +196,7 @@ class _FormBuilderState extends State<FormBuilder> {
       layoutsProvider.add(layout.name);
 
     // Write the layout to file.
-    final file = renameAndWriteFile('$layoutsDirectory/$oldName',
+    final file = renameAndWriteFile('$layoutsDirectory/$_oldName',
         '$layoutsDirectory/${layout.name}', layout.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
