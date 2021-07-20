@@ -35,6 +35,7 @@ class _FormTileContentState extends State<FormTileContent> {
       case FieldTypes.section:
         final secOpts = widget.options as SectionFieldOptions;
         return ControlledTextField(
+          key: ObjectKey(secOpts),
           enabled: widget.enabled,
           initialValue: secOpts.title,
           decoration: InputDecoration(
@@ -51,6 +52,7 @@ class _FormTileContentState extends State<FormTileContent> {
         final TextFieldData textData =
             widget.data as TextFieldData? ?? TextFieldData(data: '');
         return ControlledTextField(
+          key: ObjectKey(textOpts),
           onChanged: (value) => textData.data = value,
           enabled: widget.enabled,
           maxLines: textOpts.lines,
@@ -64,6 +66,7 @@ class _FormTileContentState extends State<FormTileContent> {
             DateFieldData(data: DateTime.now());
 
         return DateTimeField(
+          key: ObjectKey(dateOpts),
           onDateSelected: (value) => setState(() => dateData.data = value),
           selectedDate: dateData.data,
           enabled: widget.enabled,

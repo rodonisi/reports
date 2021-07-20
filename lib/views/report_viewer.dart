@@ -56,10 +56,6 @@ class _ReportViewerState extends State<ReportViewer> {
   // Store the old title to determine whether it has been updated.
   late String _oldTitle;
 
-  void _setStateCallback() {
-    setState(() {});
-  }
-
   @override
   void initState() {
     // Read the report from file
@@ -91,16 +87,7 @@ class _ReportViewerState extends State<ReportViewer> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // If the report file is not available yet, just display a progress
-    // indicator.
-    if (!loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
-    // Initialize the data structures if not present.
+  void _initializeData() {
     if (report.data.length < report.layout.fields.length) {
       for (var element in report.layout.fields) {
         switch (element.fieldType) {
@@ -112,6 +99,26 @@ class _ReportViewerState extends State<ReportViewer> {
         }
       }
     }
+  }
+
+  void _reinitializeData() {
+    setState(() {
+      report.data.clear();
+      _initializeData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // If the report file is not available yet, just display a progress
+    // indicator.
+    if (!loaded)
+      return Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+
+    // Initialize the data structures if not present.
+    _initializeData();
 
     // Determine whether we're viewing an existing report or creating a new one.
     final isNew = widget.args.index == null;
@@ -150,7 +157,7 @@ class _ReportViewerState extends State<ReportViewer> {
                 preferredSize: Size(0.0, 30.0),
                 child: _LayoutSelector(
                   report: report,
-                  refreshCallback: _setStateCallback,
+                  refreshCallback: _reinitializeData,
                 ),
               )
             : null,

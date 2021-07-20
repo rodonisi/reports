@@ -56,7 +56,7 @@ class TextFieldOptions extends FieldOptions {
   bool numeric;
 
   TextFieldOptions(
-      {String title = 'Text', this.lines = 1, this.numeric = false})
+      {required String title, this.lines = 1, this.numeric = false})
       : super(title: title, fieldType: FieldTypes.textField);
 
   bool getNumeric() {
@@ -88,7 +88,7 @@ class SectionFieldOptions extends FieldOptions {
   static const double sectionSize = 32.0;
   static const double subsectionSize = 20.0;
 
-  SectionFieldOptions({String title = 'Section', this.fontSize = sectionSize})
+  SectionFieldOptions({required String title, this.fontSize = sectionSize})
       : super(title: title, fieldType: FieldTypes.section);
   final fontSize;
 
@@ -130,7 +130,7 @@ class DateFieldFormats {
 class DateFieldOptions extends FieldOptions {
   static const String modeID = 'mode';
   DateFieldOptions({
-    String title = 'Date',
+    required String title,
     this.mode = DateFieldFormats.dateModeID,
   }) : super(title: title, fieldType: FieldTypes.date);
 
