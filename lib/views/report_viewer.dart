@@ -50,7 +50,6 @@ class ReportViewer extends StatefulWidget {
 class _ReportViewerState extends State<ReportViewer> {
   late Report report;
   final titleController = TextEditingController();
-  final controllers = <TextEditingController>[];
   // Keep track of when the report file has been read.
   bool loaded = false;
 
@@ -97,17 +96,6 @@ class _ReportViewerState extends State<ReportViewer> {
       return Center(
         child: CircularProgressIndicator.adaptive(),
       );
-
-    // Generate a controller for each of the fields.
-    controllers.addAll(List.generate(
-        report.layout.fields.length, (index) => TextEditingController()));
-
-    // Set the controllers' text to that of the existing data.
-    for (var i = 0; i < report.data.length; i++) {
-      if (report.layout.fields[i].fieldType == FieldTypes.textField &&
-          controllers[i].text.isEmpty)
-        controllers[i].text = (report.data[i] as TextFieldData).data;
-    }
 
     // Initialize the data structures if not present.
     if (report.data.length < report.layout.fields.length) {
@@ -164,7 +152,6 @@ class _ReportViewerState extends State<ReportViewer> {
         itemBuilder: (context, i) {
           return _FormViewerCard(
             options: report.layout.fields[i],
-            controller: controllers[i],
             data: report.data[i],
           );
         },
@@ -180,14 +167,6 @@ class _ReportViewerState extends State<ReportViewer> {
     final oldTitle = report.title;
     // Update the title.
     report.title = titleController.text;
-
-    // Iterate over the fields.
-    for (var i = 0; i < report.layout.fields.length; i++) {
-      // Store text fields controllers data
-      if (report.layout.fields[i].fieldType == FieldTypes.textField) {
-        (report.data[i] as TextFieldData).data = controllers[i].text;
-      }
-    }
 
     // Update or add the report in the provider.
     var reportsProvider = context.read<ReportsModel>();
@@ -220,13 +199,11 @@ class _FormViewerCard extends StatelessWidget {
   const _FormViewerCard({
     Key? key,
     required this.options,
-    required this.controller,
     required this.data,
   }) : super(key: key);
 
   final FieldOptions options;
   final FieldData data;
-  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +221,6 @@ class _FormViewerCard extends StatelessWidget {
             Expanded(
               child: FormTileContent(
                 options: options,
-                controller: controller,
                 data: data,
               ),
             ),

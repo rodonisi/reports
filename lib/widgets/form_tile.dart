@@ -18,14 +18,12 @@ class FormTileContent extends StatefulWidget {
     Key? key,
     required this.options,
     this.enabled = true,
-    this.controller,
     this.data,
   }) : super(key: key);
 
   final FieldOptions options;
   final FieldData? data;
   final bool enabled;
-  final TextEditingController? controller;
 
   @override
   _FormTileContentState createState() => _FormTileContentState();
@@ -50,10 +48,13 @@ class _FormTileContentState extends State<FormTileContent> {
         );
       case FieldTypes.textField:
         final textOpts = widget.options as TextFieldOptions;
-        return TextField(
+        final TextFieldData textData =
+            widget.data as TextFieldData? ?? TextFieldData(data: '');
+        return ControlledTextField(
+          onChanged: (value) => textData.data = value,
           enabled: widget.enabled,
           maxLines: textOpts.lines,
-          controller: widget.controller,
+          initialValue: textData.data,
           keyboardType:
               textOpts.numeric ? TextInputType.number : TextInputType.text,
         );

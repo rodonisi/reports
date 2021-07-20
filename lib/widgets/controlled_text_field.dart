@@ -10,6 +10,7 @@ class ControlledTextField extends StatefulWidget {
     this.enabled,
     this.style,
     this.keyboardType,
+    this.maxLines,
   }) : super(key: key);
 
   final String? initialValue;
@@ -18,6 +19,7 @@ class ControlledTextField extends StatefulWidget {
   final TextStyle? style;
   final bool? enabled;
   final TextInputType? keyboardType;
+  final int? maxLines;
 
   @override
   _ControlledTextFieldState createState() => _ControlledTextFieldState();
@@ -45,6 +47,7 @@ class _ControlledTextFieldState extends State<ControlledTextField> {
       decoration: widget.decoration,
       enabled: widget.enabled,
       style: widget.style,
+      maxLines: widget.maxLines,
       keyboardType: widget.keyboardType,
     );
   }
