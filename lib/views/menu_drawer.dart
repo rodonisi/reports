@@ -43,7 +43,7 @@ class MenuDrawer extends StatelessWidget {
                   Navigator.pushReplacementNamed(context, Layouts.routeName),
             ),
             ListTile(
-              title: Text(localizations.settingsTitle),
+              title: Text(localizations.settings),
               leading: Icon(Icons.settings),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Settings.routeName),

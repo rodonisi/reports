@@ -229,28 +229,40 @@ class _Dial extends StatelessWidget {
       children: [
         SpeedDialChild(
           child: Icon(Icons.calendar_today),
-          label: 'Date',
+          label: localization.date,
           onTap: () => addFieldFunc(
-            DateFieldOptions(),
+            DateFieldOptions(
+              title: localization.date,
+            ),
           ),
         ),
         SpeedDialChild(
           child: Icon(Icons.list),
-          label: localization.layoutTextFieldName,
-          onTap: () => addFieldFunc(TextFieldOptions()),
+          label: localization.textFieldName,
+          onTap: () => addFieldFunc(
+            TextFieldOptions(
+              title: localization.title,
+            ),
+          ),
         ),
         SpeedDialChild(
           child: Icon(Icons.list),
           label: localization.subsection,
-          onTap: () => addFieldFunc(SectionFieldOptions(
-            title: localization.subsection,
-            fontSize: SectionFieldOptions.subsectionSize,
-          )),
+          onTap: () => addFieldFunc(
+            SectionFieldOptions(
+              title: localization.subsection,
+              fontSize: SectionFieldOptions.subsectionSize,
+            ),
+          ),
         ),
         SpeedDialChild(
           child: Icon(Icons.list),
-          label: localization.layoutSectionFieldName,
-          onTap: () => addFieldFunc(SectionFieldOptions()),
+          label: localization.section,
+          onTap: () => addFieldFunc(
+            SectionFieldOptions(
+              title: localization.section,
+            ),
+          ),
         ),
       ],
     );

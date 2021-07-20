@@ -1,21 +1,99 @@
 {
   "@@locale": "it",
-  "buttonSave": "Salva",
-  "layoutsTitle": "Strutture",
-  "reportsTitle": "Rapporti",
-  "settingsDBBackup": "Backup su Dropbox",
-  "settingsDBLocation": "Posizione Backup",
-  "settingsSignIn": "Accedi",
-  "settingsSignOut": "Esci",
-  "settingsTitle": "Impostazioni",
-  "layoutTextFieldName": "Testo",
-  "layoutSectionFieldName": "Titolo",
-  "layoutFieldOptionsTitle": "Titolo",
-  "layoutTextFieldOptionsHeader": "Opzioni Testo",
-  "layoutTextFieldOptionsLines": "Righe",
-  "layoutTextFieldOptionsNumeric": "Tastiera Numerica",
-  "subsection": "Sottotitolo",
-  "layoutCannotBeEmpty": "La struttura non può essere vuota!",
+  "backupLocation": "Posizione Backup",
+  "@backupLocation": {
+    "description": "Backup location option string "
+  },
   "close": "Chiudi",
-  "reportRequiresLayout": "Impossibile creare un rapporto senza una struttura!"
+  "@close": {
+    "description": "Close button string"
+  },
+  "date": "Data",
+  "@date": {
+    "description": "Date string"
+  },
+  "dateAndTime": "Data e Ora",
+  "@dateAndTime": {
+    "description": "Date and time string"
+  },
+  "dateFieldOptionsHeader": "Opzioni Data",
+  "@dateFieldOptionsHeader": {
+    "description": "Date field options header string"
+  },
+  "dropboxBackup": "Backup su Dropbox",
+  "@dropboxBackup": {
+    "description": "Enable Dropbox backup option string"
+  },
+  "layoutCannotBeEmpty": "La struttura non può essere vuota!",
+  "@layoutCannotBeEmpty": {
+    "description": "Prompt message when trying to save an empty layout"
+  },
+  "layoutsTitle": "Strutture",
+  "@layoutsTitle": {
+    "description": "Layouts list view title"
+  },
+  "lines": "Righe",
+  "@lines": {
+    "description": "Lines string"
+  },
+  "mode": "Modalità",
+  "@mode": {
+    "description": "Mode string"
+  },
+  "numericKeyboard": "Tastiera Numerica",
+  "@numericKeyboard": {
+    "description": "Numeric keyboard string"
+  },
+  "reportRequiresLayout": "Impossibile creare un rapporto senza una struttura!",
+  "@reportRequiresLayout": {
+    "description": "Prompt message when trying to create a report without having any layouts"
+  },
+  "reportsTitle": "Rapporti",
+  "@reportsTitle": {
+    "description": "Reports list view title"
+  },
+  "save": "Salva",
+  "@save": {
+    "description": "Save button string"
+  },
+  "section": "Titolo",
+  "@section": {
+    "description": "Section string"
+  },
+  "settings": "Impostazioni",
+  "@settings": {
+    "description": "The settings view title\n"
+  },
+  "signIn": "Accedi",
+  "@signIn": {
+    "description": "Sign in button string"
+  },
+  "signOut": "Esci",
+  "@signOut": {
+    "description": "Sign out button string"
+  },
+  "subsection": "Sottotitolo",
+  "@subsection": {
+    "description": "Subsection string"
+  },
+  "text": "Testo",
+  "@text": {
+    "description": "Text string"
+  },
+  "textFieldName": "Testo",
+  "@textFieldName": {
+    "description": "Text field name"
+  },
+  "textFieldOptionsHeader": "Opzioni Testo",
+  "@textFieldOptionsHeader": {
+    "description": "Text field options header string"
+  },
+  "time": "Ora",
+  "@time": {
+    "description": "Time string"
+  },
+  "title": "Titolo\n",
+  "@title": {
+    "description": "Title string"
+  }
 }

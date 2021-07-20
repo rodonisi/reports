@@ -1,75 +1,99 @@
 {
   "@@locale": "en",
-  "buttonSave": "Save",
-  "@buttonSave": {
-    "description": "Save button string"
-  },
-  "layoutsTitle": "Layouts",
-  "@layoutsTitle": {
-    "description": "Layouts list view title"
-  },
-  "reportsTitle": "Reports",
-  "@reportsTitle": {
-    "description": "Reports list view title"
-  },
-  "settingsDBBackup": "Backup to Dropbox",
-  "@settingsDBBackup": {
-    "description": "Enable Dropbox backup option string"
-  },
-  "settingsDBLocation": "Backup Location",
-  "@settingsDBLocation": {
-    "description": "Dropbox backup location option string "
-  },
-  "settingsSignIn": "Sign In",
-  "@settingsSignIn": {
-    "description": "Dropbox sign in button string"
-  },
-  "settingsSignOut": "Sign Out",
-  "@settingsSignOut": {
-    "description": "Dropbox sign out button string"
-  },
-  "settingsTitle": "Settings",
-  "@settingsTitle": {
-    "description": "The settings view title\n"
-  },
-  "layoutTextFieldName": "Text Field",
-  "@layoutTextFieldName": {
-    "description": "Layout text field name"
-  },
-  "layoutSectionFieldName": "Section",
-  "@layoutSectionFieldName": {
-    "description": "Layout section field name"
-  },
-  "layoutFieldOptionsTitle": "Title",
-  "@layoutTextFieldOptionsTitle": {
-    "description": "Field options title string"
-  },
-  "layoutTextFieldOptionsHeader": "Text Field Options",
-  "@layoutTextFieldOptionsHeader": {
-    "description": "Text field options header string"
-  },
-  "layoutTextFieldOptionsLines": "Lines",
-  "@layoutTextFieldOptionsLines": {
-    "description": "Text field options lines string"
-  },
-  "layoutTextFieldOptionsNumeric": "Numeric Keyboard",
-  "@layoutTextFieldOptionsNumeric": {
-    "description": "Text field options numeric keyboard string"
-  },
-  "subsection": "Subsection",
-  "@subsection": {
-    "description": "Subsection string"
-  },
-  "layoutCannotBeEmpty": "Layout cannot be empty!",
-  "@layoutCannotBeEmpty": {
-    "description": "Prompt message when trying to save an empty layout"
+  "backupLocation": "Backup Location",
+  "@backupLocation": {
+    "description": "Backup location option string "
   },
   "close": "Close",
   "@close": {
     "description": "Close button string"
   },
+  "date": "Date",
+  "@date": {
+    "description": "Date string"
+  },
+  "dateAndTime": "Date and Time",
+  "@dateAndTime": {
+    "description": "Date and time string"
+  },
+  "dateFieldOptionsHeader": "Date Field Options",
+  "@dateFieldOptionsHeader": {
+    "description": "Date field options header string"
+  },
+  "dropboxBackup": "Backup to Dropbox",
+  "@dropboxBackup": {
+    "description": "Enable Dropbox backup option string"
+  },
+  "layoutCannotBeEmpty": "Layout cannot be empty!",
+  "@layoutCannotBeEmpty": {
+    "description": "Prompt message when trying to save an empty layout"
+  },
+  "layoutsTitle": "Layouts",
+  "@layoutsTitle": {
+    "description": "Layouts list view title"
+  },
+  "lines": "Lines",
+  "@lines": {
+    "description": "Lines string"
+  },
+  "mode": "Mode",
+  "@mode": {
+    "description": "Mode string"
+  },
+  "numericKeyboard": "Numeric Keyboard",
+  "@numericKeyboard": {
+    "description": "Numeric keyboard string"
+  },
   "reportRequiresLayout": "Cannot create a report without any layouts!",
   "@reportRequiresLayout": {
     "description": "Prompt message when trying to create a report without having any layouts"
+  },
+  "reportsTitle": "Reports",
+  "@reportsTitle": {
+    "description": "Reports list view title"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button string"
+  },
+  "section": "Section",
+  "@section": {
+    "description": "Section string"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "The settings view title\n"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Sign in button string"
+  },
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button string"
+  },
+  "subsection": "Subsection",
+  "@subsection": {
+    "description": "Subsection string"
+  },
+  "text": "Text",
+  "@text": {
+    "description": "Text string"
+  },
+  "textFieldName": "Text Field",
+  "@textFieldName": {
+    "description": "Text field name"
+  },
+  "textFieldOptionsHeader": "Text Field Options",
+  "@textFieldOptionsHeader": {
+    "description": "Text field options header string"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "Time string"
+  },
+  "title": "Title",
+  "@title": {
+    "description": "Title string"
   }
 }

@@ -12,7 +12,7 @@ class SaveButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text(AppLocalizations.of(context)!.buttonSave),
+        child: Text(AppLocalizations.of(context)!.save),
       ),
     );
   }

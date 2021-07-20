@@ -133,7 +133,7 @@ List<Widget> _getCommonOptions(
     ),
     Divider(),
     Text(
-      localization.layoutFieldOptionsTitle,
+      localization.title,
       style: TextStyle(fontWeight: FontWeight.bold),
     ),
     ControlledTextField(
@@ -158,12 +158,12 @@ class _TextFieldTileOptions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ..._getCommonOptions(
-            context, options, localization.layoutTextFieldOptionsHeader),
+            context, options, localization.textFieldOptionsHeader),
         SizedBox(
           height: 16.0,
         ),
         Text(
-          localization.layoutTextFieldOptionsLines,
+          localization.lines,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         ControlledTextField(
@@ -172,7 +172,7 @@ class _TextFieldTileOptions extends StatelessWidget {
           keyboardType: TextInputType.number,
         ),
         _SwitchOption(
-          title: localization.layoutTextFieldOptionsNumeric,
+          title: localization.numericKeyboard,
           getter: options.getNumeric,
           setter: options.setNumeric,
         ),
@@ -193,15 +193,17 @@ class _DateFieldTileOptions extends StatefulWidget {
 class __DateFieldTileOptionsState extends State<_DateFieldTileOptions> {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._getCommonOptions(context, widget.options, 'Date Field Options'),
+        ..._getCommonOptions(
+            context, widget.options, localizations.dateFieldOptionsHeader),
         SizedBox(
           height: 20.0,
         ),
         Text(
-          'Mode',
+          localizations.mode,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         DropdownButton<String>(
@@ -210,15 +212,15 @@ class __DateFieldTileOptionsState extends State<_DateFieldTileOptions> {
           underline: Container(color: Colors.grey, height: 1.0),
           items: [
             DropdownMenuItem(
-              child: Text('Date'),
+              child: Text(localizations.date),
               value: DateFieldFormats.dateModeID,
             ),
             DropdownMenuItem(
-              child: Text('Time'),
+              child: Text(localizations.time),
               value: DateFieldFormats.timeModeID,
             ),
             DropdownMenuItem(
-              child: Text('Date and Time'),
+              child: Text(localizations.dateAndTime),
               value: DateFieldFormats.dateTimeModeID,
             )
           ],

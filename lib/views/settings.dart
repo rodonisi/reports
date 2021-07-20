@@ -43,7 +43,7 @@ class _SettingsState extends State<Settings> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.settingsTitle),
+        title: Text(localizations.settings),
       ),
       drawer: MenuDrawer(),
       body: FutureBuilder<SharedPreferences>(
@@ -84,7 +84,7 @@ class _DBSettings extends StatelessWidget {
     // The list of Dropbox-related settings.
     final dbSettingsList = <Widget>[
       SwitchListTile.adaptive(
-        title: Text(localizations.settingsDBBackup),
+        title: Text(localizations.dropboxBackup),
         secondary: Icon(FontAwesomeIcons.dropbox),
         value: dbEnabled,
         onChanged: (value) async {
@@ -147,7 +147,7 @@ class _DBLoginButton extends StatelessWidget {
                   prefs.setBool(Preferences.dropboxAuthorized, true);
                   setState(() {});
                 },
-                child: Text(localizations.settingsSignIn),
+                child: Text(localizations.signIn),
               ),
             ),
           ],
@@ -166,7 +166,7 @@ class _DBLoginButton extends StatelessWidget {
                 await dbUnlink();
                 setState(() {});
               },
-              child: Text(localizations.settingsSignOut),
+              child: Text(localizations.signOut),
             ),
           ),
         ],
@@ -185,7 +185,7 @@ class _DBPathTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(AppLocalizations.of(context)!.settingsDBLocation),
+      title: Text(AppLocalizations.of(context)!.backupLocation),
       leading: Icon(Icons.folder),
       trailing: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
       onTap: () => Navigator.pushNamed(context, DropboxChooser.routeName,
