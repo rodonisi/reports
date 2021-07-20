@@ -27,6 +27,8 @@ class LayoutsModel extends ChangeNotifier {
     _layouts.add(layout);
     logger.d('Added layout: $layout');
 
+    _layouts.sort();
+
     notifyListeners();
   }
 
@@ -51,6 +53,8 @@ class LayoutsModel extends ChangeNotifier {
     _layouts[index] = layout;
     logger.d('Updated layout: $layout at position $index');
 
+    _layouts.sort();
+
     notifyListeners();
   }
 
@@ -58,6 +62,8 @@ class LayoutsModel extends ChangeNotifier {
   void loadFromFiles() async {
     final layouts = await getLocalDirFiles(layoutsDirectory);
     for (var file in layouts) add(p.basenameWithoutExtension(file.path));
+
+    _layouts.sort();
 
     notifyListeners();
   }

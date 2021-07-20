@@ -33,6 +33,8 @@ class ReportsModel extends ChangeNotifier {
     _reports.add(report);
     logger.d('Added report: $report');
 
+    _reports.sort();
+
     notifyListeners();
   }
 
@@ -57,6 +59,8 @@ class ReportsModel extends ChangeNotifier {
     _reports[index] = report.title;
     logger.d('Updated layout: ${report.title} at position $index');
 
+    _reports.sort();
+
     notifyListeners();
   }
 
@@ -64,6 +68,8 @@ class ReportsModel extends ChangeNotifier {
   void loadFromFiles() async {
     final reports = await getLocalDirFiles(reportsDirectory);
     for (var file in reports) add(p.basenameWithoutExtension(file.path));
+
+    _reports.sort();
 
     notifyListeners();
   }

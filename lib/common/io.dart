@@ -54,9 +54,6 @@ Future<List<File>> getLocalDirFiles(String dirPath) async {
     }
   }
 
-  // Sort the gathered files alphabetically by name.
-  files.sort((a, b) => a.path.compareTo(b.path));
-
   return files;
 }
 
