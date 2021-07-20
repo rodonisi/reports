@@ -11,6 +11,7 @@ class ControlledTextField extends StatefulWidget {
     this.style,
     this.keyboardType,
     this.maxLines,
+    this.hasClearButton = false,
   }) : super(key: key);
 
   final String? initialValue;
@@ -20,6 +21,7 @@ class ControlledTextField extends StatefulWidget {
   final bool? enabled;
   final TextInputType? keyboardType;
   final int? maxLines;
+  final bool hasClearButton;
 
   @override
   _ControlledTextFieldState createState() => _ControlledTextFieldState();
@@ -27,6 +29,7 @@ class ControlledTextField extends StatefulWidget {
 
 class _ControlledTextFieldState extends State<ControlledTextField> {
   TextEditingController _controller = TextEditingController();
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -41,14 +44,32 @@ class _ControlledTextFieldState extends State<ControlledTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      onChanged: widget.onChanged,
-      decoration: widget.decoration,
-      enabled: widget.enabled,
-      style: widget.style,
-      maxLines: widget.maxLines,
-      keyboardType: widget.keyboardType,
+    InputDecoration? decoration = widget.decoration;
+    if (widget.hasClearButton) {
+      final bodyColor = Theme.of(context).textTheme.bodyText1!.color;
+      decoration = widget.decoration ?? InputDecoration();
+      decoration = decoration.copyWith(
+          suffixIcon: _isEditing
+              ? IconButton(
+                  icon: Icon(
+                    Icons.cancel_rounded,
+                    color: bodyColor,
+                  ),
+                  onPressed: () => _controller.clear(),
+                )
+              : null);
+    }
+    return Focus(
+      onFocusChange: (hasFocus) => setState(() => _isEditing = hasFocus),
+      child: TextField(
+        controller: _controller,
+        onChanged: widget.onChanged,
+        decoration: decoration,
+        enabled: widget.enabled,
+        style: widget.style,
+        maxLines: widget.maxLines,
+        keyboardType: widget.keyboardType,
+      ),
     );
   }
 
