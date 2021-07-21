@@ -63,6 +63,10 @@ class Preferences {
   /// Get the default name for a new report or layout synchronously based on the
   /// given settings.
   static String getDefaultNameSync(String name, bool hasDate, bool hasTime) {
+    if (!name.endsWith(' ') && (hasDate || hasTime)) {
+      name += ' ';
+    }
+
     if (hasDate && hasTime) {
       return name +
           DateFieldFormats.getFormat(DateFieldFormats.dateTimeModeID)
