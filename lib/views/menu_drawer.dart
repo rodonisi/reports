@@ -23,10 +23,8 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    return Scaffold(
-      body: SafeArea(
-        top: true,
-        bottom: true,
+    return Drawer(
+      child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
