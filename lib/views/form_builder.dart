@@ -246,7 +246,7 @@ class _Dial extends StatelessWidget {
           label: localization.textFieldName,
           onTap: () => addFieldFunc(
             TextFieldOptions(
-              title: localization.title,
+              title: localization.text,
             ),
           ),
         ),
