@@ -163,7 +163,10 @@ class _FormBuilderState extends State<FormBuilder> {
         ),
       ]),
       floatingActionButton: _Dial(addFieldFunc: _addField),
-      bottomNavigationBar: SaveButton(onPressed: _save),
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: SaveButton(onPressed: _save),
+      ),
     );
   }
 

@@ -175,7 +175,10 @@ class _ReportViewerState extends State<ReportViewer> {
           );
         },
       ),
-      bottomNavigationBar: SaveButton(onPressed: _saveReport),
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: SaveButton(onPressed: _saveReport),
+      ),
     );
   }
 
