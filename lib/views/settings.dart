@@ -131,7 +131,7 @@ class _DBLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    // TODO: Find a better way to establish this.
+    // TODO: Find a better way to determine this.
     final isAuthorized = prefs.getBool(Preferences.dropboxAuthorized);
 
     // Show the sign in button if Dropbox is not authorized
