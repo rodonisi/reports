@@ -28,7 +28,6 @@ class Layouts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _layoutsProvider = context.watch<LayoutsModel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.layoutsTitle),
