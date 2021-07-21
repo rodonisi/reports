@@ -48,11 +48,11 @@
   "@layout": {
     "description": "Layout string"
   },
-  "layoutCannotBeEmpty": "La struttura non può essere vuota!",
+  "layoutCannotBeEmpty": "Il layout non può essere vuoto!",
   "@layoutCannotBeEmpty": {
     "description": "Prompt message when trying to save an empty layout"
   },
-  "layoutsTitle": "Strutture",
+  "layoutsTitle": "Layout",
   "@layoutsTitle": {
     "description": "Layouts list view title"
   },
@@ -76,7 +76,7 @@
   "@report": {
     "description": "Report string"
   },
-  "reportRequiresLayout": "Impossibile creare un rapporto senza una struttura!",
+  "reportRequiresLayout": "Impossibile creare un rapporto senza layout!",
   "@reportRequiresLayout": {
     "description": "Prompt message when trying to create a report without having any layouts"
   },
