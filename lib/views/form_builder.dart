@@ -76,10 +76,12 @@ class _FormBuilderState extends State<FormBuilder> {
         _oldName = layout.name;
         loaded = true;
       });
-    }).catchError((error, stackTrace) {
+    }).catchError((error, stackTrace) async {
+      final defaultName =
+          await Preferences.getDefaultName(DefaultNameType.layout);
       setState(() {
         layout = ReportLayout(
-          name: widget.args.name,
+          name: defaultName,
           fields: [],
         );
         _oldName = layout.name;

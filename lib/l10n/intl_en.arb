@@ -4,6 +4,10 @@
   "@backupLocation": {
     "description": "Backup location option string "
   },
+  "baseName": "Base Name",
+  "@baseName": {
+    "description": "Base Name string"
+  },
   "close": "Close",
   "@close": {
     "description": "Close button string"
@@ -20,9 +24,29 @@
   "@dateFieldOptionsHeader": {
     "description": "Date field options header string"
   },
+  "defaultLayoutNaming": "Default Layout Naming",
+  "@defaultLayoutNaming": {
+    "description": "Default layout naming string"
+  },
+  "defaultReportNaming": "Default Report Naming",
+  "@defaultReportNaming": {
+    "description": "Default report naming string"
+  },
   "dropboxBackup": "Backup to Dropbox",
   "@dropboxBackup": {
     "description": "Enable Dropbox backup option string"
+  },
+  "includeDate": "Include Date",
+  "@includeDate": {
+    "description": "Include date string"
+  },
+  "inlcudeTime": "Include Time",
+  "@inlcudeTime": {
+    "description": "Include time string"
+  },
+  "layout": "Layout",
+  "@layout": {
+    "description": "Layout string"
   },
   "layoutCannotBeEmpty": "Layout cannot be empty!",
   "@layoutCannotBeEmpty": {
@@ -43,6 +67,14 @@
   "numericKeyboard": "Numeric Keyboard",
   "@numericKeyboard": {
     "description": "Numeric keyboard string"
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Preview string"
+  },
+  "report": "Report",
+  "@report": {
+    "description": "Report string"
   },
   "reportRequiresLayout": "Cannot create a report without any layouts!",
   "@reportRequiresLayout": {

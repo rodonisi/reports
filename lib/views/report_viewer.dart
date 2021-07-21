@@ -73,9 +73,11 @@ class _ReportViewerState extends State<ReportViewer> {
 
       // Read the first available layout.
       final layoutString = await readNamedLayout(layoutProvider.layouts[0]);
+      final defaultName =
+          await Preferences.getDefaultName(DefaultNameType.report);
       setState(() {
         report = Report(
-          title: widget.args.name,
+          title: defaultName,
           layout: ReportLayout.fromJSON(layoutString),
           data: [],
         );

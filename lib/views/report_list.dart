@@ -44,8 +44,7 @@ class Reports extends StatelessWidget {
                 bounce: true,
                 closeProgressThreshold: 0.4,
                 builder: (context) {
-                  final args = ReportViewerArgs(
-                      name: 'Report ${DateTime.now().toString()}');
+                  final args = ReportViewerArgs(name: '');
                   return ReportViewer(args: args);
                 },
               );

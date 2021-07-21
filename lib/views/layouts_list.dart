@@ -41,9 +41,7 @@ class Layouts extends StatelessWidget {
           bounce: true,
           closeProgressThreshold: 0.4,
           builder: (context) {
-            final args = FormBuilderArgs(
-              name: 'Layout ${_layoutsProvider.layouts.length}',
-            );
+            final args = FormBuilderArgs(name: '');
             return FormBuilder(args: args);
           },
         ),
