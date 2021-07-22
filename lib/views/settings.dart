@@ -89,6 +89,7 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
         children: [
           ListTile(
             title: Text(localizations.defaultReportNaming),
+            trailing: Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -106,6 +107,7 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
           ),
           ListTile(
             title: Text(localizations.defaultLayoutNaming),
+            trailing: Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
