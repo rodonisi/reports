@@ -65,14 +65,14 @@ Future<void> dbBackupFile(String file, String directory) async {
     throw Exception('Dropbox is not authorized');
 
   // Get the full path to the file's directory.
-  final localPath = p.join((await getLocalDocsPath), directory);
+  final localPath = p.join((await getLocalDocsPath), p.basename(directory));
 
   // Get Dropbox base path.
   final prefs = await SharedPreferences.getInstance();
   var mayDbPath = prefs.getString(Preferences.dropboxPath);
   String dbPath = '';
   if (mayDbPath != null) dbPath = mayDbPath;
-  dbPath = p.join(dbPath, directory);
+  dbPath = p.join(dbPath, p.basename(directory));
 
   // Upload the file.
   Dropbox.upload(p.join(localPath, file), p.join(dbPath, file));
