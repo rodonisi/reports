@@ -71,7 +71,7 @@ class _FormTileContentState extends State<FormTileContent> {
           selectedDate: dateData.data,
           enabled: widget.enabled,
           dateFormat: dateOpts.getFormat,
-          mode: DateTimeFieldPickerMode.date,
+          mode: DateFieldFormats.getDateTimeFieldPickerMode(dateOpts.mode),
         );
       default:
         throw ArgumentError.value(

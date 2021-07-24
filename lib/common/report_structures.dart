@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'dart:convert';
 import 'dart:io';
+import 'package:date_field/date_field.dart';
 import 'package:intl/intl.dart';
 
 // -----------------------------------------------------------------------------
@@ -120,6 +121,19 @@ class DateFieldFormats {
         return DateFormat.jm(locale);
       case dateTimeModeID:
         return DateFormat.yMd(locale).add_jm();
+      default:
+        throw Exception('Unsupported mode $mode');
+    }
+  }
+
+  static DateTimeFieldPickerMode getDateTimeFieldPickerMode(String mode) {
+    switch (mode) {
+      case dateModeID:
+        return DateTimeFieldPickerMode.date;
+      case timeModeID:
+        return DateTimeFieldPickerMode.time;
+      case dateTimeModeID:
+        return DateTimeFieldPickerMode.dateAndTime;
       default:
         throw Exception('Unsupported mode $mode');
     }
