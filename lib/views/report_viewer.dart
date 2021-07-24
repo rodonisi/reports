@@ -1,6 +1,9 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'dart:io';
+import 'package:path/path.dart' as p;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,7 +17,6 @@ import 'package:reports/common/io.dart';
 import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/layouts.dart';
-import 'package:reports/models/reports.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 import 'package:reports/widgets/save_button.dart';
@@ -25,10 +27,9 @@ import 'package:reports/widgets/save_button.dart';
 
 /// Arguments class for the report viewer.
 class ReportViewerArgs {
-  ReportViewerArgs({required this.name, this.index});
+  ReportViewerArgs({required this.path});
 
-  final String name;
-  final int? index;
+  final String path;
 }
 
 // -----------------------------------------------------------------------------
@@ -52,20 +53,19 @@ class _ReportViewerState extends State<ReportViewer> {
   // Keep track of when the report file has been read.
   bool loaded = false;
 
-  // Store the old title to determine whether it has been updated.
-  late String _oldTitle;
+  late bool _isNew;
 
   @override
   void initState() {
     // Read the report from file
-    final futureReport = readNamedReport(widget.args.name);
+    final futureReport = File(widget.args.path).readAsString();
 
     // Add completition callback for when the file has been read.
     futureReport.then((value) {
       setState(() {
         report = Report.fromJSON(value);
-        _oldTitle = report.title;
         loaded = true;
+        _isNew = false;
       });
     }).catchError((error, stackTrace) async {
       final layoutProvider = context.read<LayoutsModel>();
@@ -80,8 +80,8 @@ class _ReportViewerState extends State<ReportViewer> {
           layout: ReportLayout.fromJSON(layoutString),
           data: [],
         );
-        _oldTitle = report.title;
         loaded = true;
+        _isNew = true;
       });
     });
 
@@ -121,12 +121,9 @@ class _ReportViewerState extends State<ReportViewer> {
     // Initialize the data structures if not present.
     _initializeData();
 
-    // Determine whether we're viewing an existing report or creating a new one.
-    final isNew = widget.args.index == null;
-
     // Add a share action if we're viewing an existing report.
     final List<Widget> shareAction = [];
-    if (!isNew)
+    if (!_isNew)
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
@@ -153,7 +150,7 @@ class _ReportViewerState extends State<ReportViewer> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: shareAction,
-        bottom: isNew
+        bottom: _isNew
             ? PreferredSize(
                 preferredSize: Size(0.0, 30.0),
                 child: _LayoutSelector(
@@ -184,24 +181,29 @@ class _ReportViewerState extends State<ReportViewer> {
   void _saveReport() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Update or add the report in the provider.
-    var reportsProvider = context.read<ReportsModel>();
-    if (widget.args.index != null)
-      reportsProvider.update(widget.args.index!, report);
-    else
-      reportsProvider.add(report.title);
-
+    final File reportFile;
     // Write the report to file.
-    final file = renameAndWriteFile('$reportsDirectory/$_oldTitle',
-        '$reportsDirectory/${report.title}', report.toJSON());
+    if (_isNew) {
+      var path = p.join(widget.args.path, report.title);
+      path = p.setExtension(path, '.json');
+      reportFile = await File(path).writeAsString(report.toJSON());
+    } else {
+      final file = File(widget.args.path);
+      var newPath = p.join(file.parent.path, report.title);
+      newPath = p.setExtension(newPath, '.json');
+      final renamed = await file.rename(newPath);
+      reportFile = await renamed.writeAsString(report.toJSON());
+    }
 
     // Backup the newly created file to dropbox if option is enabled.
     final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
     if (dbEnabled != null && dbEnabled) {
-      // Wait for the file to be written
-      await file;
+      // Get relative path from the local documents directory.
+      final dir =
+          p.relative(reportFile.parent.path, from: await getLocalDocsPath);
+
       // Backup to dropbox.
-      dbBackupFile('${report.title}.json', reportsDirectory);
+      dbBackupFile('${report.title}.json', dir);
     }
 
     Navigator.pop(context);

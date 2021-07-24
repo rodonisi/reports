@@ -4,6 +4,7 @@
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:path/path.dart' as p;
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -29,13 +30,23 @@ Future<String> get getLocalDocsPath async {
 /// Get the local directory where the layouts live.
 Future<String> get getLayoutsDirectory async {
   final basePath = await getLocalDocsPath;
-  return basePath + layoutsDirectory;
+
+  // Ensure the directory exists
+  final path = basePath + layoutsDirectory;
+  await Directory(path).create(recursive: true);
+
+  return path;
 }
 
 /// Get the local directory where the reports live.
 Future<String> get getReportsDirectory async {
   final basePath = await getLocalDocsPath;
-  return basePath + reportsDirectory;
+
+  // Ensure the directory exists
+  final path = basePath + reportsDirectory;
+  await Directory(path).create(recursive: true);
+
+  return path;
 }
 
 /// Get all the files contained in the given directory path as a list.

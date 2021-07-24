@@ -13,7 +13,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/theme.dart';
 import 'package:reports/common/routes.dart';
 import 'package:reports/models/layouts.dart';
-import 'package:reports/models/reports.dart';
 
 void main() {
   // Only allow portrait mode
@@ -34,9 +33,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => LayoutsModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ReportsModel(),
         ),
       ],
       child: GestureDetector(

@@ -15,7 +15,9 @@ import 'package:reports/views/settings.dart';
 
 /// Contains the route of each view of the app.
 final routes = {
-  Reports.routeName: (context) => Reports(),
+  Reports.routeName: (context) => Reports(
+        path: (ModalRoute.of(context)!.settings.arguments as String?) ?? '',
+      ),
   Layouts.routeName: (context) => Layouts(),
   FormBuilder.routeName: (context) => FormBuilder(
         args: ModalRoute.of(context)!.settings.arguments as FormBuilderArgs,
