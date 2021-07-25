@@ -95,6 +95,9 @@ class _ReportViewerState extends State<ReportViewer> {
           case FieldTypes.date:
             report.data.add(DateFieldData(data: DateTime.now()));
             break;
+          case FieldTypes.dateRange:
+            report.data.add(DateRangeFieldData.empty());
+            break;
           default:
             report.data.add(TextFieldData(data: ''));
         }

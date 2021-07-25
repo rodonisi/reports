@@ -24,6 +24,10 @@
   "@dateFieldOptionsHeader": {
     "description": "Date field options header string"
   },
+  "dateRange": "Intervallo Data",
+  "@dateRange": {
+    "description": "Daterange string"
+  },
   "defaultLayoutNaming": "Denominazione Layout",
   "@defaultLayoutNaming": {
     "description": "Default layout naming string"

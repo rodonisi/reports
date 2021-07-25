@@ -41,6 +41,18 @@ void main() {
     ],
   );
 
+  final String dateRangeLayoutJSON =
+      '{"layout_name":"layout","0":{"field_name":"daterange","field_type":"date_range_field","mode":"date_and_time"}}';
+  final dateRangeLayout = ReportLayout(
+    name: 'layout',
+    fields: [
+      DateRangeFieldOptions(
+        title: 'daterange',
+        mode: DateFieldFormats.dateTimeModeID,
+      )
+    ],
+  );
+
   final String simpleReportJSON =
       '{"report_title":"report","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
   final simpleReport = Report(
@@ -52,6 +64,15 @@ void main() {
       '{"report_title":"report","0":{"field_name":"date","field_type":"date_field","mode":"date","data":"2021-07-20 00:28:23.288288"}}';
   final dateReport = Report(title: 'report', layout: dateLayout, data: [
     DateFieldData(data: DateTime.parse('2021-07-20 00:28:23.288288'))
+  ]);
+
+  final String dateRangeReportJSON =
+      '{"report_title":"report","0":{"field_name":"daterange","field_type":"date_range_field","mode":"date_and_time","data":{"start":"2021-07-25 19:21:27.038217","end":"2021-07-25 19:21:27.038219"}}}';
+  final dateRangeReport =
+      Report(title: 'report', layout: dateRangeLayout, data: [
+    DateRangeFieldData(
+        start: DateTime.parse('2021-07-25 19:21:27.038217'),
+        end: DateTime.parse('2021-07-25 19:21:27.038219'))
   ]);
 
   group('layout tests', () {
@@ -78,6 +99,13 @@ void main() {
     test('date field layout', () {
       expect(ReportLayout.fromJSON(dateLayoutJSON).toJSON(), dateLayoutJSON);
     });
+    test('date range field layout', () {
+      expect(dateRangeLayout.toJSON(), dateRangeLayoutJSON);
+    });
+    test('roudntrip date range field layout', () {
+      expect(ReportLayout.fromJSON(dateRangeLayoutJSON).toJSON(),
+          dateRangeLayoutJSON);
+    });
   });
 
   group('report tests', () {
@@ -92,6 +120,13 @@ void main() {
     });
     test('roundtrip date', () {
       expect(Report.fromJSON(dateReportJSON).toJSON(), dateReportJSON);
+    });
+    test('date range report', () {
+      expect(dateRangeReport.toJSON(), dateRangeReportJSON);
+    });
+    test('roundtrip date range', () {
+      expect(
+          Report.fromJSON(dateRangeReportJSON).toJSON(), dateRangeReportJSON);
     });
   });
 }

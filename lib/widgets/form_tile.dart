@@ -30,6 +30,44 @@ class FormTileContent extends StatefulWidget {
 }
 
 class _FormTileContentState extends State<FormTileContent> {
+  Widget _getDateRangeField() {
+    final dateRangeOpts = widget.options as DateRangeFieldOptions;
+    final DateRangeFieldData dateRangeData =
+        widget.data as DateRangeFieldData? ?? DateRangeFieldData.empty();
+
+    return Row(
+      key: ObjectKey(dateRangeOpts),
+      children: [
+        Expanded(
+          child: DateTimeField(
+            onDateSelected: (value) =>
+                setState(() => dateRangeData.start = value),
+            selectedDate: dateRangeData.start,
+            enabled: widget.enabled,
+            dateFormat: dateRangeOpts.getFormat,
+            mode:
+                DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text('-'),
+        ),
+        Expanded(
+          child: DateTimeField(
+            onDateSelected: (value) =>
+                setState(() => dateRangeData.end = value),
+            selectedDate: dateRangeData.end,
+            enabled: widget.enabled,
+            dateFormat: dateRangeOpts.getFormat,
+            mode:
+                DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _getField() {
     switch (widget.options.fieldType) {
       case FieldTypes.section:
@@ -73,6 +111,8 @@ class _FormTileContentState extends State<FormTileContent> {
           dateFormat: dateOpts.getFormat,
           mode: DateFieldFormats.getDateTimeFieldPickerMode(dateOpts.mode),
         );
+      case FieldTypes.dateRange:
+        return _getDateRangeField();
       default:
         throw ArgumentError.value(
             widget.options.fieldType, 'unsupported field type');
@@ -116,6 +156,10 @@ class FormTileOptions extends StatelessWidget {
       case FieldTypes.date:
         return _DateFieldTileOptions(
           options: options as DateFieldOptions,
+        );
+      case FieldTypes.dateRange:
+        return _DateRangeFieldTileOptions(
+          options: options as DateRangeFieldOptions,
         );
       default:
         throw ArgumentError.value(options.fieldType, 'unsupported field type');
@@ -194,6 +238,59 @@ class _DateFieldTileOptions extends StatefulWidget {
 }
 
 class __DateFieldTileOptionsState extends State<_DateFieldTileOptions> {
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ..._getCommonOptions(
+            context, widget.options, localizations.dateFieldOptionsHeader),
+        SizedBox(
+          height: 20.0,
+        ),
+        Text(
+          localizations.mode,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        DropdownButton<String>(
+          isExpanded: true,
+          value: widget.options.mode,
+          underline: Container(color: Colors.grey, height: 1.0),
+          items: [
+            DropdownMenuItem(
+              child: Text(localizations.date),
+              value: DateFieldFormats.dateModeID,
+            ),
+            DropdownMenuItem(
+              child: Text(localizations.time),
+              value: DateFieldFormats.timeModeID,
+            ),
+            DropdownMenuItem(
+              child: Text(localizations.dateAndTime),
+              value: DateFieldFormats.dateTimeModeID,
+            )
+          ],
+          onChanged: (value) => setState(() => widget.options.mode = value!),
+        ),
+      ],
+    );
+  }
+}
+
+class _DateRangeFieldTileOptions extends StatefulWidget {
+  _DateRangeFieldTileOptions({Key? key, required this.options})
+      : super(key: key);
+
+  final DateRangeFieldOptions options;
+
+  @override
+  __DateRangeFieldTileOptionsState createState() =>
+      __DateRangeFieldTileOptionsState();
+}
+
+class __DateRangeFieldTileOptionsState
+    extends State<_DateRangeFieldTileOptions> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;

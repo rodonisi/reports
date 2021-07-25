@@ -15,6 +15,7 @@ class FieldTypes {
   static const String textField = 'text_field';
   static const String section = 'section';
   static const String date = 'date_field';
+  static const String dateRange = 'date_range_field';
 }
 
 // -----------------------------------------------------------------------------
@@ -170,6 +171,36 @@ class DateFieldOptions extends FieldOptions {
   }
 }
 
+/// Contains the options specific to a date range field.
+class DateRangeFieldOptions extends FieldOptions {
+  static const String modeID = 'mode';
+  DateRangeFieldOptions({
+    required String title,
+    this.mode = DateFieldFormats.timeModeID,
+  }) : super(title: title, fieldType: FieldTypes.dateRange);
+
+  /// The date field mode. Must be one of the IDs defined in the
+  /// DateFieldFormats class.
+  String mode;
+
+  DateRangeFieldOptions.fromMap(Map<String, dynamic> map)
+      : mode = map[modeID],
+        super.fromMap(map);
+
+  /// Get the DateFormat class from the current mode.
+  DateFormat get getFormat {
+    return DateFieldFormats.getFormat(mode);
+  }
+
+  @override
+  Map<String, dynamic> asMap() {
+    final map = super.asMap();
+    map[modeID] = mode;
+
+    return map;
+  }
+}
+
 // -----------------------------------------------------------------------------
 // - Field Data Structures
 // -----------------------------------------------------------------------------
@@ -178,7 +209,14 @@ class DateFieldOptions extends FieldOptions {
 abstract class FieldData {
   static const String dataID = 'data';
 
-  String toString();
+  /// Default constructor.
+  FieldData();
+
+  /// Construct a FieldData object from some data.
+  FieldData.fromData(dynamic data);
+
+  /// Serialize the FieldData data to an encodable object.
+  dynamic serialize();
 }
 
 /// A text field's data.
@@ -187,7 +225,10 @@ class TextFieldData extends FieldData {
   TextFieldData({required this.data});
 
   @override
-  String toString() {
+  TextFieldData.fromData(this.data);
+
+  @override
+  String serialize() {
     return data;
   }
 }
@@ -198,8 +239,37 @@ class DateFieldData extends FieldData {
   DateFieldData({required this.data});
 
   @override
-  toString() {
+  DateFieldData.fromData(String data) : this.data = DateTime.parse(data);
+
+  @override
+  serialize() {
     return data.toString();
+  }
+}
+
+class DateRangeFieldData extends FieldData {
+  static const String startID = 'start';
+  static const String endID = 'end';
+
+  DateRangeFieldData({required DateTime start, required DateTime end})
+      : start = start,
+        end = end;
+
+  @override
+  DateRangeFieldData.fromData(Map<String, dynamic> data)
+      : start = DateTime.parse(data[startID]!),
+        end = DateTime.parse(data[endID]!);
+
+  DateRangeFieldData.empty()
+      : start = DateTime.now(),
+        end = DateTime.now();
+
+  DateTime start;
+  DateTime end;
+
+  @override
+  Map<String, dynamic> serialize() {
+    return {startID: start.toString(), endID: end.toString()};
   }
 }
 
@@ -243,6 +313,9 @@ class ReportLayout {
               break;
             case FieldTypes.date:
               options = DateFieldOptions.fromMap(fieldMap);
+              break;
+            case FieldTypes.dateRange:
+              options = DateRangeFieldOptions.fromMap(fieldMap);
               break;
             default:
               throw ArgumentError.value(value[FieldOptions.typeID].fieldType,
@@ -303,12 +376,14 @@ class Report {
     });
   }
 
-  FieldData getFieldData(String fieldType, String data) {
+  FieldData getFieldData(String fieldType, dynamic data) {
     switch (fieldType) {
       case FieldTypes.date:
-        return DateFieldData(data: DateTime.parse(data));
+        return DateFieldData.fromData(data);
+      case FieldTypes.dateRange:
+        return DateRangeFieldData.fromData(data);
       default:
-        return TextFieldData(data: data);
+        return TextFieldData.fromData(data);
     }
   }
 
@@ -335,7 +410,7 @@ Map<String, dynamic> _serialize(
     // Add the data to the nested map if present.
     if (data != null)
       (serialized[i.toString()]! as Map<String, dynamic>)[FieldData.dataID] =
-          data[i].toString();
+          data[i].serialize();
   }
 
   return serialized;

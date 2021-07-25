@@ -234,11 +234,18 @@ class _Dial extends StatelessWidget {
       children: [
         SpeedDialChild(
           child: Icon(Icons.calendar_today),
+          label: localization.dateRange,
+          onTap: () => addFieldFunc(
+            DateRangeFieldOptions(
+              title: localization.dateRange,
+            ),
+          ),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.calendar_today),
           label: localization.date,
           onTap: () => addFieldFunc(
-            DateFieldOptions(
-              title: localization.date,
-            ),
+            DateFieldOptions(title: localization.date),
           ),
         ),
         SpeedDialChild(
