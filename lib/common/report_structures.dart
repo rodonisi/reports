@@ -407,7 +407,7 @@ class Report {
   Future<String> toJSON() async {
     final packageInfo = await PackageInfo.fromPlatform();
     Map<String, dynamic> jsonMap = {};
-    jsonMap['report_title'] = title;
+    jsonMap[titleID] = title;
     jsonMap[FileHeader.versionID] = packageInfo.version;
     jsonMap[FileHeader.typeID] = FileHeader.reportID;
     jsonMap.addAll(_serialize(layout: layout, data: data));
