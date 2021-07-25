@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
+import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -73,6 +74,11 @@ class _ReportsState extends State<Reports> {
       key: ObjectKey(item),
       actionPane: SlidableDrawerActionPane(),
       secondaryActions: [
+        IconSlideAction(
+          icon: Icons.adaptive.share,
+          color: Colors.blue,
+          onTap: () => Share.shareFiles([item.path]),
+        ),
         IconSlideAction(
           icon: Icons.delete,
           color: Colors.red,
