@@ -30,6 +30,53 @@ class FormTileContent extends StatefulWidget {
 }
 
 class _FormTileContentState extends State<FormTileContent> {
+  Widget _getSectionField() {
+    final secOpts = widget.options as SectionFieldOptions;
+    return ControlledTextField(
+      key: ObjectKey(secOpts),
+      enabled: widget.enabled,
+      initialValue: secOpts.title,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+      ),
+      style: TextStyle(
+        fontSize: secOpts.fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+      onChanged: (val) => secOpts.title = val,
+    );
+  }
+
+  Widget _getTextField() {
+    final textOpts = widget.options as TextFieldOptions;
+    final TextFieldData textData =
+        widget.data as TextFieldData? ?? TextFieldData(data: '');
+    return ControlledTextField(
+      key: ObjectKey(textOpts),
+      onChanged: (value) => textData.data = value,
+      enabled: widget.enabled,
+      maxLines: textOpts.lines,
+      initialValue: textData.data,
+      keyboardType:
+          textOpts.numeric ? TextInputType.number : TextInputType.text,
+    );
+  }
+
+  Widget _getDateField() {
+    final dateOpts = widget.options as DateFieldOptions;
+    final DateFieldData dateData =
+        widget.data as DateFieldData? ?? DateFieldData(data: DateTime.now());
+
+    return DateTimeField(
+      key: ObjectKey(dateOpts),
+      onDateSelected: (value) => setState(() => dateData.data = value),
+      selectedDate: dateData.data,
+      enabled: widget.enabled,
+      dateFormat: dateOpts.getFormat,
+      mode: DateFieldFormats.getDateTimeFieldPickerMode(dateOpts.mode),
+    );
+  }
+
   Widget _getDateRangeField() {
     final dateRangeOpts = widget.options as DateRangeFieldOptions;
     final DateRangeFieldData dateRangeData =
@@ -71,46 +118,11 @@ class _FormTileContentState extends State<FormTileContent> {
   Widget _getField() {
     switch (widget.options.fieldType) {
       case FieldTypes.section:
-        final secOpts = widget.options as SectionFieldOptions;
-        return ControlledTextField(
-          key: ObjectKey(secOpts),
-          enabled: widget.enabled,
-          initialValue: secOpts.title,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-          ),
-          style: TextStyle(
-            fontSize: secOpts.fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-          onChanged: (val) => secOpts.title = val,
-        );
+        return _getSectionField();
       case FieldTypes.textField:
-        final textOpts = widget.options as TextFieldOptions;
-        final TextFieldData textData =
-            widget.data as TextFieldData? ?? TextFieldData(data: '');
-        return ControlledTextField(
-          key: ObjectKey(textOpts),
-          onChanged: (value) => textData.data = value,
-          enabled: widget.enabled,
-          maxLines: textOpts.lines,
-          initialValue: textData.data,
-          keyboardType:
-              textOpts.numeric ? TextInputType.number : TextInputType.text,
-        );
+        return _getTextField();
       case FieldTypes.date:
-        final dateOpts = widget.options as DateFieldOptions;
-        final DateFieldData dateData = widget.data as DateFieldData? ??
-            DateFieldData(data: DateTime.now());
-
-        return DateTimeField(
-          key: ObjectKey(dateOpts),
-          onDateSelected: (value) => setState(() => dateData.data = value),
-          selectedDate: dateData.data,
-          enabled: widget.enabled,
-          dateFormat: dateOpts.getFormat,
-          mode: DateFieldFormats.getDateTimeFieldPickerMode(dateOpts.mode),
-        );
+        return _getDateField();
       case FieldTypes.dateRange:
         return _getDateRangeField();
       default:
