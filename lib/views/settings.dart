@@ -1,6 +1,8 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'dart:io';
+
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,7 +56,8 @@ class _SettingsState extends State<Settings> {
             return ListView(
               children: [
                 _GeneralSettings(prefs: snapshot.data!),
-                _DBSettings(prefs: snapshot.data!, setState: setState),
+                if (!Platform.isMacOS)
+                  _DBSettings(prefs: snapshot.data!, setState: setState),
               ],
             );
           }
