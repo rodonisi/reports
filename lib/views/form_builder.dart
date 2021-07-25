@@ -202,7 +202,7 @@ class _FormBuilderState extends State<FormBuilder> {
 
     // Write the layout to file.
     final file = renameAndWriteFile('$layoutsDirectory/$_oldName',
-        '$layoutsDirectory/${layout.name}', layout.toJSON());
+        '$layoutsDirectory/${layout.name}', await layout.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
     final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);

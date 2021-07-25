@@ -189,14 +189,14 @@ class _ReportViewerState extends State<ReportViewer> {
     if (_isNew) {
       var path = p.join(widget.args.path, report.title);
       path = p.setExtension(path, '.json');
-      reportFile = await File(path).writeAsString(report.toJSON());
+      reportFile = File(path);
     } else {
       final file = File(widget.args.path);
       var newPath = p.join(file.parent.path, report.title);
       newPath = p.setExtension(newPath, '.json');
-      final renamed = await file.rename(newPath);
-      reportFile = await renamed.writeAsString(report.toJSON());
+      reportFile = await file.rename(newPath);
     }
+    await reportFile.writeAsString(await report.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
     final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);

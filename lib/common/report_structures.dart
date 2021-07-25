@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:date_field/date_field.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - Field Types
@@ -274,6 +275,18 @@ class DateRangeFieldData extends FieldData {
 }
 
 // -----------------------------------------------------------------------------
+// - FileHeader keys
+// -----------------------------------------------------------------------------
+
+/// Contains the key for the file headers
+class FileHeader {
+  static const String versionID = 'version';
+  static const String typeID = 'type';
+  static const String reportID = 'report';
+  static const String layoutID = 'layout';
+}
+
+// -----------------------------------------------------------------------------
 // - Layout Structure
 // -----------------------------------------------------------------------------
 
@@ -328,9 +341,12 @@ class ReportLayout {
   }
 
   /// Convert the layout to a JSON string.
-  String toJSON() {
+  Future<String> toJSON() async {
+    final packageInfo = await PackageInfo.fromPlatform();
     Map<String, dynamic> jsonMap = {};
     jsonMap[nameID] = name;
+    jsonMap[FileHeader.versionID] = packageInfo.version;
+    jsonMap[FileHeader.layoutID] = FileHeader.layoutID;
     jsonMap.addAll(_serialize(layout: this));
     return jsonEncode(jsonMap);
   }
@@ -388,9 +404,12 @@ class Report {
   }
 
   /// Convert the report to a JSON string.
-  String toJSON() {
+  Future<String> toJSON() async {
+    final packageInfo = await PackageInfo.fromPlatform();
     Map<String, dynamic> jsonMap = {};
     jsonMap['report_title'] = title;
+    jsonMap[FileHeader.versionID] = packageInfo.version;
+    jsonMap[FileHeader.typeID] = FileHeader.reportID;
     jsonMap.addAll(_serialize(layout: layout, data: data));
 
     return jsonEncode(jsonMap);
