@@ -87,16 +87,23 @@ void main() {
       expect(
           ReportLayout.fromJSON(simpleLayoutJSON).toJSON(), simpleLayoutJSON);
     });
-    test('section layout', () {
+    test(' section layout', () {
       expect(sectionLayout.toJSON(), sectionLayoutJSON);
+    });
+    test('roundtrip section layout', () {
+      expect(ReportLayout.fromJSON(dateLayoutJSON).toJSON(), sectionLayoutJSON);
     });
     test('subsection layout', () {
       expect(subsectionLayout.toJSON(), subsectionLayoutJSON);
     });
+    test('roundtrip subsection layout', () {
+      expect(
+          ReportLayout.fromJSON(dateLayoutJSON).toJSON(), subsectionLayoutJSON);
+    });
     test('date field layout', () {
       expect(dateLayout.toJSON(), dateLayoutJSON);
     });
-    test('date field layout', () {
+    test('roundtrip date field layout', () {
       expect(ReportLayout.fromJSON(dateLayoutJSON).toJSON(), dateLayoutJSON);
     });
     test('date range field layout', () {
