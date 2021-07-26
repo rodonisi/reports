@@ -346,7 +346,7 @@ class ReportLayout {
     Map<String, dynamic> jsonMap = {};
     jsonMap[nameID] = name;
     jsonMap[FileHeader.versionID] = packageInfo.version;
-    jsonMap[FileHeader.layoutID] = FileHeader.layoutID;
+    jsonMap[FileHeader.typeID] = FileHeader.layoutID;
     jsonMap.addAll(_serialize(layout: this));
     return jsonEncode(jsonMap);
   }
