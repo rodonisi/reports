@@ -153,3 +153,19 @@ void deleteFile(String path) async {
     logger.d('Deleted file ${file.path}');
   }
 }
+
+/// Get the (sorted) list of layouts as files. Any directory in the layout
+/// folder is signored.
+Future<List<File>> getLayoutsList() async {
+  final layoutsDirectory = Directory(await getLayoutsDirectory);
+  final dirList = layoutsDirectory.listSync();
+  final List<File> layoutsList = [];
+
+  for (var entity in dirList) {
+    if (entity is File) layoutsList.add(entity);
+  }
+
+  layoutsList.sort((a, b) => a.path.compareTo(b.path));
+
+  return layoutsList;
+}

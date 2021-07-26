@@ -269,23 +269,47 @@ class _LayoutSelector extends StatefulWidget {
 }
 
 class __LayoutSelectorState extends State<_LayoutSelector> {
+  File _selectedLayout = File('');
+  List<DropdownMenuItem<File>> _menuItems = [];
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getLayoutsList().then((value) {
+      setState(() {
+        // Set the default layout.
+        _selectedLayout = value.first;
+
+        // Generate the list of dropdown menu items.
+        _menuItems = value
+            .map<DropdownMenuItem<File>>((element) => DropdownMenuItem(
+                  child: Text(p.basenameWithoutExtension(element.path)),
+                  value: element,
+                ))
+            .toList();
+      });
+
+      // Update loaded flag.
+      _loaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var layoutsProvider = context.watch<LayoutsModel>();
-    var titleMap = layoutsProvider.layouts
-        .map<DropdownMenuItem<String>>(
-          (e) => DropdownMenuItem<String>(
-            child: Text(e),
-            value: e,
-          ),
-        )
-        .toList();
-    return DropdownButton<String>(
-        items: titleMap,
-        value: widget.report.layout.name,
+    if (!_loaded)
+      return Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+
+    return DropdownButton<File>(
+        items: _menuItems,
+        value: _selectedLayout,
         onChanged: (value) async {
-          // Load layout.
-          final layoutString = await readNamedLayout(value!);
+          _selectedLayout = value!;
+          // Read layout.
+          final layoutString = await _selectedLayout.readAsString();
           // Update layout.
           widget.report.layout = ReportLayout.fromJSON(layoutString);
           // Refresh parent widget.
