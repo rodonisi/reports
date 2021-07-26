@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 
 import '../utilities.dart';
@@ -12,7 +13,7 @@ void main() {
       await tester.pumpWidget(
         wrapWidgetScaffold(
           widget: FormTileContent(
-            options: TextFieldOptions(),
+            options: TextFieldOptions(title: ''),
           ),
         ),
       );
@@ -32,7 +33,7 @@ void main() {
         wrapWidgetScaffold(
           widget: FormTileContent(
             enabled: false,
-            options: TextFieldOptions(),
+            options: TextFieldOptions(title: ''),
           ),
         ),
       );
@@ -53,16 +54,16 @@ void main() {
       await tester.pumpWidget(
         wrapWidgetScaffold(
           widget: FormTileOptions(
-            options: TextFieldOptions(),
+            options: TextFieldOptions(title: ''),
           ),
         ),
       );
 
       final findText = find.byType(Text);
       final findDivider = find.byType(Divider);
-      final findTextField = find.byType(TextFormField);
+      final findTextField = find.byType(ControlledTextField);
 
-      expect(findText, findsNWidgets(3));
+      expect(findText, findsNWidgets(4));
       expect(find.text('Text Field Options'), findsOneWidget);
       expect(find.text('Title'), findsOneWidget);
       expect(find.text('Lines'), findsOneWidget);
