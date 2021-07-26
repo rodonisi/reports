@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 /// A textfield with embedded editing controller which accepts an initial value.
 class ControlledTextField extends StatefulWidget {
-  ControlledTextField({
-    Key? key,
-    this.initialValue,
-    this.onChanged,
-    this.decoration = const InputDecoration(),
-    this.enabled,
-    this.style,
-    this.keyboardType,
-    this.maxLines,
-    this.hasClearButton = false,
-  }) : super(key: key);
+  ControlledTextField(
+      {Key? key,
+      this.initialValue,
+      this.onChanged,
+      this.decoration = const InputDecoration(),
+      this.enabled,
+      this.style,
+      this.keyboardType,
+      this.maxLines,
+      this.hasClearButton = false,
+      this.focusNode})
+      : super(key: key);
 
   final String? initialValue;
   final void Function(String)? onChanged;
@@ -22,6 +23,7 @@ class ControlledTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final int? maxLines;
   final bool hasClearButton;
+  final FocusNode? focusNode;
 
   @override
   _ControlledTextFieldState createState() => _ControlledTextFieldState();
@@ -61,6 +63,7 @@ class _ControlledTextFieldState extends State<ControlledTextField> {
     }
     return Focus(
       onFocusChange: (hasFocus) => setState(() => _isEditing = hasFocus),
+      focusNode: widget.focusNode,
       child: TextField(
         controller: _controller,
         onChanged: widget.onChanged,
