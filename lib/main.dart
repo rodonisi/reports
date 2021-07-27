@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,7 +13,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/theme.dart';
 import 'package:reports/common/routes.dart';
-import 'package:reports/models/layouts.dart';
 
 void main() {
   // Only allow portrait mode
@@ -32,30 +30,22 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => LayoutsModel(),
-        ),
-      ],
-      child: GestureDetector(
-        onTap: () {
-          // Get current focus.
-          final currentFocus = FocusScope.of(context);
+    return GestureDetector(
+      onTap: () {
+        // Get current focus.
+        final currentFocus = FocusScope.of(context);
 
-          if (!currentFocus.hasPrimaryFocus)
-            currentFocus.focusedChild!.unfocus();
-        },
-        child: MaterialApp(
-          title: 'Reports',
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: ThemeMode.system,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: '/reports',
-          routes: routes,
-        ),
+        if (!currentFocus.hasPrimaryFocus) currentFocus.focusedChild!.unfocus();
+      },
+      child: MaterialApp(
+        title: 'Reports',
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.system,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        initialRoute: '/reports',
+        routes: routes,
       ),
     );
   }

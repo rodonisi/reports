@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,7 +15,6 @@ import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
-import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 import 'package:reports/widgets/save_button.dart';
@@ -68,10 +66,9 @@ class _ReportViewerState extends State<ReportViewer> {
         _isNew = false;
       });
     }).catchError((error, stackTrace) async {
-      final layoutProvider = context.read<LayoutsModel>();
-
+      final layouts = await getLayoutsList();
       // Read the first available layout.
-      final layoutString = await readNamedLayout(layoutProvider.layouts[0]);
+      final layoutString = await layouts.first.readAsString();
       final defaultName =
           await Preferences.getDefaultName(DefaultNameType.report);
       setState(() {

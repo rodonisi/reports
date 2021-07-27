@@ -1,9 +1,11 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'dart:io';
+import 'package:path/path.dart' as p;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:provider/provider.dart';
 import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +18,6 @@ import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
-import 'package:reports/models/layouts.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 
@@ -26,10 +27,9 @@ import 'package:reports/widgets/form_tile.dart';
 
 /// Arguments class for the form builder.
 class FormBuilderArgs {
-  FormBuilderArgs({required this.name, this.index});
+  FormBuilderArgs({required this.path});
 
-  final String name;
-  final int? index;
+  final String path;
 }
 
 // -----------------------------------------------------------------------------
@@ -50,9 +50,7 @@ class FormBuilder extends StatefulWidget {
 class _FormBuilderState extends State<FormBuilder> {
   late ReportLayout layout;
   bool loaded = false;
-
-  // Keep track of when the report file has been read.
-  late String _oldName;
+  bool _isNew = false;
 
   void _addField(FieldOptions options) {
     setState(() => layout.fields.add(options));
@@ -67,14 +65,14 @@ class _FormBuilderState extends State<FormBuilder> {
   @override
   void initState() {
     // Read layout from file
-    final futureReport = readNamedLayout(widget.args.name);
+    final futureLayout = File(widget.args.path).readAsString();
 
     // Add completition callback for when the file has been read.
-    futureReport.then((value) {
+    futureLayout.then((value) {
       setState(() {
         layout = ReportLayout.fromJSON(value);
-        _oldName = layout.name;
         loaded = true;
+        _isNew = false;
       });
     }).catchError((error, stackTrace) async {
       final defaultName =
@@ -84,8 +82,8 @@ class _FormBuilderState extends State<FormBuilder> {
           name: defaultName,
           fields: [],
         );
-        _oldName = layout.name;
         loaded = true;
+        _isNew = true;
       });
     });
 
@@ -100,12 +98,9 @@ class _FormBuilderState extends State<FormBuilder> {
         child: CircularProgressIndicator.adaptive(),
       );
 
-    // Determine whether this is a new layout.
-    final isNew = widget.args.index == null;
-
     // Add the share action only if we're viewing an existing report.
     final List<Widget> shareAction = [];
-    if (!isNew)
+    if (!_isNew)
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
@@ -191,24 +186,23 @@ class _FormBuilderState extends State<FormBuilder> {
     }
     final prefs = await SharedPreferences.getInstance();
 
-    // Get the provider.
-    final layoutsProvider = context.read<LayoutsModel>();
-
-    // Update or add the layout
-    if (widget.args.index != null)
-      layoutsProvider.update(widget.args.index!, layout.name);
-    else
-      layoutsProvider.add(layout.name);
-
-    // Write the layout to file.
-    final file = renameAndWriteFile('$layoutsDirectory/$_oldName',
-        '$layoutsDirectory/${layout.name}', await layout.toJSON());
+    final File layoutFile;
+    // Write the report to file.
+    if (_isNew) {
+      var path = p.join(widget.args.path, layout.name);
+      path = p.setExtension(path, '.json');
+      layoutFile = File(path);
+    } else {
+      final file = File(widget.args.path);
+      var newPath = p.join(file.parent.path, layout.name);
+      newPath = p.setExtension(newPath, '.json');
+      layoutFile = await file.rename(newPath);
+    }
+    await layoutFile.writeAsString(await layout.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
     final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
     if (dbEnabled != null && dbEnabled) {
-      // Wait for the file to be written
-      await file;
       // Backup to dropbox.
       dbBackupFile('${layout.name}.json', layoutsDirectory);
     }
