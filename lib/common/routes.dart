@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/form_builder.dart';
+import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/report_viewer.dart';
 import 'package:reports/views/report_list.dart';
 import 'package:reports/views/layouts_list.dart';
@@ -15,6 +16,7 @@ import 'package:reports/views/settings.dart';
 
 /// Contains the route of each view of the app.
 final routes = {
+  MenuDrawer.routeName: (context) => MenuDrawer(),
   Reports.routeName: (context) => Reports(
         path: (ModalRoute.of(context)!.settings.arguments as String?) ?? '',
       ),

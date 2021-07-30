@@ -36,9 +36,29 @@
   "@defaultReportNaming": {
     "description": "Default report naming string"
   },
+  "destination": "Destination",
+  "@destination": {
+    "description": "Destination string"
+  },
   "dropboxBackup": "Backup to Dropbox",
   "@dropboxBackup": {
     "description": "Enable Dropbox backup option string"
+  },
+  "import": "Import",
+  "@import": {
+    "description": "Import string"
+  },
+  "importAsLayout": "Import as layouts",
+  "@importAsLayout": {
+    "description": "Import as layouts string"
+  },
+  "importLayouts": "Import Layouts",
+  "@importLayouts": {
+    "description": "Import layouts string"
+  },
+  "importReports": "Import Reports",
+  "@importReports": {
+    "description": "Import reports string"
   },
   "includeDate": "Include Date",
   "@includeDate": {
@@ -95,6 +115,10 @@
   "section": "Section",
   "@section": {
     "description": "Section string"
+  },
+  "select": "select",
+  "@select": {
+    "description": "Select string"
   },
   "settings": "Settings",
   "@settings": {
