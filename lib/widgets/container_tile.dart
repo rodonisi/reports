@@ -10,6 +10,8 @@ class ContainerTile extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.leading,
+    this.onTap,
+    this.enabled = true,
   }) : super(key: key);
 
   final Color? color;
@@ -17,6 +19,8 @@ class ContainerTile extends StatelessWidget {
   final Widget? subtitle;
   final Widget? trailing;
   final Widget? leading;
+  final void Function()? onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,8 @@ class ContainerTile extends StatelessWidget {
         subtitle: subtitle,
         trailing: trailing,
         leading: leading,
+        onTap: onTap,
+        enabled: enabled,
       ),
     );
   }

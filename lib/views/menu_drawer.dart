@@ -48,13 +48,13 @@ class MenuDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            ListTile(
+            ContainerTile(
               title: Text(localizations.reportsTitle),
               leading: Icon(ReportsIcons.report),
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Reports.routeName),
             ),
-            ListTile(
+            ContainerTile(
               title: Text(localizations.layoutsTitle),
               leading: Icon(ReportsIcons.layout),
               onTap: () =>
@@ -63,7 +63,7 @@ class MenuDrawer extends StatelessWidget {
             _getSeparator(),
             _ImportTile(),
             _getSeparator(),
-            ListTile(
+            ContainerTile(
               title: Text(localizations.settings),
               leading: Icon(Icons.settings),
               onTap: () =>

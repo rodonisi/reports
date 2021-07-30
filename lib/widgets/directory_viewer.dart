@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reports/widgets/container_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
@@ -54,7 +55,7 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
           },
         )
       ],
-      child: ListTile(
+      child: ContainerTile(
         title: Text(p.basenameWithoutExtension(item.path)),
         leading: Icon(isFile ? widget.fileIcon : Icons.folder),
         trailing: isFile ? null : Icon(Icons.keyboard_arrow_right_rounded),

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/widgets/container_tile.dart';
 import 'package:reports/widgets/directory_viewer.dart';
 
 /// Displays the selected legal files (illegal files are ignored) and import
@@ -92,7 +93,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
               ),
             ),
           ),
-          ListTile(
+          ContainerTile(
             title: Text(localizations.destination),
             trailing: Text(_getRelativePath(_destination)),
             enabled: !_importAsLayouts,
@@ -107,6 +108,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
                 )),
           ),
           SwitchListTile.adaptive(
+            tileColor: Theme.of(context).cardColor,
             value: _importAsLayouts,
             title: Text(localizations.importAsLayout),
             onChanged: (value) => setState(() => _importAsLayouts = value),

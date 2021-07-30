@@ -2,6 +2,7 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:reports/widgets/container_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // -----------------------------------------------------------------------------
@@ -79,7 +80,7 @@ class _DropboxChooserState extends State<DropboxChooser> {
                 // Directories do not have a filesize.
                 final isFile = item['filesize'] != null;
                 final itemPath = item['pathLower'];
-                return ListTile(
+                return ContainerTile(
                   title: Text(name),
                   leading: Icon(isFile ? Icons.text_snippet : Icons.folder),
                   trailing:
