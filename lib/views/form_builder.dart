@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +18,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/io.dart';
-import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
@@ -75,8 +76,7 @@ class _FormBuilderState extends State<FormBuilder> {
         _isNew = false;
       });
     }).catchError((error, stackTrace) async {
-      final defaultName =
-          await Preferences.getDefaultName(DefaultNameType.layout);
+      final defaultName = context.read<PreferencesModel>().defaultLayoutName;
       setState(() {
         layout = ReportLayout(
           name: defaultName,
@@ -201,10 +201,9 @@ class _FormBuilderState extends State<FormBuilder> {
     await layoutFile.writeAsString(await layout.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
-    final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
-    if (dbEnabled != null && dbEnabled) {
+    if (context.read<PreferencesModel>().dropboxEnabled) {
       // Backup to dropbox.
-      dbBackupFile('${layout.name}.json', layoutsDirectory);
+      dbBackupFile(context, '${layout.name}.json', layoutsDirectory);
     }
 
     Navigator.pop(context);

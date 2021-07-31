@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/common/io.dart';
-import 'package:reports/common/preferences.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
@@ -66,11 +68,15 @@ class _ReportViewerState extends State<ReportViewer> {
         _isNew = false;
       });
     }).catchError((error, stackTrace) async {
+      final localizations = AppLocalizations.of(context)!;
       final layouts = await getLayoutsList();
       // Read the first available layout.
       final layoutString = await layouts.first.readAsString();
-      final defaultName =
-          await Preferences.getDefaultName(DefaultNameType.report);
+
+      final prefs = context.read<PreferencesModel>();
+      prefs.initializeString(
+          PreferenceKeys.reportBaseName, localizations.report);
+      final defaultName = prefs.defaultReportName;
       setState(() {
         report = Report(
           title: defaultName,
@@ -196,14 +202,14 @@ class _ReportViewerState extends State<ReportViewer> {
     await reportFile.writeAsString(await report.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
-    final dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
-    if (dbEnabled != null && dbEnabled) {
+    final dbEnabled = context.read<PreferencesModel>().dropboxEnabled;
+    if (dbEnabled) {
       // Get relative path from the local documents directory.
       final dir =
           p.relative(reportFile.parent.path, from: await getLocalDocsPath);
 
       // Backup to dropbox.
-      dbBackupFile('${report.title}.json', dir);
+      dbBackupFile(context, '${report.title}.json', dir);
     }
 
     Navigator.pop(context);

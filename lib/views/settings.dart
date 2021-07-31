@@ -6,14 +6,14 @@ import 'dart:io';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/preferences.dart';
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
@@ -23,23 +23,9 @@ import 'package:reports/widgets/controlled_text_field.dart';
 // -----------------------------------------------------------------------------
 
 /// Displays the main settings view for the application.
-class Settings extends StatefulWidget {
+class Settings extends StatelessWidget {
   static const String routeName = '/settings';
   Settings({Key? key}) : super(key: key);
-
-  @override
-  _SettingsState createState() => _SettingsState();
-}
-
-class _SettingsState extends State<Settings> {
-  String? dropboxAccessToken;
-
-  Future getDir() async {}
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,31 +35,18 @@ class _SettingsState extends State<Settings> {
         title: Text(localizations.settings),
       ),
       drawer: MenuDrawer(),
-      body: FutureBuilder<SharedPreferences>(
-        future: SharedPreferences.getInstance(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView(
-              children: [
-                _GeneralSettings(prefs: snapshot.data!),
-                if (!Platform.isMacOS)
-                  _DBSettings(prefs: snapshot.data!, setState: setState),
-              ],
-            );
-          }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+      body: ListView(
+        children: [
+          _GeneralSettings(),
+          if (!Platform.isMacOS) _DBSettings(),
+        ],
       ),
     );
   }
 }
 
 class _GeneralSettings extends StatefulWidget {
-  _GeneralSettings({Key? key, required this.prefs}) : super(key: key);
-
-  final SharedPreferences prefs;
+  _GeneralSettings({Key? key}) : super(key: key);
 
   @override
   __GeneralSettingsState createState() => __GeneralSettingsState();
@@ -98,9 +71,9 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
               MaterialPageRoute(
                 builder: (context) => _DefaultNamingView(
                   title: localizations.defaultReportNaming,
-                  namePref: Preferences.reportBaseName,
-                  datePref: Preferences.reportNameDate,
-                  timePref: Preferences.reportNameTime,
+                  namePref: PreferenceKeys.reportBaseName,
+                  datePref: PreferenceKeys.reportNameDate,
+                  timePref: PreferenceKeys.reportNameTime,
                 ),
               ),
             ),
@@ -116,9 +89,9 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
               MaterialPageRoute(
                 builder: (context) => _DefaultNamingView(
                   title: localizations.defaultLayoutNaming,
-                  namePref: Preferences.layoutBaseName,
-                  datePref: Preferences.layoutNameDate,
-                  timePref: Preferences.layoutNameTime,
+                  namePref: PreferenceKeys.layoutBaseName,
+                  datePref: PreferenceKeys.layoutNameDate,
+                  timePref: PreferenceKeys.layoutNameTime,
                 ),
               ),
             ),
@@ -130,50 +103,35 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
 }
 
 class _DBSettings extends StatelessWidget {
-  const _DBSettings({Key? key, required this.prefs, required this.setState})
-      : super(key: key);
-
-  final SharedPreferences prefs;
-  final setState;
+  const _DBSettings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    var dbEnabled = prefs.getBool(Preferences.dropboxEnabled);
+    final prefs = context.watch<PreferencesModel>();
 
-    if (dbEnabled == null) {
-      dbEnabled = false;
-      prefs.setBool(Preferences.dropboxEnabled, false);
-    }
     // The list of Dropbox-related settings.
     final dbSettingsList = <Widget>[
       SwitchListTile.adaptive(
         title: Text(localizations.dropboxBackup),
         secondary: Icon(FontAwesomeIcons.dropbox),
-        value: dbEnabled,
+        value: prefs.dropboxEnabled,
         onChanged: (value) async {
-          if (!value) await dbUnlink();
-          prefs.setBool(Preferences.dropboxEnabled, value);
-          dbEnabled = value;
-
-          setState(() {});
+          if (!value) dbUnlink(context);
+          prefs.dropboxEnabled = value;
         },
       ),
     ];
 
     // Only show further settings if Dropbox is enabled.
-    if (dbEnabled!) {
+    if (prefs.dropboxEnabled) {
       dbSettingsList.add(
-        _DBLoginButton(
-          setState: setState,
-          prefs: prefs,
-        ),
+        _DBLoginButton(),
       );
       // Add default backup path chooser.
       dbSettingsList.add(
         _DBPathTile(
-          dbPath: prefs.getString(Preferences.dropboxPath),
-          setState: setState,
+          dbPath: prefs.dropboxPath,
         ),
       );
     }
@@ -187,19 +145,17 @@ class _DBSettings extends StatelessWidget {
 }
 
 class _DBLoginButton extends StatelessWidget {
-  const _DBLoginButton({Key? key, required this.setState, required this.prefs})
-      : super(key: key);
-  final setState;
-  final SharedPreferences prefs;
+  const _DBLoginButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<PreferencesModel>();
     final localizations = AppLocalizations.of(context)!;
     // TODO: Find a better way to determine this.
-    final isAuthorized = prefs.getBool(Preferences.dropboxAuthorized);
+    final isAuthorized = prefs.dropboxAuthorized;
 
     // Show the sign in button if Dropbox is not authorized
-    if (isAuthorized == null || !isAuthorized)
+    if (!isAuthorized)
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -208,8 +164,7 @@ class _DBLoginButton extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   Dropbox.authorize();
-                  prefs.setBool(Preferences.dropboxAuthorized, true);
-                  setState(() {});
+                  prefs.dropboxAuthorized = true;
                 },
                 child: Text(localizations.signIn),
               ),
@@ -227,8 +182,7 @@ class _DBLoginButton extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.red),
               onPressed: () async {
-                await dbUnlink();
-                setState(() {});
+                dbUnlink(context);
               },
               child: Text(localizations.signOut),
             ),
@@ -240,11 +194,12 @@ class _DBLoginButton extends StatelessWidget {
 }
 
 class _DBPathTile extends StatelessWidget {
-  const _DBPathTile({Key? key, this.dbPath, required this.setState})
-      : super(key: key);
+  const _DBPathTile({
+    Key? key,
+    this.dbPath,
+  }) : super(key: key);
 
   final String? dbPath;
-  final setState;
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +208,7 @@ class _DBPathTile extends StatelessWidget {
       leading: Icon(Icons.folder),
       trailing: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
       onTap: () => Navigator.pushNamed(context, DropboxChooser.routeName,
-          arguments: DropboxChooserArgs(setState: setState)),
+          arguments: DropboxChooserArgs()),
     );
   }
 }
@@ -277,59 +232,54 @@ class _DefaultNamingView extends StatefulWidget {
 }
 
 class __DefaultNamingViewState extends State<_DefaultNamingView> {
-  String? _baseName;
-  bool? _includeDate;
-  bool? _includeTime;
-
   Widget _getDivider() {
     return Divider(height: 0.0);
   }
 
   List<Widget> _getSettings() {
     final localizations = AppLocalizations.of(context)!;
+    final prefs = Provider.of<PreferencesModel>(context);
     return [
       ListTile(
         title: Text(localizations.baseName),
         subtitle: ControlledTextField(
-          initialValue: _baseName,
-          hasClearButton: true,
+          initialValue: prefs.getString(widget.namePref),
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             contentPadding:
                 EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
           ),
-          onChanged: (value) => setState(() => _baseName = value),
+          onChanged: (value) => prefs.setString(widget.namePref, value),
           maxLines: 1,
         ),
       ),
       _getDivider(),
       SwitchListTile.adaptive(
         title: Text(localizations.includeDate),
-        value: _includeDate!,
-        onChanged: (value) => setState(() {
-          _includeDate = value;
-        }),
+        value: prefs.getBool(widget.datePref),
+        onChanged: (value) => prefs.setBool(widget.datePref, value),
       ),
       _getDivider(),
       SwitchListTile.adaptive(
         title: Text(localizations.inlcudeTime),
-        value: _includeTime!,
-        onChanged: (value) => setState(() {
-          _includeTime = value;
-        }),
+        value: prefs.getBool(widget.timePref),
+        onChanged: (value) => prefs.setBool(widget.timePref, value),
       ),
       _getDivider(),
       ListTile(
         title: Text(localizations.preview),
         subtitle: Text(
-          Preferences.getDefaultNameSync(
-              _baseName!, _includeDate!, _includeTime!),
+          PreferencesModel.constructName(
+            prefs.getString(widget.namePref),
+            prefs.getBool(widget.datePref),
+            prefs.getBool(widget.timePref),
+          ),
         ),
       ),
     ];
   }
 
-  Widget _getBody(SharedPreferences prefs) {
+  Widget _getBody() {
     return ListView(
       children: [
         Card(
@@ -345,55 +295,11 @@ class __DefaultNamingViewState extends State<_DefaultNamingView> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator.adaptive();
-        if (snapshot.hasError) throw snapshot.error!;
-
-        final prefs = snapshot.data!;
-
-        // Set localized default base name.
-        if (_baseName == null) {
-          final baseNamePref = prefs.getString(widget.namePref);
-          if (baseNamePref == null) {
-            if (widget.namePref == Preferences.reportBaseName)
-              _baseName = localizations.report;
-            else
-              _baseName = localizations.layout;
-          } else {
-            _baseName = baseNamePref;
-          }
-        }
-
-        // Set default include date setting.
-        if (_includeDate == null)
-          _includeDate = prefs.getBool(widget.datePref) ??
-              Preferences.getDefault(widget.datePref) as bool;
-
-        // Set default include time setting.
-        if (_includeTime == null)
-          _includeTime = prefs.getBool(widget.timePref) ??
-              Preferences.getDefault(widget.timePref) as bool;
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-            leading: BackButton(
-              onPressed: () async {
-                await prefs.setString(widget.namePref, _baseName!);
-                await prefs.setBool(widget.datePref, _includeDate!);
-                await prefs.setBool(widget.timePref, _includeTime!);
-
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: _getBody(prefs),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: _getBody(),
     );
   }
 }

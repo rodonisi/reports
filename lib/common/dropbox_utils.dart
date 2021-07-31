@@ -4,31 +4,32 @@
 import 'dart:io';
 
 import 'package:dropbox_client/dropbox_client.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
-import 'package:reports/common/preferences.dart';
 
 /// Authorize Dropbox access with token, if present, or ask for authorization.
 /// The token is then returned as result.
-Future<bool> dbCheckAuthorized() async {
-  final prefs = await SharedPreferences.getInstance();
-  var token = prefs.getString(Preferences.dropboxAccessToken);
+Future<bool> dbCheckAuthorized(BuildContext context) async {
+  final prefs = context.read<PreferencesModel>();
+  var token = prefs.dropboxAccessToken;
   logger.d("Stored Dropbox acces token: $token");
 
   // Try getting a fresh token if we don't have any stored.
-  if (token == null || token.isEmpty) {
-    token = await Dropbox.getAccessToken();
+  if (token.isEmpty) {
+    token = await Dropbox.getAccessToken() ?? '';
   }
 
-  if (token != null && token.isNotEmpty) {
+  if (token.isNotEmpty) {
     // Store the token.
-    await prefs.setString(Preferences.dropboxAccessToken, token);
+    prefs.dropboxAccessToken = token;
 
     // Authorize Dropbox.
     await Dropbox.authorizeWithAccessToken(token);
@@ -40,38 +41,37 @@ Future<bool> dbCheckAuthorized() async {
 }
 
 /// Unlink the user account from dropbox and reset the preferences.
-Future<void> dbUnlink() async {
+void dbUnlink(BuildContext context) {
   // Unlink Dropbox.
   Dropbox.unlink();
 
   // Set back stored settings.
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setString(Preferences.dropboxAccessToken, '');
-  prefs.setString(Preferences.dropboxPath, '');
-  prefs.setBool(Preferences.dropboxAuthorized, false);
+  final prefs = context.read<PreferencesModel>();
+  prefs.dropboxAccessToken = '';
+  prefs.dropboxPath = '';
+  prefs.dropboxAuthorized = false;
 }
 
-Future<dynamic> dbListFolder(String path) async {
-  if (!(await dbCheckAuthorized()))
+Future<dynamic> dbListFolder(BuildContext context, String path) async {
+  if (!(await dbCheckAuthorized(context)))
     throw Exception('Dropbox is not authorized');
 
   return Dropbox.listFolder(path);
 }
 
 /// Backup a single file to dropbox.
-Future<void> dbBackupFile(String file, String directory) async {
+Future<void> dbBackupFile(
+    BuildContext context, String file, String directory) async {
   // Throw exception if not authorized.
-  if (!(await dbCheckAuthorized()))
+  if (!(await dbCheckAuthorized(context)))
     throw Exception('Dropbox is not authorized');
 
   // Get the full path to the file's directory.
   final localPath = p.join((await getLocalDocsPath), p.basename(directory));
 
   // Get Dropbox base path.
-  final prefs = await SharedPreferences.getInstance();
-  var mayDbPath = prefs.getString(Preferences.dropboxPath);
-  String dbPath = '';
-  if (mayDbPath != null) dbPath = mayDbPath;
+  final prefs = context.read<PreferencesModel>();
+  String dbPath = prefs.dropboxPath;
   dbPath = p.join(dbPath, p.basename(directory));
 
   // Upload the file.
@@ -91,20 +91,19 @@ Future<void> _dbBackupFileList(List<File> files, String path) async {
 }
 
 /// Backup all local layouts and reports to dropbox.
-Future<void> dbBackupEverything() async {
+Future<void> dbBackupEverything(BuildContext context) async {
   // Throw exception if Dropbox is not authorized.
-  if (!(await dbCheckAuthorized()))
+  if (!(await dbCheckAuthorized(context)))
     throw Exception('Dropbox is not authorized');
 
   // Get base Dropbox path.
-  final prefs = await SharedPreferences.getInstance();
-  final dbPath = prefs.getString(Preferences.dropboxPath);
-
+  final prefs = context.read<PreferencesModel>();
+  final dbPath = prefs.dropboxPath;
   // Get report files.
   final lsReports = await getLocalDirFiles(reportsDirectory);
   // Get reports destination path.
   final dbReportsPath =
-      dbPath == null ? '/$reportsDirectory' : '$dbPath$reportsDirectory';
+      dbPath.isEmpty ? '/$reportsDirectory' : '$dbPath$reportsDirectory';
   // Backup repots.
   _dbBackupFileList(lsReports, dbReportsPath);
 
@@ -112,7 +111,7 @@ Future<void> dbBackupEverything() async {
   final lsLayouts = await getLocalDirFiles(layoutsDirectory);
   // Get layouts destination path.
   final dbLayoutsPath =
-      dbPath == null ? '/$layoutsDirectory' : '$dbPath$layoutsDirectory';
+      dbPath.isEmpty ? '/$layoutsDirectory' : '$dbPath$layoutsDirectory';
   // Backup layouts.
   _dbBackupFileList(lsLayouts, dbLayoutsPath);
 }

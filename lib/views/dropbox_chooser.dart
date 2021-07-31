@@ -2,14 +2,14 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/container_tile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/preferences.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/views/settings.dart';
 
@@ -18,11 +18,9 @@ import 'package:reports/views/settings.dart';
 // -----------------------------------------------------------------------------
 /// DropboxChosser view's arguments.
 class DropboxChooserArgs {
-  const DropboxChooserArgs(
-      {this.name = 'Dropbox', this.path = '', required this.setState});
+  const DropboxChooserArgs({this.name = 'Dropbox', this.path = ''});
   final String name;
   final String path;
-  final setState;
 }
 
 /// Shows a navigable list of files and directories at the given Dropbox path.
@@ -32,12 +30,10 @@ class DropboxChooser extends StatefulWidget {
   DropboxChooser({Key? key, required DropboxChooserArgs args})
       : name = args.name,
         path = args.path,
-        setState = args.setState,
         super(key: key);
 
   final String name;
   final String path;
-  final setState;
 
   @override
   _DropboxChooserState createState() => _DropboxChooserState();
@@ -52,22 +48,21 @@ class _DropboxChooserState extends State<DropboxChooser> {
         actions: [
           IconButton(
               onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString(Preferences.dropboxPath, widget.path);
+                final prefs = context.read<PreferencesModel>();
+                prefs.dropboxPath = widget.path;
 
                 logger.d('New dropbox path: ${widget.path}');
 
-                widget.setState(() {});
                 Navigator.popUntil(
                     context, ModalRoute.withName(Settings.routeName));
 
-                dbBackupEverything();
+                dbBackupEverything(context);
               },
               icon: Icon(Icons.check)),
         ],
       ),
       body: FutureBuilder(
-        future: dbListFolder(widget.path),
+        future: dbListFolder(context, widget.path),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // Get list data.
@@ -87,10 +82,8 @@ class _DropboxChooserState extends State<DropboxChooser> {
                       isFile ? null : Icon(Icons.arrow_forward_ios_rounded),
                   onTap: () => Navigator.pushNamed(
                       context, DropboxChooser.routeName,
-                      arguments: DropboxChooserArgs(
-                          name: name,
-                          path: itemPath,
-                          setState: widget.setState)),
+                      arguments:
+                          DropboxChooserArgs(name: name, path: itemPath)),
                   enabled: !isFile,
                 );
               },
