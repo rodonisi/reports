@@ -122,7 +122,7 @@ class DateFieldFormats {
       case timeModeID:
         return DateFormat.jm(locale);
       case dateTimeModeID:
-        return DateFormat.yMd(locale).add_jm();
+        return DateFormat.yMMMd(locale).add_jm();
       default:
         throw Exception('Unsupported mode $mode');
     }
