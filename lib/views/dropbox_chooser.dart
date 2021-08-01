@@ -40,6 +40,14 @@ class DropboxChooser extends StatefulWidget {
 }
 
 class _DropboxChooserState extends State<DropboxChooser> {
+  late Future<dynamic> _listFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _listFuture = dbListFolder(context, widget.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +70,7 @@ class _DropboxChooserState extends State<DropboxChooser> {
         ],
       ),
       body: FutureBuilder(
-        future: dbListFolder(context, widget.path),
+        future: _listFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // Get list data.
