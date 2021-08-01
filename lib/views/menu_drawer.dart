@@ -113,6 +113,8 @@ class _ImportTile extends StatelessWidget {
         allowedExtensions: ['.json']).then(
       (picked) {
         if (picked != null) {
+          final localizations = AppLocalizations.of(context)!;
+
           // Iterate over the picked files.
           picked.files.forEach((element) async {
             final file = File(element.path!);
@@ -123,6 +125,15 @@ class _ImportTile extends StatelessWidget {
             if (type != null && type == FileHeader.layoutID) {
               // Get final path.
               final path = p.join(await getLayoutsDirectory, element.name);
+
+              // Check if a file already exists at the destination.
+              if (File(path).existsSync()) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(localizations.fileExists(localizations.report)),
+                  backgroundColor: Colors.red,
+                ));
+                return;
+              }
 
               logger.d('Imported layout to path $path');
 

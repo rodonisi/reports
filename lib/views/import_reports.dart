@@ -119,6 +119,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
   }
 
   Future<void> _saveCallback(BuildContext context) async {
+    final localizations = AppLocalizations.of(context)!;
     // Get destination directory.
     String destination =
         _importAsLayouts ? await getLayoutsDirectory : _destination;
@@ -129,6 +130,17 @@ class _ImportReportsViewState extends State<ImportReportsView> {
       final file = File(element.path!);
       // Get full destination path.
       final path = p.join(destination, element.name);
+
+      // Check if a file already exists at the destination.
+      if (File(path).existsSync()) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            localizations.fileExists(localizations.report),
+          ),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
 
       logger.d('Imported report to path $path');
 
