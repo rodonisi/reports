@@ -130,7 +130,7 @@ class _ReportsState extends State<Reports> {
                 builder: _getNewFolderDialog,
               );
             },
-            icon: Icon(Icons.create_new_folder_outlined),
+            icon: Icon(Icons.create_new_folder),
           ),
         ],
       ),
