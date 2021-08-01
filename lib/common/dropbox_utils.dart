@@ -78,15 +78,19 @@ Future<void> dbBackupFile(
   Dropbox.upload(p.join(localPath, file), p.join(dbPath, file));
 }
 
-Future<void> _dbBackupFileList(List<File> files, String path) async {
-  for (final file in files) {
-    final fileName = p.basename(file.path);
-    await Dropbox.upload(
-      file.path,
-      '$path/$fileName',
-      (uploaded, total) =>
-          logger.v('Uploading $fileName to $path: $uploaded/$total'),
-    );
+Future<void> _dbBackupList(
+    List<FileSystemEntity> list, String dropboxPath) async {
+  for (final element in list) {
+    if (element is File) {
+      final relativePath =
+          p.relative(element.path, from: await getLocalDocsPath);
+      await Dropbox.upload(
+        element.path,
+        p.join(dropboxPath, relativePath),
+        (uploaded, total) =>
+            logger.v('Uploading $relativePath: $uploaded/$total'),
+      );
+    }
   }
 }
 
@@ -100,18 +104,12 @@ Future<void> dbBackupEverything(BuildContext context) async {
   final prefs = context.read<PreferencesModel>();
   final dbPath = prefs.dropboxPath;
   // Get report files.
-  final lsReports = await getLocalDirFiles(reportsDirectory);
-  // Get reports destination path.
-  final dbReportsPath =
-      dbPath.isEmpty ? '/$reportsDirectory' : '$dbPath$reportsDirectory';
+  final lsReports = await getDirectoryList(reportsDirectory);
   // Backup repots.
-  _dbBackupFileList(lsReports, dbReportsPath);
+  _dbBackupList(lsReports, dbPath);
 
   // Get layout files.
-  final lsLayouts = await getLocalDirFiles(layoutsDirectory);
-  // Get layouts destination path.
-  final dbLayoutsPath =
-      dbPath.isEmpty ? '/$layoutsDirectory' : '$dbPath$layoutsDirectory';
+  final lsLayouts = await getDirectoryList(layoutsDirectory);
   // Backup layouts.
-  _dbBackupFileList(lsLayouts, dbLayoutsPath);
+  _dbBackupList(lsLayouts, dbPath);
 }

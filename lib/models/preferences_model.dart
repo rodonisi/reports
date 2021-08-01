@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reports/common/io.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,10 +45,12 @@ class PreferenceKeys {
 
 class PreferencesModel extends ChangeNotifier {
   late SharedPreferences _prefs;
+  late String localDocsPath;
   bool loading = true;
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
+    localDocsPath = await getLocalDocsPath;
     loading = false;
 
     notifyListeners();
