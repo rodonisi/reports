@@ -184,7 +184,6 @@ class _FormBuilderState extends State<FormBuilder> {
       );
       return;
     }
-    final prefs = await SharedPreferences.getInstance();
 
     final File layoutFile;
     // Write the report to file.
