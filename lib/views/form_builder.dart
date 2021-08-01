@@ -131,8 +131,7 @@ class _FormBuilderState extends State<FormBuilder> {
         ),
         actions: shareAction,
       ),
-      body: Stack(children: [
-        ReorderableListView.builder(
+      body: ReorderableListView.builder(
           padding: EdgeInsets.all(16.0),
           shrinkWrap: true,
           itemCount: layout.fields.length,
@@ -151,12 +150,6 @@ class _FormBuilderState extends State<FormBuilder> {
               layout.fields.add(item);
           },
         ),
-        SafeArea(
-          bottom: true,
-          top: false,
-          child: Align(alignment: Alignment.bottomCenter, child: null),
-        ),
-      ]),
       floatingActionButton: _Dial(addFieldFunc: _addField),
       bottomNavigationBar: SafeArea(
         bottom: true,
