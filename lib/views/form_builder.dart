@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // -----------------------------------------------------------------------------
