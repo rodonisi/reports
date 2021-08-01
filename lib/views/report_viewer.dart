@@ -186,31 +186,35 @@ class _ReportViewerState extends State<ReportViewer> {
 
   void _saveReport() async {
     final localizations = AppLocalizations.of(context)!;
-    final File reportFile;
-    // Write the report to file.
+
+    final reportString = await report.toJSON();
+    var destPath = '';
+    var fromPath = '';
+
     if (_isNew) {
-      var path = p.join(widget.args.path, report.title);
-      path = p.setExtension(path, '.json');
-      reportFile = File(path);
-      if (reportFile.existsSync()) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(localizations.fileExists(localizations.report)),
-          backgroundColor: Colors.red,
-        ));
-        return;
-      }
+      destPath = p.join(widget.args.path, report.title);
+      destPath = p.setExtension(destPath, '.json');
     } else {
-      final file = File(widget.args.path);
-      var newPath = p.join(file.parent.path, report.title);
-      newPath = p.setExtension(newPath, '.json');
-      reportFile = await file.rename(newPath);
+      destPath = p.join(p.dirname(widget.args.path), report.title);
+      destPath = p.setExtension(destPath, '.json');
+      if (destPath != widget.args.path) fromPath = widget.args.path;
     }
-    await reportFile.writeAsString(await report.toJSON());
+
+    // Write the report to file.
+    final didWrite = await writeToFile(reportString, destPath,
+        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
+    if (!didWrite) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(localizations.fileExists(localizations.report)),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
 
     // Backup the newly created file to dropbox if option is enabled.
     if (context.read<PreferencesModel>().dropboxEnabled) {
       // Backup to dropbox.
-      dbBackupFile(context, reportFile.path);
+      dbBackupFile(context, destPath);
     }
 
     Navigator.pop(context);

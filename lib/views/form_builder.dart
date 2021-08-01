@@ -174,31 +174,34 @@ class _FormBuilderState extends State<FormBuilder> {
       return;
     }
 
-    final File layoutFile;
-    // Write the report to file.
+    final layoutString = await layout.toJSON();
+    var destPath = '';
+    var fromPath = '';
+
     if (_isNew) {
-      var path = p.join(widget.args.path, layout.name);
-      path = p.setExtension(path, '.json');
-      layoutFile = File(path);
-      if (layoutFile.existsSync()) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(localizations.fileExists(localizations.layout)),
-          backgroundColor: Colors.red,
-        ));
-        return;
-      }
+      destPath = p.join(widget.args.path, layout.name);
+      destPath = p.setExtension(destPath, '.json');
     } else {
-      final file = File(widget.args.path);
-      var newPath = p.join(file.parent.path, layout.name);
-      newPath = p.setExtension(newPath, '.json');
-      layoutFile = await file.rename(newPath);
+      destPath = p.join(p.dirname(widget.args.path), layout.name);
+      destPath = p.setExtension(destPath, '.json');
+      if (destPath != widget.args.path) fromPath = widget.args.path;
     }
-    await layoutFile.writeAsString(await layout.toJSON());
+
+    // Write the layout to file.
+    final didWrite = await writeToFile(layoutString, destPath,
+        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
+    if (!didWrite) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(localizations.fileExists(localizations.layout)),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
 
     // Backup the newly created file to dropbox if option is enabled.
     if (context.read<PreferencesModel>().dropboxEnabled) {
       // Backup to dropbox.
-      dbBackupFile(context, layoutFile.path);
+      dbBackupFile(context, destPath);
     }
 
     Navigator.pop(context);

@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:reports/common/logger.dart';
 
 // -----------------------------------------------------------------------------
 // - Global Strings
@@ -67,4 +68,24 @@ Future<List<File>> getLayoutsList() async {
   layoutsList.sort(compareFileSystemEntities);
 
   return layoutsList;
+}
+
+Future<bool> writeToFile(String string, String destination,
+    {bool checkExisting = false,
+    String renameFrom = '',
+    bool dropboxBackup = false}) async {
+  File destFile = File(destination);
+  if (checkExisting && await destFile.exists()) {
+    logger.d('File $destination already exists.');
+    return false;
+  }
+
+  if (renameFrom.isNotEmpty) {
+    logger.d('Renamed file: $renameFrom => $destination');
+    destFile = await File(renameFrom).rename(destination);
+  }
+
+  await destFile.writeAsString(string);
+
+  return true;
 }
