@@ -203,7 +203,7 @@ class _FormBuilderState extends State<FormBuilder> {
     // Backup the newly created file to dropbox if option is enabled.
     if (context.read<PreferencesModel>().dropboxEnabled) {
       // Backup to dropbox.
-      dbBackupFile(context, '${layout.name}.json', layoutsDirectory);
+      dbBackupFile(context, layoutFile.path);
     }
 
     Navigator.pop(context);

@@ -60,22 +60,20 @@ Future<dynamic> dbListFolder(BuildContext context, String path) async {
 }
 
 /// Backup a single file to dropbox.
-Future<void> dbBackupFile(
-    BuildContext context, String file, String directory) async {
+Future<void> dbBackupFile(BuildContext context, String filePath) async {
   // Throw exception if not authorized.
   if (!(await dbCheckAuthorized(context)))
     throw Exception('Dropbox is not authorized');
+  final prefs = context.read<PreferencesModel>();
 
   // Get the full path to the file's directory.
-  final localPath = p.join((await getLocalDocsPath), p.basename(directory));
+  final relative = p.relative(filePath, from: prefs.localDocsPath);
 
-  // Get Dropbox base path.
-  final prefs = context.read<PreferencesModel>();
-  String dbPath = prefs.dropboxPath;
-  dbPath = p.join(dbPath, p.basename(directory));
+// Get destination path
+  final destination = p.join(prefs.dropboxPath, relative);
 
   // Upload the file.
-  Dropbox.upload(p.join(localPath, file), p.join(dbPath, file));
+  Dropbox.upload(filePath, destination);
 }
 
 Future<void> _dbBackupList(

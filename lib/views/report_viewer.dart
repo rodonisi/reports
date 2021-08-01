@@ -185,8 +185,6 @@ class _ReportViewerState extends State<ReportViewer> {
   }
 
   void _saveReport() async {
-    final prefs = await SharedPreferences.getInstance();
-
     final File reportFile;
     // Write the report to file.
     if (_isNew) {
@@ -202,14 +200,9 @@ class _ReportViewerState extends State<ReportViewer> {
     await reportFile.writeAsString(await report.toJSON());
 
     // Backup the newly created file to dropbox if option is enabled.
-    final dbEnabled = context.read<PreferencesModel>().dropboxEnabled;
-    if (dbEnabled) {
-      // Get relative path from the local documents directory.
-      final dir =
-          p.relative(reportFile.parent.path, from: await getLocalDocsPath);
-
+    if (context.read<PreferencesModel>().dropboxEnabled) {
       // Backup to dropbox.
-      dbBackupFile(context, '${report.title}.json', dir);
+      dbBackupFile(context, reportFile.path);
     }
 
     Navigator.pop(context);
