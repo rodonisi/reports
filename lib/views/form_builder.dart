@@ -217,10 +217,11 @@ class _Dial extends StatelessWidget {
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
-      activeLabel: Text('close'),
+      backgroundColor: Theme.of(context).accentColor,
+      foregroundColor: Theme.of(context).primaryColor,
       children: [
         SpeedDialChild(
-          child: Icon(Icons.calendar_today),
+          child: Icon(Icons.date_range),
           label: localization.dateRange,
           onTap: () => addFieldFunc(
             DateRangeFieldOptions(
@@ -236,7 +237,7 @@ class _Dial extends StatelessWidget {
           ),
         ),
         SpeedDialChild(
-          child: Icon(Icons.list),
+          child: Icon(Icons.short_text),
           label: localization.textFieldName,
           onTap: () => addFieldFunc(
             TextFieldOptions(
@@ -245,7 +246,7 @@ class _Dial extends StatelessWidget {
           ),
         ),
         SpeedDialChild(
-          child: Icon(Icons.list),
+          child: Icon(Icons.text_fields),
           label: localization.subsection,
           onTap: () => addFieldFunc(
             SectionFieldOptions(
@@ -255,7 +256,7 @@ class _Dial extends StatelessWidget {
           ),
         ),
         SpeedDialChild(
-          child: Icon(Icons.list),
+          child: Icon(Icons.title),
           label: localization.section,
           onTap: () => addFieldFunc(
             SectionFieldOptions(
