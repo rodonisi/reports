@@ -44,6 +44,13 @@
   "@dropboxBackup": {
     "description": "Enable Dropbox backup option string"
   },
+  "fileExists": "Un {file} con questo nome esista già!",
+  "@fileExists": {
+    "description": "File exists string.",
+    "placeholders": {
+      "file": {}
+    }
+  },
   "import": "Importa",
   "@import": {
     "description": "Import string"

@@ -185,12 +185,20 @@ class _ReportViewerState extends State<ReportViewer> {
   }
 
   void _saveReport() async {
+    final localizations = AppLocalizations.of(context)!;
     final File reportFile;
     // Write the report to file.
     if (_isNew) {
       var path = p.join(widget.args.path, report.title);
       path = p.setExtension(path, '.json');
       reportFile = File(path);
+      if (reportFile.existsSync()) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(localizations.fileExists(localizations.report)),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
     } else {
       final file = File(widget.args.path);
       var newPath = p.join(file.parent.path, report.title);

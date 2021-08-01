@@ -166,22 +166,11 @@ class _FormBuilderState extends State<FormBuilder> {
   }
 
   void _save() async {
+    final localizations = AppLocalizations.of(context)!;
     if (layout.fields.length == 0) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          final localizations = AppLocalizations.of(context)!;
-          return AlertDialog(
-            title: Text(localizations.layoutCannotBeEmpty),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(localizations.close),
-              ),
-            ],
-          );
-        },
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(localizations.layoutCannotBeEmpty),
+          backgroundColor: Colors.red));
       return;
     }
 
@@ -191,6 +180,13 @@ class _FormBuilderState extends State<FormBuilder> {
       var path = p.join(widget.args.path, layout.name);
       path = p.setExtension(path, '.json');
       layoutFile = File(path);
+      if (layoutFile.existsSync()) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(localizations.fileExists(localizations.layout)),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
     } else {
       final file = File(widget.args.path);
       var newPath = p.join(file.parent.path, layout.name);
