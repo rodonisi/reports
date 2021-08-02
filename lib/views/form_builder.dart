@@ -132,7 +132,6 @@ class _FormBuilderState extends State<FormBuilder> {
       ),
       body: ReorderableListView.builder(
         padding: EdgeInsets.all(16.0),
-        shrinkWrap: true,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: layout.fields.length,
         itemBuilder: (context, i) {
