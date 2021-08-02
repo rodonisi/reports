@@ -168,6 +168,7 @@ class _ReportViewerState extends State<ReportViewer> {
       body: ListView.builder(
         padding: EdgeInsets.all(16.0),
         shrinkWrap: true,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: report.layout.fields.length,
         itemBuilder: (context, i) {
           return _FormViewerCard(
