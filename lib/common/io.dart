@@ -81,10 +81,11 @@ Future<bool> writeToFile(String string, String destination,
   }
 
   if (renameFrom.isNotEmpty) {
-    logger.d('Renamed file: $renameFrom => $destination');
+    logger.d('Renaming file: $renameFrom => $destination');
     destFile = await File(renameFrom).rename(destination);
   }
 
+  logger.d('Writing file: $destination');
   await destFile.writeAsString(string);
 
   return true;
