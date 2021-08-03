@@ -41,6 +41,9 @@ class PreferenceKeys {
 
   /// Bool. Wether to include the time in the name for new layouts.
   static const String layoutNameTime = 'layoutNameTime';
+
+  /// String. The default path where to store data.
+  static const String defaultPath = 'defaultPath';
 }
 
 class PreferencesModel extends ChangeNotifier {
@@ -116,6 +119,10 @@ class PreferencesModel extends ChangeNotifier {
     return constructName(reportBaseName, reportNameDate, reportNameTime);
   }
 
+  String get defaultPath {
+    return getString(PreferenceKeys.defaultPath, defaultValue: localDocsPath);
+  }
+
   Future<void> initializeString(String key, String value) async {
     if (_prefs.getString(key) == null) setString(key, value);
   }
@@ -174,6 +181,10 @@ class PreferencesModel extends ChangeNotifier {
 
   set reportNameTime(bool value) {
     setBool(PreferenceKeys.reportNameTime, value);
+  }
+
+  set defaultPath(String value) {
+    setString(PreferenceKeys.defaultPath, value);
   }
 
   /// Get the default name for a new report or layout synchronously based on the
