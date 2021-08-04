@@ -60,7 +60,7 @@ class _MacosSettings extends StatelessWidget {
         children: [
           ListTile(
             title: Text('Default Path'),
-            trailing: Text(prefs.defaultPath),
+            subtitle: Text(prefs.defaultPath),
             onTap: () async {
               final dir = await getDirectoryPath();
               logger.d(dir);
