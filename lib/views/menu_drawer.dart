@@ -8,8 +8,6 @@ import 'package:path/path.dart' as p;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:focused_menu/focused_menu.dart';
-import 'package:focused_menu/modals.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/common/report_structures.dart';
@@ -79,11 +77,11 @@ class MenuDrawer extends StatelessWidget {
 class _ImportTile extends StatelessWidget {
   const _ImportTile({Key? key}) : super(key: key);
 
-  void _importReportCallback(BuildContext context) {
-    FilePicker.platform.pickFiles(
+  void _importReportCallback(BuildContext context) async {
+    await FilePicker.platform.pickFiles(
         allowMultiple: true,
         type: FileType.custom,
-        allowedExtensions: ['.json']).then((picked) {
+        allowedExtensions: ['.json']).then((picked) async {
       if (picked != null) {
         // Select only reports, ignore anything else.
         final list = picked.files.where((element) {
@@ -94,7 +92,7 @@ class _ImportTile extends StatelessWidget {
 
         // Show import screen if there are any selected reports.
         if (list.isNotEmpty) {
-          showCupertinoModalBottomSheet(
+          await showCupertinoModalBottomSheet(
             context: context,
             builder: (context) {
               return ImportReportsView(files: list);
@@ -103,11 +101,12 @@ class _ImportTile extends StatelessWidget {
           );
         }
       }
+      Navigator.pop(context);
     });
   }
 
   Future<void> _importLayoutsCallback(BuildContext context) async {
-    FilePicker.platform.pickFiles(
+    await FilePicker.platform.pickFiles(
         allowMultiple: true,
         type: FileType.custom,
         allowedExtensions: ['.json']).then(
@@ -138,8 +137,9 @@ class _ImportTile extends StatelessWidget {
               logger.d('Imported layout to path $path');
 
               // Copy file.
-              file.copy(path);
+              await file.copy(path);
             }
+            Navigator.pop(context);
           });
         }
       },
@@ -149,29 +149,32 @@ class _ImportTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-
-    return FocusedMenuHolder(
-      onPressed: () {},
-      openWithTap: true,
-      menuItems: [
-        FocusedMenuItem(
-          title: Text(localizations.importReports),
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () => _importReportCallback(context),
-        ),
-        FocusedMenuItem(
-          title: Text(localizations.importLayouts),
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () => _importLayoutsCallback(context),
-        ),
-      ],
-      menuOffset: 8.0,
-      animateMenuItems: true,
-      child: ContainerTile(
-        color: Theme.of(context).cardColor,
-        title: Text(localizations.import),
-        leading: Icon(Icons.save_alt),
-      ),
+    return ContainerTile(
+      color: Theme.of(context).cardColor,
+      title: Text(localizations.import),
+      leading: Icon(Icons.save_alt),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ContainerTile(
+                title: Text(localizations.importReports),
+                onTap: () {
+                  _importReportCallback(context);
+                },
+              ),
+              ContainerTile(
+                title: Text(localizations.importLayouts),
+                onTap: () {
+                  _importLayoutsCallback(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
