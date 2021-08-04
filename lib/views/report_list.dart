@@ -9,13 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/directory_viewer.dart';
+import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/reports_icons_icons.dart';
-import 'package:reports/common/io.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/views/report_viewer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 
@@ -40,14 +42,8 @@ class Reports extends StatefulWidget {
 
 class _ReportsState extends State<Reports> {
   late Directory _dir;
-  bool _loaded = false;
 
   Widget _getList() {
-    if (!_loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
     return DirectoryViewer(
       fileIcon: ReportsIcons.report,
       fileAction: (File item) => showCupertinoModalBottomSheet(
@@ -99,17 +95,11 @@ class _ReportsState extends State<Reports> {
 
   @override
   void initState() {
-    // Set the path to the base reportsDirectory if no path is provided.
     if (widget.path.isEmpty) {
-      getReportsDirectory.then((value) {
-        setState(() {
-          _loaded = true;
-          _dir = Directory(value);
-        });
-      });
+      // Set the path to the base reportsDirectory if no path is provided.
+      _dir = context.read<PreferencesModel>().reportsDirectory;
     } else {
       // Just set the directory otherwise.
-      _loaded = true;
       _dir = Directory(widget.path);
     }
 
@@ -138,7 +128,7 @@ class _ReportsState extends State<Reports> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          final layouts = await getLayoutsList();
+          final layouts = getLayoutsList(context);
           if (layouts.isNotEmpty)
             showCupertinoModalBottomSheet(
               context: context,

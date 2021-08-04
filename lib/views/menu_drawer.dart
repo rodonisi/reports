@@ -8,7 +8,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:reports/common/io.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
@@ -63,8 +63,8 @@ class MenuDrawer extends StatelessWidget {
             ),
             _getSeparator(),
             if (!Platform.isMacOS) ...[
-            _ImportTile(),
-            _getSeparator(),
+              _ImportTile(),
+              _getSeparator(),
             ],
             ContainerTile(
               title: Text(localizations.settings),
@@ -129,7 +129,8 @@ class _ImportTile extends StatelessWidget {
             final type = decodedContent[FileHeader.typeID] as String?;
             if (type != null && type == FileHeader.layoutID) {
               // Get final path.
-              final path = p.join(await getLayoutsDirectory, element.name);
+              final path = p.join(
+                  context.read<PreferencesModel>().layoutsPath, element.name);
 
               // Check if a file already exists at the destination.
               if (File(path).existsSync()) {

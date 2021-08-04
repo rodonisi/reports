@@ -14,7 +14,7 @@ import 'package:share_plus/share_plus.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/io.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
@@ -68,7 +68,7 @@ class _ReportViewerState extends State<ReportViewer> {
       });
     }).catchError((error, stackTrace) async {
       final localizations = AppLocalizations.of(context)!;
-      final layouts = await getLayoutsList();
+      final layouts = getLayoutsList(context);
       // Read the first available layout.
       final layoutString = await layouts.first.readAsString();
 
@@ -126,15 +126,17 @@ class _ReportViewerState extends State<ReportViewer> {
     // Initialize the data structures if not present.
     _initializeData();
 
+    final prefs = context.read<PreferencesModel>();
+
     // Add a share action if we're viewing an existing report.
     final List<Widget> shareAction = [];
     if (!_isNew)
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
-          onPressed: () async {
-            final reportsDir = await getReportsDirectory;
-            Share.shareFiles(['$reportsDir/${report.title}.json']);
+          onPressed: () {
+            Share.shareFiles(
+                [joinAndSetExtension(prefs.reportsPath, report.title)]);
           },
         ),
       );
@@ -192,11 +194,9 @@ class _ReportViewerState extends State<ReportViewer> {
     var fromPath = '';
 
     if (_isNew) {
-      destPath = p.join(widget.args.path, report.title);
-      destPath = p.setExtension(destPath, '.json');
+      destPath = joinAndSetExtension(widget.args.path, report.title);
     } else {
-      destPath = p.join(p.dirname(widget.args.path), report.title);
-      destPath = p.setExtension(destPath, '.json');
+      destPath = joinAndSetExtension(p.dirname(widget.args.path), report.title);
       if (destPath != widget.args.path) fromPath = widget.args.path;
     }
 
@@ -279,38 +279,27 @@ class _LayoutSelector extends StatefulWidget {
 class __LayoutSelectorState extends State<_LayoutSelector> {
   File _selectedLayout = File('');
   List<DropdownMenuItem<File>> _menuItems = [];
-  bool _loaded = false;
 
   @override
   void initState() {
     super.initState();
 
-    getLayoutsList().then((value) {
-      setState(() {
-        // Set the default layout.
-        _selectedLayout = value.first;
+    final layoutsList = getLayoutsList(context);
 
-        // Generate the list of dropdown menu items.
-        _menuItems = value
-            .map<DropdownMenuItem<File>>((element) => DropdownMenuItem(
-                  child: Text(p.basenameWithoutExtension(element.path)),
-                  value: element,
-                ))
-            .toList();
-      });
+    // Set the default layout.
+    _selectedLayout = layoutsList.first;
 
-      // Update loaded flag.
-      _loaded = true;
-    });
+    // Generate the list of dropdown menu items.
+    _menuItems = layoutsList
+        .map<DropdownMenuItem<File>>((element) => DropdownMenuItem(
+              child: Text(p.basenameWithoutExtension(element.path)),
+              value: element,
+            ))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
     return DropdownButton<File>(
         items: _menuItems,
         value: _selectedLayout,

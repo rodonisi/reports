@@ -16,7 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/io.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
@@ -103,8 +103,9 @@ class _FormBuilderState extends State<FormBuilder> {
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
-          onPressed: () async {
-            final layoutsDir = await getLayoutsDirectory;
+          onPressed: () {
+            final layoutsDir =
+                context.read<PreferencesModel>().layoutsDirectory;
             Share.shareFiles(
               ['$layoutsDir/${layout.name}.json'],
             );
@@ -174,11 +175,10 @@ class _FormBuilderState extends State<FormBuilder> {
     var fromPath = '';
 
     if (_isNew) {
-      destPath = p.join(widget.args.path, layout.name);
-      destPath = p.setExtension(destPath, '.json');
+      destPath = joinAndSetExtension(
+          context.read<PreferencesModel>().layoutsPath, layout.name);
     } else {
-      destPath = p.join(p.dirname(widget.args.path), layout.name);
-      destPath = p.setExtension(destPath, '.json');
+      destPath = joinAndSetExtension(p.dirname(widget.args.path), layout.name);
       if (destPath != widget.args.path) fromPath = widget.args.path;
     }
 

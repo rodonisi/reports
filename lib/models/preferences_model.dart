@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:reports/common/io.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +57,7 @@ class PreferencesModel extends ChangeNotifier {
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
-    localDocsPath = await getLocalDocsPath;
+    localDocsPath = (await getApplicationDocumentsDirectory()).path;
     loading = false;
 
     notifyListeners();
@@ -121,6 +125,24 @@ class PreferencesModel extends ChangeNotifier {
 
   String get defaultPath {
     return getString(PreferenceKeys.defaultPath, defaultValue: localDocsPath);
+  }
+
+  Directory get reportsDirectory {
+    return Directory(p.join(defaultPath, reportsDirectoryPath))
+      ..createSync(recursive: true);
+  }
+
+  String get reportsPath {
+    return reportsDirectory.path;
+  }
+
+  Directory get layoutsDirectory {
+    return Directory(p.join(defaultPath, layoutsDirectoryPath))
+      ..createSync(recursive: true);
+  }
+
+  String get layoutsPath {
+    return layoutsDirectory.path;
   }
 
   Future<void> initializeString(String key, String value) async {
