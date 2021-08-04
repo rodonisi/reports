@@ -17,7 +17,6 @@ import 'package:file_selector/file_selector.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/views/dropbox_chooser.dart';
-import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 
 // -----------------------------------------------------------------------------
@@ -27,6 +26,8 @@ import 'package:reports/widgets/controlled_text_field.dart';
 /// Displays the main settings view for the application.
 class Settings extends StatelessWidget {
   static const String routeName = '/settings';
+  static const ValueKey valueKey = ValueKey('Settings');
+
   Settings({Key? key}) : super(key: key);
 
   @override
@@ -36,7 +37,6 @@ class Settings extends StatelessWidget {
       appBar: AppBar(
         title: Text(localizations.settings),
       ),
-      drawer: MenuDrawer(),
       body: ListView(
         children: [
           if (Platform.isMacOS) _MacosSettings(),

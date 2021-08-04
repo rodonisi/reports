@@ -11,7 +11,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/views/form_builder.dart';
-import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
 
 // -----------------------------------------------------------------------------
@@ -21,6 +20,7 @@ import 'package:reports/widgets/directory_viewer.dart';
 /// Displays all the layouts stored in the app in a list.
 class Layouts extends StatefulWidget {
   static const String routeName = '/layouts';
+  static const ValueKey valueKey = ValueKey('Layouts');
 
   Layouts({Key? key}) : super(key: key);
 
@@ -66,7 +66,6 @@ class _LayoutsState extends State<Layouts> {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.layoutsTitle),
           ),
-          drawer: MenuDrawer(),
           floatingActionButton: snapshot.hasData
               ? FloatingActionButton(
                   child: Icon(Icons.add),

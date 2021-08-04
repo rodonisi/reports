@@ -13,14 +13,13 @@ import 'package:reports/common/logger.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reports/models/app_state.dart';
 import 'package:reports/views/import_reports.dart';
+import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/views/layouts_list.dart';
-import 'package:reports/views/report_list.dart';
-import 'package:reports/views/settings.dart';
 import 'package:reports/widgets/container_tile.dart';
 
 // -----------------------------------------------------------------------------
@@ -30,6 +29,7 @@ import 'package:reports/widgets/container_tile.dart';
 /// Creates the menu drawer for the app.
 class MenuDrawer extends StatelessWidget {
   static const String routeName = '/';
+  static const ValueKey valueKey = ValueKey('MenuDrawer');
   const MenuDrawer({Key? key}) : super(key: key);
 
   Widget _getSeparator() {
@@ -41,6 +41,7 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final appState = context.read<AppStateModel>();
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -49,23 +50,28 @@ class MenuDrawer extends StatelessWidget {
             ContainerTile(
               title: Text(localizations.reportsTitle),
               leading: Icon(ReportsIcons.report),
+              selected: appState.currentPage == Pages.reports,
               onTap: () =>
-                  Navigator.pushReplacementNamed(context, Reports.routeName),
+                  context.read<AppStateModel>().currentPage = Pages.reports,
             ),
             ContainerTile(
               title: Text(localizations.layoutsTitle),
               leading: Icon(ReportsIcons.layout),
+              selected: appState.currentPage == Pages.layouts,
               onTap: () =>
-                  Navigator.pushReplacementNamed(context, Layouts.routeName),
+                  context.read<AppStateModel>().currentPage = Pages.layouts,
             ),
             _getSeparator(),
+            if (!Platform.isMacOS) ...[
             _ImportTile(),
             _getSeparator(),
+            ],
             ContainerTile(
               title: Text(localizations.settings),
               leading: Icon(Icons.settings),
+              selected: appState.currentPage == Pages.settings,
               onTap: () =>
-                  Navigator.pushReplacementNamed(context, Settings.routeName),
+                  context.read<AppStateModel>().currentPage = Pages.settings,
             ),
           ],
         ),

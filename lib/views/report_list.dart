@@ -17,7 +17,6 @@ import 'package:reports/widgets/directory_viewer.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/common/io.dart';
 import 'package:reports/views/report_viewer.dart';
-import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 
 // -----------------------------------------------------------------------------
@@ -27,6 +26,8 @@ import 'package:reports/widgets/controlled_text_field.dart';
 /// Displays all the reports stored in the app in a list.
 class Reports extends StatefulWidget {
   static const routeName = "/reports";
+  static const ValueKey valueKey = ValueKey('Reports');
+
   const Reports({Key? key, required this.path}) : super(key: key);
 
   /// The full path to the reports directory to display. If an empty path ('') is
@@ -157,7 +158,6 @@ class _ReportsState extends State<Reports> {
             );
         },
       ),
-      drawer: widget.path.isEmpty ? MenuDrawer() : null,
       body: _getList(),
     );
   }
