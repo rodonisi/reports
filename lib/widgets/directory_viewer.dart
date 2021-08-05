@@ -66,15 +66,7 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final list = widget.directory.listSync();
-
-    if (widget.ignoreDirectories)
-      list.removeWhere((element) => element is Directory);
-
-    list.sort((a, b) => a.path.compareTo(b.path));
-
+  Widget _getList(List<FileSystemEntity> list) {
     return ListView.separated(
       itemCount: list.length,
       itemBuilder: (context, i) {
@@ -83,5 +75,28 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
       },
       separatorBuilder: (context, i) => Divider(height: 0.0),
     );
+  }
+
+  List<FileSystemEntity> _getProcessList() {
+    final list = widget.directory.listSync();
+    if (widget.ignoreDirectories)
+      list.removeWhere((element) => element is Directory);
+    list.sort((a, b) => a.path.compareTo(b.path));
+    return list;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch the directory on macos to get live updates of the directory when
+    // files are changed.
+    if (Platform.isMacOS) {
+      return StreamBuilder(
+          stream: widget.directory.watch(recursive: true),
+          builder: (context, snapshot) {
+            return _getList(_getProcessList());
+          });
+    }
+
+    return _getList(_getProcessList());
   }
 }
