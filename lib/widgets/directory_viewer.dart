@@ -81,6 +81,10 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
     final list = widget.directory.listSync();
     if (widget.ignoreDirectories)
       list.removeWhere((element) => element is Directory);
+
+    // Hide system files.
+    list.removeWhere((element) => p.basename(element.path).startsWith('.'));
+
     list.sort((a, b) => a.path.compareTo(b.path));
     return list;
   }
