@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -85,7 +86,8 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
     // Hide system files.
     list.removeWhere((element) => p.basename(element.path).startsWith('.'));
 
-    list.sort((a, b) => a.path.compareTo(b.path));
+    // Sort list by paths
+    list.sort(fileSystemEntityComparator);
     return list;
   }
 
