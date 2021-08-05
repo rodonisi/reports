@@ -44,8 +44,9 @@ class MenuDrawer extends StatelessWidget {
     final appState = context.read<AppStateModel>();
     return Scaffold(
       body: SafeArea(
+        top: true,
         child: ListView(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
           children: [
             ContainerTile(
               title: Text(localizations.reportsTitle),
