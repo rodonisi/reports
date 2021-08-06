@@ -69,3 +69,21 @@ String joinAndSetExtension(String part0, String part1,
   String path = p.join(part0, part1);
   return p.setExtension(path, extension);
 }
+
+/// Get a list of all sub paths for the given path.
+List<String> getSubPaths(String path) {
+  final List<String> list = [];
+
+  // Get all path elements.
+  final elements = p.split(path);
+  for (var i = 0, e = elements.length; i < e; i++) {
+    // Join the elements up to the j'th element.
+    String subPath = '';
+    for (var j = 0; j <= i; j++) {
+      subPath = p.join(subPath, elements[j]);
+    }
+    list.add(subPath);
+  }
+
+  return list;
+}

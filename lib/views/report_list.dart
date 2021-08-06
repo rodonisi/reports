@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
@@ -39,6 +40,26 @@ class Reports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<AppStateModel>();
+    final prefs = context.watch<PreferencesModel>();
+
+    // Generate additional pages based on the current app state.
+    final pagesList = <MaterialPage>[];
+    if (appState.reportsListPath.isNotEmpty) {
+      final paths = getSubPaths(
+          p.relative(appState.reportsListPath, from: prefs.reportsPath));
+      paths.forEach((element) {
+        pagesList.add(
+          MaterialPage(
+            key: ValueKey(p.join(ReportsList.valueKey.value, element)),
+            name: p.join(prefs.reportsPath, element),
+            child: ReportsList(
+              path: p.join(prefs.reportsPath, element),
+            ),
+          ),
+        );
+      });
+    }
     return WrapNavigator(
       child: MaterialPage(
         key: ReportsList.valueKey,
@@ -46,6 +67,15 @@ class Reports extends StatelessWidget {
           path: '',
         ),
       ),
+      additionalPages: pagesList,
+      onPopPage: (route, result) {
+        // Get the parent directory path.
+        final dir = p.dirname(route.settings.name ?? '');
+        // Set the app state to the parent directory or empty if on the root
+        // reports directory.
+        appState.reportsListPath = dir == prefs.reportsPath ? '' : dir;
+        return route.didPop(result);
+      },
     );
   }
 }
@@ -86,14 +116,8 @@ class _ReportsListState extends State<ReportsList> {
       ).then(
         (value) => setState(() {}),
       ),
-      directoryAction: (Directory item) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ReportsList(
-            path: item.path,
-          ),
-        ),
-      ),
+      directoryAction: (Directory item) =>
+          context.read<AppStateModel>().reportsListPath = item.path,
       directoryPath: _dir.path,
     );
   }
