@@ -158,7 +158,6 @@ class _ImportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     return ContainerTile(
-      color: Theme.of(context).cardColor,
       title: Text(localizations.import),
       leading: Icon(Icons.save_alt),
       onTap: () {
