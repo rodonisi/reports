@@ -29,7 +29,7 @@ class _WideLayout extends StatelessWidget {
   Widget _getChildFromPage(Pages? page) {
     switch (page) {
       case Pages.reports:
-        return Reports(path: '');
+        return Reports();
       case Pages.layouts:
         return Layouts();
       case Pages.settings:
@@ -62,7 +62,7 @@ class _NarrowLayout extends StatelessWidget {
         if (appState.currentPage == null)
           MaterialPage(key: MenuDrawer.valueKey, child: MenuDrawer())
         else if (appState.currentPage == Pages.reports)
-          MaterialPage(key: Reports.valueKey, child: Reports(path: ''))
+          MaterialPage(key: Reports.valueKey, child: Reports())
         else if (appState.currentPage == Pages.layouts)
           MaterialPage(key: Layouts.valueKey, child: Layouts())
         else if (appState.currentPage == Pages.settings)

@@ -33,11 +33,9 @@ class Reports extends StatelessWidget {
   static const routeName = "/reports";
   static const ValueKey valueKey = ValueKey('Reports');
 
-  const Reports({Key? key, required this.path}) : super(key: key);
-
-  /// The full path to the reports directory to display. If an empty path ('') is
-  /// provided, the base reports directory $reportsDirectory is picked.
-  final String path;
+  const Reports({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +43,7 @@ class Reports extends StatelessWidget {
       child: MaterialPage(
         key: ReportsList.valueKey,
         child: ReportsList(
-          path: path,
+          path: '',
         ),
       ),
     );
