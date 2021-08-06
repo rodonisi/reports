@@ -14,24 +14,51 @@ import 'package:provider/provider.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/views/form_builder.dart';
+import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
+import 'package:reports/widgets/sidebar_layout.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
 // - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays all the layouts stored in the app in a list.
-class Layouts extends StatefulWidget {
+/// Displays the LayoutsList widget wrapped in a navigator.
+class Layouts extends StatelessWidget {
   static const String routeName = '/layouts';
   static const ValueKey valueKey = ValueKey('Layouts');
 
-  Layouts({Key? key}) : super(key: key);
+  const Layouts({Key? key}) : super(key: key);
 
   @override
-  _LayoutsState createState() => _LayoutsState();
+  Widget build(BuildContext context) {
+    return WrapNavigator(
+      child: MaterialPage(
+        key: LayoutsList.valueKey,
+        child: LayoutsList(),
+      ),
+    );
+  }
 }
 
-class _LayoutsState extends State<Layouts> {
+// -----------------------------------------------------------------------------
+// - LayoutsList Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays the layouts directory list.
+class LayoutsList extends StatefulWidget {
+  static const String routeName = '/layouts';
+  static const ValueKey valueKey = ValueKey('LayoutsList');
+
+  LayoutsList({Key? key}) : super(key: key);
+
+  @override
+  _LayoutsListState createState() => _LayoutsListState();
+}
+
+class _LayoutsListState extends State<LayoutsList> {
+  late bool _showDrawer;
+
   void _fileActionCallback(File item) {
     showCupertinoModalBottomSheet(
       context: context,
@@ -59,6 +86,14 @@ class _LayoutsState extends State<Layouts> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Only show the drawer if in narrow layout.
+    _showDrawer =
+        context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final prefs = context.read<PreferencesModel>();
     return Scaffold(
@@ -69,6 +104,7 @@ class _LayoutsState extends State<Layouts> {
         child: Icon(Icons.add),
         onPressed: _fabCallback,
       ),
+      drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
       body: DirectoryViewer(
         fileIcon: ReportsIcons.layout,
         fileAction: _fileActionCallback,
