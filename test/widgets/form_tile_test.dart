@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utilities.dart';
 
@@ -10,8 +11,9 @@ void main() {
   testWidgets(
     'Test text field FormTileContent layout',
     (WidgetTester tester) async {
+      SharedPreferences.setMockInitialValues({});
       await tester.pumpWidget(
-        wrapWidgetScaffold(
+        wrapProviders(
           widget: FormTileContent(
             options: TextFieldOptions(title: ''),
           ),
