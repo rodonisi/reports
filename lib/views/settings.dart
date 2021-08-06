@@ -94,6 +94,11 @@ class _MacosSettings extends StatelessWidget {
               if (dir != null) prefs.defaultPath = dir;
             },
           ),
+          SwitchListTile.adaptive(
+            title: Text('Reader Mode'),
+            value: prefs.readerMode,
+            onChanged: (value) => prefs.readerMode = value,
+          ),
         ],
       ),
     );

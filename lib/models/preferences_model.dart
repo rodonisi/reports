@@ -48,6 +48,9 @@ class PreferenceKeys {
 
   /// String. The default path where to store data.
   static const String defaultPath = 'defaultPath';
+
+  /// Bool. Wheter the client is in read-only mode.
+  static const String readerMode = 'readerMode';
 }
 
 class PreferencesModel extends ChangeNotifier {
@@ -145,6 +148,10 @@ class PreferencesModel extends ChangeNotifier {
     return layoutsDirectory.path;
   }
 
+  bool get readerMode {
+    return getBool(PreferenceKeys.readerMode, defaultValue: false);
+  }
+
   Future<void> initializeString(String key, String value) async {
     if (_prefs.getString(key) == null) setString(key, value);
   }
@@ -207,6 +214,10 @@ class PreferencesModel extends ChangeNotifier {
 
   set defaultPath(String value) {
     setString(PreferenceKeys.defaultPath, value);
+  }
+
+  set readerMode(bool value) {
+    setBool(PreferenceKeys.readerMode, value);
   }
 
   /// Get the default name for a new report or layout synchronously based on the

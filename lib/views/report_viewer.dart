@@ -179,10 +179,12 @@ class _ReportViewerState extends State<ReportViewer> {
           );
         },
       ),
-      bottomNavigationBar: SafeArea(
-        bottom: true,
-        child: SaveButton(onPressed: _saveReport),
-      ),
+      bottomNavigationBar: prefs.readerMode
+          ? null
+          : SafeArea(
+              bottom: true,
+              child: SaveButton(onPressed: _saveReport),
+            ),
     );
   }
 
