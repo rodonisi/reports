@@ -59,8 +59,9 @@ class _NarrowLayout extends StatelessWidget {
     final appState = context.watch<AppStateModel>();
     return Navigator(
       pages: [
-        MaterialPage(key: MenuDrawer.valueKey, child: MenuDrawer()),
-        if (appState.currentPage == Pages.reports)
+        if (appState.currentPage == null)
+          MaterialPage(key: MenuDrawer.valueKey, child: MenuDrawer())
+        else if (appState.currentPage == Pages.reports)
           MaterialPage(key: Reports.valueKey, child: Reports(path: ''))
         else if (appState.currentPage == Pages.layouts)
           MaterialPage(key: Layouts.valueKey, child: Layouts())
