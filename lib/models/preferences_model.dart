@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:reports/common/logger.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -161,12 +162,14 @@ class PreferencesModel extends ChangeNotifier {
   }
 
   Future<void> setString(String key, String value) async {
+    logger.d('Setting string preference $key: $value');
     final saved = await _prefs.setString(key, value);
     if (!saved) throw Exception('Failed to store preference $key');
     notifyListeners();
   }
 
   Future<void> setBool(String key, bool value) async {
+    logger.d('Setting boolean preference $key: $value');
     final saved = await _prefs.setBool(key, value);
     if (!saved) throw Exception('Failed to store preference $key');
     notifyListeners();
