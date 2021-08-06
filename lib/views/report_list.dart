@@ -9,44 +9,100 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/app_state.dart';
+import 'package:reports/models/preferences_model.dart';
+import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
+import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/reports_icons_icons.dart';
-import 'package:reports/common/io.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/views/report_viewer.dart';
-import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/widgets/sidebar_layout.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - ReportList Widget Implementation
+// - Reports Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays all the reports stored in the app in a list.
-class Reports extends StatefulWidget {
+/// Displays a nested navigator managing the reports navigation.
+class Reports extends StatelessWidget {
   static const routeName = "/reports";
-  const Reports({Key? key, required this.path}) : super(key: key);
+  static const ValueKey valueKey = ValueKey('Reports');
+
+  const Reports({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<AppStateModel>();
+    final prefs = context.watch<PreferencesModel>();
+
+    // Generate additional pages based on the current app state.
+    final pagesList = <MaterialPage>[];
+    if (appState.reportsListPath.isNotEmpty) {
+      final paths = getSubPaths(
+          p.relative(appState.reportsListPath, from: prefs.reportsPath));
+      paths.forEach((element) {
+        pagesList.add(
+          MaterialPage(
+            key: ValueKey(p.join(ReportsList.valueKey.value, element)),
+            name: p.join(prefs.reportsPath, element),
+            child: ReportsList(
+              path: p.join(prefs.reportsPath, element),
+            ),
+          ),
+        );
+      });
+    }
+    return WrapNavigator(
+      child: MaterialPage(
+        key: ReportsList.valueKey,
+        child: ReportsList(
+          path: '',
+        ),
+      ),
+      additionalPages: pagesList,
+      onPopPage: (route, result) {
+        // Get the parent directory path.
+        final dir = p.dirname(route.settings.name ?? '');
+        // Set the app state to the parent directory or empty if on the root
+        // reports directory.
+        appState.reportsListPath = dir == prefs.reportsPath ? '' : dir;
+        return route.didPop(result);
+      },
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// - ReportsList Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays a directory navigator for the reports folder.
+class ReportsList extends StatefulWidget {
+  static const ValueKey valueKey = ValueKey('ReportsList');
+
+  const ReportsList({Key? key, required this.path}) : super(key: key);
 
   /// The full path to the reports directory to display. If an empty path ('') is
   /// provided, the base reports directory $reportsDirectory is picked.
   final String path;
 
   @override
-  _ReportsState createState() => _ReportsState();
+  _ReportsListState createState() => _ReportsListState();
 }
 
-class _ReportsState extends State<Reports> {
+class _ReportsListState extends State<ReportsList> {
   late Directory _dir;
-  bool _loaded = false;
+  late bool _showDrawer;
 
   Widget _getList() {
-    if (!_loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
     return DirectoryViewer(
       fileIcon: ReportsIcons.report,
       fileAction: (File item) => showCupertinoModalBottomSheet(
@@ -60,14 +116,8 @@ class _ReportsState extends State<Reports> {
       ).then(
         (value) => setState(() {}),
       ),
-      directoryAction: (Directory item) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Reports(
-            path: item.path,
-          ),
-        ),
-      ),
+      directoryAction: (Directory item) =>
+          context.read<AppStateModel>().reportsListPath = item.path,
       directoryPath: _dir.path,
     );
   }
@@ -98,18 +148,17 @@ class _ReportsState extends State<Reports> {
 
   @override
   void initState() {
-    // Set the path to the base reportsDirectory if no path is provided.
     if (widget.path.isEmpty) {
-      getReportsDirectory.then((value) {
-        setState(() {
-          _loaded = true;
-          _dir = Directory(value);
-        });
-      });
+      // Set the path to the base reportsDirectory if no path is provided.
+      _dir = context.read<PreferencesModel>().reportsDirectory;
+      // Only show the drawer if we're on the reports root folder and in narrow
+      // layout.
+      _showDrawer =
+          context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
     } else {
       // Just set the directory otherwise.
-      _loaded = true;
       _dir = Directory(widget.path);
+      _showDrawer = false;
     }
 
     super.initState();
@@ -134,10 +183,11 @@ class _ReportsState extends State<Reports> {
           ),
         ],
       ),
+      drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          final layouts = await getLayoutsList();
+          final layouts = getLayoutsList(context);
           if (layouts.isNotEmpty)
             showCupertinoModalBottomSheet(
               context: context,
@@ -157,7 +207,6 @@ class _ReportsState extends State<Reports> {
             );
         },
       ),
-      drawer: widget.path.isEmpty ? MenuDrawer() : null,
       body: _getList(),
     );
   }

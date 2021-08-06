@@ -7,13 +7,8 @@ import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
-import 'package:reports/models/preferences_model.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
-import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/preferences_model.dart';
 
 /// Authorize Dropbox access with token, if present, or ask for authorization.
 /// The token is then returned as result.
@@ -77,11 +72,10 @@ Future<void> dbBackupFile(BuildContext context, String filePath) async {
 }
 
 Future<void> _dbBackupList(
-    List<FileSystemEntity> list, String dropboxPath) async {
+    List<FileSystemEntity> list, String docsPath, String dropboxPath) async {
   for (final element in list) {
     if (element is File) {
-      final relativePath =
-          p.relative(element.path, from: await getLocalDocsPath);
+      final relativePath = p.relative(element.path, from: docsPath);
       await Dropbox.upload(
         element.path,
         p.join(dropboxPath, relativePath),
@@ -98,16 +92,18 @@ Future<void> dbBackupEverything(BuildContext context) async {
   if (!(await dbCheckAuthorized(context)))
     throw Exception('Dropbox is not authorized');
 
-  // Get base Dropbox path.
+  // Get base paths.
   final prefs = context.read<PreferencesModel>();
   final dbPath = prefs.dropboxPath;
+  final docsPath = prefs.defaultPath;
+
   // Get report files.
-  final lsReports = await getDirectoryList(reportsDirectory);
+  final lsReports = prefs.reportsDirectory.listSync(recursive: true);
   // Backup repots.
-  _dbBackupList(lsReports, dbPath);
+  _dbBackupList(lsReports, docsPath, dbPath);
 
   // Get layout files.
-  final lsLayouts = await getDirectoryList(layoutsDirectory);
+  final lsLayouts = prefs.layoutsDirectory.listSync();
   // Backup layouts.
-  _dbBackupList(lsLayouts, dbPath);
+  _dbBackupList(lsLayouts, docsPath, dbPath);
 }

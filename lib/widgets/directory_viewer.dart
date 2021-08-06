@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -66,15 +67,7 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final list = widget.directory.listSync();
-
-    if (widget.ignoreDirectories)
-      list.removeWhere((element) => element is Directory);
-
-    list.sort((a, b) => a.path.compareTo(b.path));
-
+  Widget _getList(List<FileSystemEntity> list) {
     return ListView.separated(
       itemCount: list.length,
       itemBuilder: (context, i) {
@@ -83,5 +76,33 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
       },
       separatorBuilder: (context, i) => Divider(height: 0.0),
     );
+  }
+
+  List<FileSystemEntity> _getProcessList() {
+    final list = widget.directory.listSync();
+    if (widget.ignoreDirectories)
+      list.removeWhere((element) => element is Directory);
+
+    // Hide system files.
+    list.removeWhere((element) => p.basename(element.path).startsWith('.'));
+
+    // Sort list by paths
+    list.sort(fileSystemEntityComparator);
+    return list;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch the directory on macos to get live updates of the directory when
+    // files are changed.
+    if (Platform.isMacOS) {
+      return StreamBuilder(
+          stream: widget.directory.watch(recursive: true),
+          builder: (context, snapshot) {
+            return _getList(_getProcessList());
+          });
+    }
+
+    return _getList(_getProcessList());
   }
 }

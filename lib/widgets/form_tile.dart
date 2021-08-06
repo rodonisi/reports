@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - FormTileContent Widget Implementation
@@ -30,6 +32,8 @@ class FormTileContent extends StatefulWidget {
 }
 
 class _FormTileContentState extends State<FormTileContent> {
+  late bool _enabled;
+
   Widget _getSectionField() {
     final secOpts = widget.options as SectionFieldOptions;
     return ControlledTextField(
@@ -54,7 +58,7 @@ class _FormTileContentState extends State<FormTileContent> {
     return ControlledTextField(
       key: ObjectKey(textOpts),
       onChanged: (value) => textData.data = value,
-      enabled: widget.enabled,
+      enabled: _enabled,
       maxLines: textOpts.lines,
       initialValue: textData.data,
       keyboardType:
@@ -71,7 +75,7 @@ class _FormTileContentState extends State<FormTileContent> {
       key: ObjectKey(dateOpts),
       onDateSelected: (value) => setState(() => dateData.data = value),
       selectedDate: dateData.data,
-      enabled: widget.enabled,
+      enabled: _enabled,
       dateFormat: dateOpts.getFormat,
       mode: DateFieldFormats.getDateTimeFieldPickerMode(dateOpts.mode),
     );
@@ -90,7 +94,7 @@ class _FormTileContentState extends State<FormTileContent> {
             onDateSelected: (value) =>
                 setState(() => dateRangeData.start = value),
             selectedDate: dateRangeData.start,
-            enabled: widget.enabled,
+            enabled: _enabled,
             dateFormat: dateRangeOpts.getFormat,
             mode:
                 DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
@@ -105,7 +109,7 @@ class _FormTileContentState extends State<FormTileContent> {
             onDateSelected: (value) =>
                 setState(() => dateRangeData.end = value),
             selectedDate: dateRangeData.end,
-            enabled: widget.enabled,
+            enabled: _enabled,
             dateFormat: dateRangeOpts.getFormat,
             mode:
                 DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
@@ -133,6 +137,8 @@ class _FormTileContentState extends State<FormTileContent> {
 
   @override
   Widget build(BuildContext context) {
+    _enabled = widget.enabled && !context.read<PreferencesModel>().readerMode;
+
     if (widget.options is SectionFieldOptions) return _getField();
 
     return Column(

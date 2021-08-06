@@ -7,10 +7,11 @@ import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reports/common/io.dart';
 import 'package:reports/common/logger.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/container_tile.dart';
 import 'package:reports/widgets/directory_viewer.dart';
+import 'package:provider/provider.dart';
 
 /// Displays the selected legal files (illegal files are ignored) and import
 /// options when importing reports.
@@ -28,12 +29,6 @@ class _ImportReportsViewState extends State<ImportReportsView> {
   String _reportsDirectory = '';
   bool _initComplete = false;
 
-  Future<void> _onInit() async {
-    _destination = await getReportsDirectory;
-    _reportsDirectory = _destination;
-    setState(() => _initComplete = true);
-  }
-
   void _setDestinationCallback(String newDestination) {
     setState(() {
       _destination = newDestination;
@@ -48,7 +43,8 @@ class _ImportReportsViewState extends State<ImportReportsView> {
   @override
   void initState() {
     super.initState();
-    _onInit();
+    _destination = context.read<PreferencesModel>().reportsPath;
+    _reportsDirectory = _destination;
   }
 
   @override
@@ -69,7 +65,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
         actions: [
           IconButton(
               onPressed: () async {
-                await _saveCallback(context);
+                _saveCallback(context);
               },
               icon: Icon(
                 Icons.check,
@@ -118,11 +114,12 @@ class _ImportReportsViewState extends State<ImportReportsView> {
     );
   }
 
-  Future<void> _saveCallback(BuildContext context) async {
+  void _saveCallback(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     // Get destination directory.
-    String destination =
-        _importAsLayouts ? await getLayoutsDirectory : _destination;
+    String destination = _importAsLayouts
+        ? context.read<PreferencesModel>().layoutsPath
+        : _destination;
 
     // Iterate over files.
     widget.files.forEach((element) {

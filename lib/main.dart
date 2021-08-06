@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 // - Local Imports
 // -----------------------------------------------------------------------------
 import 'package:reports/common/theme.dart';
-import 'package:reports/common/routes.dart';
+import 'package:reports/home.dart';
+import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
 
 void main() {
@@ -25,21 +26,24 @@ void main() {
   if (!Platform.isMacOS)
     Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
 
+  // Declare and initialize providers.
+  final prefs = PreferencesModel();
+  prefs.initialize();
+  final appState = AppStateModel();
+
   // Run app
   runApp(
-    ChangeNotifierProvider<PreferencesModel>(
-      create: (context) {
-        final model = PreferencesModel();
-        // Initialize preferences provider.
-        model.initialize();
-        return model;
-      },
-      child: MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PreferencesModel>.value(value: prefs),
+        ChangeNotifierProvider<AppStateModel>.value(value: appState)
+      ],
+      child: ReportsApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class ReportsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
@@ -64,8 +68,7 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        initialRoute: '/reports',
-        routes: routes,
+        home: Home(),
       ),
     );
   }

@@ -7,8 +7,10 @@ import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:file_selector/file_selector.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -17,28 +19,86 @@ import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/widgets/sidebar_layout.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - Settings View Implementation
+// - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays the main settings view for the application.
+/// Displays the SettingsBody view wrapped in a navigator.
 class Settings extends StatelessWidget {
   static const String routeName = '/settings';
-  Settings({Key? key}) : super(key: key);
+  static const ValueKey valueKey = ValueKey('Settings');
+
+  const Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return WrapNavigator(
+      child: MaterialPage(
+        key: SettingsBody.valueKey,
+        child: SettingsBody(),
+      ),
+    );
+  }
+}
+// -----------------------------------------------------------------------------
+// - SettingsBody View Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays the main settings view for the application.
+class SettingsBody extends StatelessWidget {
+  static const ValueKey valueKey = ValueKey('SettingsBody');
+
+  SettingsBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Only show the drawer if in narrow layout.
+    final showDrawer =
+        context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.settings),
       ),
-      drawer: MenuDrawer(),
+      drawer: showDrawer ? Drawer(child: MenuDrawer()) : null,
       body: ListView(
         children: [
+          if (Platform.isMacOS) _MacosSettings(),
           _GeneralSettings(),
           if (!Platform.isMacOS) _DBSettings(),
+        ],
+      ),
+    );
+  }
+}
+
+class _MacosSettings extends StatelessWidget {
+  const _MacosSettings({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final prefs = context.watch<PreferencesModel>();
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text('Default Path'),
+            subtitle: Text(prefs.defaultPath),
+            onTap: () async {
+              final dir = await getDirectoryPath();
+              logger.d(dir);
+              if (dir != null) prefs.defaultPath = dir;
+            },
+          ),
+          SwitchListTile.adaptive(
+            title: Text('Reader Mode'),
+            value: prefs.readerMode,
+            onChanged: (value) => prefs.readerMode = value,
+          ),
         ],
       ),
     );

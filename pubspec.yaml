@@ -44,6 +44,8 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   package_info_plus: ^1.0.4
   file_picker: ^3.0.3
+  file_selector: ^0.8.2
+  file_selector_macos: ^0.0.4+1
 
 dev_dependencies:
   flutter_test:

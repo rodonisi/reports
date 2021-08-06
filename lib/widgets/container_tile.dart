@@ -12,6 +12,7 @@ class ContainerTile extends StatelessWidget {
     this.leading,
     this.onTap,
     this.enabled = true,
+    this.selected = false,
   }) : super(key: key);
 
   final Color? color;
@@ -21,11 +22,12 @@ class ContainerTile extends StatelessWidget {
   final Widget? leading;
   final void Function()? onTap;
   final bool enabled;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: color ?? Theme.of(context).cardColor,
+      color: color ?? Colors.transparent,
       child: ListTile(
         title: title,
         subtitle: subtitle,
@@ -33,6 +35,7 @@ class ContainerTile extends StatelessWidget {
         leading: leading,
         onTap: onTap,
         enabled: enabled,
+        selected: selected,
       ),
     );
   }

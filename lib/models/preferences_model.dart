@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:reports/common/io.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,6 +45,12 @@ class PreferenceKeys {
 
   /// Bool. Wether to include the time in the name for new layouts.
   static const String layoutNameTime = 'layoutNameTime';
+
+  /// String. The default path where to store data.
+  static const String defaultPath = 'defaultPath';
+
+  /// Bool. Wheter the client is in read-only mode.
+  static const String readerMode = 'readerMode';
 }
 
 class PreferencesModel extends ChangeNotifier {
@@ -50,7 +60,7 @@ class PreferencesModel extends ChangeNotifier {
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
-    localDocsPath = await getLocalDocsPath;
+    localDocsPath = (await getApplicationDocumentsDirectory()).path;
     loading = false;
 
     notifyListeners();
@@ -116,6 +126,32 @@ class PreferencesModel extends ChangeNotifier {
     return constructName(reportBaseName, reportNameDate, reportNameTime);
   }
 
+  String get defaultPath {
+    return getString(PreferenceKeys.defaultPath, defaultValue: localDocsPath);
+  }
+
+  Directory get reportsDirectory {
+    return Directory(p.join(defaultPath, reportsDirectoryPath))
+      ..createSync(recursive: true);
+  }
+
+  String get reportsPath {
+    return reportsDirectory.path;
+  }
+
+  Directory get layoutsDirectory {
+    return Directory(p.join(defaultPath, layoutsDirectoryPath))
+      ..createSync(recursive: true);
+  }
+
+  String get layoutsPath {
+    return layoutsDirectory.path;
+  }
+
+  bool get readerMode {
+    return getBool(PreferenceKeys.readerMode, defaultValue: false);
+  }
+
   Future<void> initializeString(String key, String value) async {
     if (_prefs.getString(key) == null) setString(key, value);
   }
@@ -174,6 +210,14 @@ class PreferencesModel extends ChangeNotifier {
 
   set reportNameTime(bool value) {
     setBool(PreferenceKeys.reportNameTime, value);
+  }
+
+  set defaultPath(String value) {
+    setString(PreferenceKeys.defaultPath, value);
+  }
+
+  set readerMode(bool value) {
+    setBool(PreferenceKeys.readerMode, value);
   }
 
   /// Get the default name for a new report or layout synchronously based on the
