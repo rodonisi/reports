@@ -17,26 +17,53 @@ import 'package:file_selector/file_selector.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/common/dropbox_utils.dart';
 import 'package:reports/views/dropbox_chooser.dart';
+import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/widgets/sidebar_layout.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - Settings View Implementation
+// - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays the main settings view for the application.
+/// Displays the SettingsBody view wrapped in a navigator.
 class Settings extends StatelessWidget {
   static const String routeName = '/settings';
   static const ValueKey valueKey = ValueKey('Settings');
 
-  Settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return WrapNavigator(
+      child: MaterialPage(
+        key: SettingsBody.valueKey,
+        child: SettingsBody(),
+      ),
+    );
+  }
+}
+// -----------------------------------------------------------------------------
+// - SettingsBody View Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays the main settings view for the application.
+class SettingsBody extends StatelessWidget {
+  static const ValueKey valueKey = ValueKey('SettingsBody');
+
+  SettingsBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Only show the drawer if in narrow layout.
+    final showDrawer =
+        context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.settings),
       ),
+      drawer: showDrawer ? Drawer(child: MenuDrawer()) : null,
       body: ListView(
         children: [
           if (Platform.isMacOS) _MacosSettings(),
