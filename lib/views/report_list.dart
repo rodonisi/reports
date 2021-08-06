@@ -10,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
 import 'package:provider/provider.dart';
 
@@ -20,13 +21,15 @@ import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/views/report_viewer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/widgets/sidebar_layout.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - ReportList Widget Implementation
+// - Reports Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays all the reports stored in the app in a list.
-class Reports extends StatefulWidget {
+/// Displays a nested navigator managing the reports navigation.
+class Reports extends StatelessWidget {
   static const routeName = "/reports";
   static const ValueKey valueKey = ValueKey('Reports');
 
@@ -37,11 +40,39 @@ class Reports extends StatefulWidget {
   final String path;
 
   @override
-  _ReportsState createState() => _ReportsState();
+  Widget build(BuildContext context) {
+    return WrapNavigator(
+      child: MaterialPage(
+        key: ReportsList.valueKey,
+        child: ReportsList(
+          path: path,
+        ),
+      ),
+    );
+  }
 }
 
-class _ReportsState extends State<Reports> {
+// -----------------------------------------------------------------------------
+// - ReportsList Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays a directory navigator for the reports folder.
+class ReportsList extends StatefulWidget {
+  static const ValueKey valueKey = ValueKey('ReportsList');
+
+  const ReportsList({Key? key, required this.path}) : super(key: key);
+
+  /// The full path to the reports directory to display. If an empty path ('') is
+  /// provided, the base reports directory $reportsDirectory is picked.
+  final String path;
+
+  @override
+  _ReportsListState createState() => _ReportsListState();
+}
+
+class _ReportsListState extends State<ReportsList> {
   late Directory _dir;
+  late bool _showDrawer;
 
   Widget _getList() {
     return DirectoryViewer(
@@ -60,7 +91,7 @@ class _ReportsState extends State<Reports> {
       directoryAction: (Directory item) => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Reports(
+          builder: (context) => ReportsList(
             path: item.path,
           ),
         ),
@@ -98,9 +129,14 @@ class _ReportsState extends State<Reports> {
     if (widget.path.isEmpty) {
       // Set the path to the base reportsDirectory if no path is provided.
       _dir = context.read<PreferencesModel>().reportsDirectory;
+      // Only show the drawer if we're on the reports root folder and in narrow
+      // layout.
+      _showDrawer =
+          context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
     } else {
       // Just set the directory otherwise.
       _dir = Directory(widget.path);
+      _showDrawer = false;
     }
 
     super.initState();
@@ -125,6 +161,7 @@ class _ReportsState extends State<Reports> {
           ),
         ],
       ),
+      drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
