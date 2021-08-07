@@ -86,35 +86,68 @@ class _FormTileContentState extends State<FormTileContent> {
     final DateRangeFieldData dateRangeData =
         widget.data as DateRangeFieldData? ?? DateRangeFieldData.empty();
 
-    return Row(
-      key: ObjectKey(dateRangeOpts),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: DateTimeField(
-            onDateSelected: (value) =>
-                setState(() => dateRangeData.start = value),
-            selectedDate: dateRangeData.start,
-            enabled: _enabled,
-            dateFormat: dateRangeOpts.getFormat,
-            mode:
-                DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
+        Row(
+          key: ObjectKey(dateRangeOpts),
+          children: [
+            Expanded(
+              child: DateTimeField(
+                onDateSelected: (value) => setState(() {
+                  // Adjust end date if start is after end.
+                  if (value.isAfter(dateRangeData.end))
+                    dateRangeData.end =
+                        dateRangeData.end.add(Duration(days: 1));
+
+                  dateRangeData.start = value;
+                }),
+                selectedDate: dateRangeData.start,
+                enabled: _enabled,
+                dateFormat: dateRangeOpts.getFormat,
+                mode: DateFieldFormats.getDateTimeFieldPickerMode(
+                    dateRangeOpts.mode),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text('-'),
+            ),
+            Expanded(
+              child: DateTimeField(
+                onDateSelected: (value) => setState(() {
+                  // Adjust end date if start is after end.
+                  if (dateRangeData.start.isAfter(value))
+                    dateRangeData.end = value.add(Duration(days: 1));
+                  else
+                    dateRangeData.end = value;
+                }),
+                selectedDate: dateRangeData.end,
+                enabled: _enabled,
+                dateFormat: dateRangeOpts.getFormat,
+                mode: DateFieldFormats.getDateTimeFieldPickerMode(
+                    dateRangeOpts.mode),
+              ),
+            ),
+          ],
+        ),
+        if (dateRangeOpts.showTotal)
+          SizedBox(
+            height: 8.0,
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text('-'),
-        ),
-        Expanded(
-          child: DateTimeField(
-            onDateSelected: (value) =>
-                setState(() => dateRangeData.end = value),
-            selectedDate: dateRangeData.end,
-            enabled: _enabled,
-            dateFormat: dateRangeOpts.getFormat,
-            mode:
-                DateFieldFormats.getDateTimeFieldPickerMode(dateRangeOpts.mode),
+        if (dateRangeOpts.showTotal)
+          Row(
+            children: [
+              Text(
+                'Total hours: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(dateRangeData.end
+                  .difference(dateRangeData.start)
+                  .inHours
+                  .toString()),
+            ],
           ),
-        ),
       ],
     );
   }
@@ -343,6 +376,11 @@ class __DateRangeFieldTileOptionsState
             )
           ],
           onChanged: (value) => setState(() => widget.options.mode = value!),
+        ),
+        _SwitchOption(
+          title: 'Show total hours',
+          getter: () => widget.options.showTotal,
+          setter: (value) => widget.options.showTotal = value,
         ),
       ],
     );

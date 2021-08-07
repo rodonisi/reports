@@ -175,17 +175,24 @@ class DateFieldOptions extends FieldOptions {
 /// Contains the options specific to a date range field.
 class DateRangeFieldOptions extends FieldOptions {
   static const String modeID = 'mode';
+  static const String showTotalID = 'show_total';
+
   DateRangeFieldOptions({
     required String title,
     this.mode = DateFieldFormats.timeModeID,
+    this.showTotal = true,
   }) : super(title: title, fieldType: FieldTypes.dateRange);
 
   /// The date field mode. Must be one of the IDs defined in the
   /// DateFieldFormats class.
   String mode;
 
+  /// Wheter to show the total amount of hours of the date range field.
+  bool showTotal;
+
   DateRangeFieldOptions.fromMap(Map<String, dynamic> map)
       : mode = map[modeID],
+        showTotal = map[showTotalID],
         super.fromMap(map);
 
   /// Get the DateFormat class from the current mode.
@@ -197,6 +204,7 @@ class DateRangeFieldOptions extends FieldOptions {
   Map<String, dynamic> asMap() {
     final map = super.asMap();
     map[modeID] = mode;
+    map[showTotalID] = showTotal;
 
     return map;
   }
