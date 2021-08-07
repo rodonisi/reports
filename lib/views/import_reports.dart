@@ -113,15 +113,27 @@ class _ImportReportsViewState extends State<ImportReportsView> {
   Widget _getBody() {
     return Column(
       children: [
-        SizedBox(
-          height: 200,
+        Flexible(
+          fit: FlexFit.tight,
           child: Card(
             margin: EdgeInsets.all(16.0),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(16.0),
               child: ListView.builder(
                 itemCount: widget.files.length,
-                itemBuilder: (context, index) => Text(widget.files[index].name),
+                itemBuilder: (context, index) => Row(
+                  children: [
+                    Expanded(child: Text(widget.files[index].name)),
+                    IconButton(
+                      onPressed: () =>
+                          setState(() => widget.files.removeAt(index)),
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
