@@ -166,6 +166,7 @@ class _ReportsListState extends State<ReportsList> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<PreferencesModel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.path.isEmpty
@@ -184,29 +185,31 @@ class _ReportsListState extends State<ReportsList> {
         ],
       ),
       drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final layouts = getLayoutsList(context);
-          if (layouts.isNotEmpty)
-            showCupertinoModalBottomSheet(
-              context: context,
-              bounce: true,
-              closeProgressThreshold: 0.4,
-              builder: (context) {
-                final args = ReportViewerArgs(path: _dir.path);
-                return ReportViewer(args: args);
+      floatingActionButton: prefs.readerMode
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () async {
+                final layouts = getLayoutsList(context);
+                if (layouts.isNotEmpty)
+                  showCupertinoModalBottomSheet(
+                    context: context,
+                    bounce: true,
+                    closeProgressThreshold: 0.4,
+                    builder: (context) {
+                      final args = ReportViewerArgs(path: _dir.path);
+                      return ReportViewer(args: args);
+                    },
+                  ).then((value) => setState(() {}));
+                else
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          AppLocalizations.of(context)!.reportRequiresLayout),
+                    ),
+                  );
               },
-            ).then((value) => setState(() {}));
-          else
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content:
-                    Text(AppLocalizations.of(context)!.reportRequiresLayout),
-              ),
-            );
-        },
-      ),
+            ),
       body: _getList(),
     );
   }
