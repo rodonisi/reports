@@ -229,7 +229,7 @@ class PreferencesModel extends ChangeNotifier {
   }
 
   Future<void> setInt(String key, int value) async {
-    logger.d('Setting boolean preference $key: $value');
+    logger.d('Setting integer preference $key: $value');
     final saved = await _prefs.setInt(key, value);
     if (!saved) throw Exception('Failed to store preference $key');
     notifyListeners();
