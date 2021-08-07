@@ -216,7 +216,7 @@ class _Dial extends StatelessWidget {
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: context.read<PreferencesModel>().accentColor,
       foregroundColor: Theme.of(context).primaryColor,
       children: [
         SpeedDialChild(

@@ -188,6 +188,7 @@ class _ReportsListState extends State<ReportsList> {
       floatingActionButton: prefs.readerMode
           ? null
           : FloatingActionButton(
+              backgroundColor: prefs.accentColor,
               child: Icon(Icons.add),
               onPressed: () async {
                 final layouts = getLayoutsList(context);

@@ -101,6 +101,7 @@ class _LayoutsListState extends State<LayoutsList> {
         title: Text(AppLocalizations.of(context)!.layoutsTitle),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: prefs.accentColor,
         child: Icon(Icons.add),
         onPressed: _fabCallback,
       ),

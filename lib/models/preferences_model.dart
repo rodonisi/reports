@@ -55,12 +55,35 @@ class PreferenceKeys {
 
   /// Int. The theme mode of the client;
   static const String themeMode = 'themeMode';
+
+  /// Int. the accent color for the client.
+  static const String accentColor = 'accentColor';
 }
 
 class PreferencesModel extends ChangeNotifier {
   late SharedPreferences _prefs;
   late String localDocsPath;
   bool loading = true;
+
+  /// The list of valid accent colors.
+  final colors = const <MaterialColor>[
+    Colors.blue,
+    Colors.green,
+    Colors.purple,
+    Colors.red,
+    Colors.orange,
+    Colors.yellow,
+  ];
+
+  /// The list of names for the respective accent colors.
+  final colorNames = const <String>[
+    'Blue',
+    'Green',
+    'Purple',
+    'Red',
+    'Orange',
+    'Yellow',
+  ];
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
@@ -162,6 +185,14 @@ class PreferencesModel extends ChangeNotifier {
 
   int get themeModeValue {
     return getInt(PreferenceKeys.themeMode, defaultValue: 2);
+  }
+
+  int get accentColorValue {
+    return getInt(PreferenceKeys.accentColor);
+  }
+
+  MaterialColor get accentColor {
+    return colors[accentColorValue];
   }
 
   ThemeMode get themeMode {
@@ -272,6 +303,14 @@ class PreferencesModel extends ChangeNotifier {
     }
 
     themeModeValue = value;
+  }
+
+  set accentColorValue(int value) {
+    setInt(PreferenceKeys.accentColor, value);
+  }
+
+  set accentColor(MaterialColor color) {
+    accentColorValue = colors.indexOf(color);
   }
 
   /// Get the default name for a new report or layout synchronously based on the

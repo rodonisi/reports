@@ -81,6 +81,29 @@ class SettingsBody extends StatelessWidget {
 class _AppearanceSettings extends StatelessWidget {
   const _AppearanceSettings({Key? key}) : super(key: key);
 
+  Widget _getColorSelectionView(PreferencesModel prefs) {
+    logger.d(Colors.primaries.first.toString());
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Accent Color'),
+        ),
+        body: ListView.separated(
+          itemCount: prefs.colors.length,
+          itemBuilder: (context, index) {
+            return RadioListTile<int>(
+              value: index,
+              groupValue: prefs.accentColorValue,
+              onChanged: (value) => prefs.accentColorValue = value!,
+              title: Text(prefs.colorNames[index]),
+              activeColor: prefs.accentColor,
+            );
+          },
+          separatorBuilder: (context, index) => Divider(
+            height: 0.0,
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
@@ -108,6 +131,14 @@ class _AppearanceSettings extends StatelessWidget {
               ],
               onChanged: (value) => prefs.themeMode = value!,
             ),
+          ),
+          ListTile(
+            title: Text('Accent Color'),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => _getColorSelectionView(prefs),
+                )),
           ),
         ],
       ),

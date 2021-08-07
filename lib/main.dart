@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/theme.dart';
 import 'package:reports/home.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -63,8 +62,15 @@ class ReportsApp extends StatelessWidget {
       },
       child: MaterialApp(
         title: 'Reports',
-        theme: lightTheme,
-        darkTheme: darkTheme,
+        theme: ThemeData(
+          primaryColor: Colors.white,
+          primarySwatch: prefs.accentColor,
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+          primarySwatch: prefs.accentColor,
+          brightness: Brightness.dark,
+        ),
         themeMode: prefs.themeMode,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
