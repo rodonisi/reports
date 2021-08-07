@@ -210,17 +210,39 @@ class _Dial extends StatelessWidget {
   const _Dial({Key? key, required this.addFieldFunc}) : super(key: key);
   final Function(FieldOptions) addFieldFunc;
 
+  SpeedDialChild _theemedDialChild({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required void Function() onTap,
+  }) {
+    final theme = Theme.of(context);
+    return SpeedDialChild(
+      child: Icon(
+        icon,
+        color: theme.iconTheme.color,
+      ),
+      backgroundColor: theme.backgroundColor,
+      labelBackgroundColor: theme.backgroundColor,
+      label: label,
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
+      iconTheme: theme.iconTheme,
       backgroundColor: context.read<PreferencesModel>().accentColor,
-      foregroundColor: Theme.of(context).primaryColor,
+      overlayColor: theme.primaryColor,
       children: [
-        SpeedDialChild(
-          child: Icon(Icons.date_range),
+        _theemedDialChild(
+          context: context,
+          icon: Icons.date_range,
           label: localization.dateRange,
           onTap: () => addFieldFunc(
             DateRangeFieldOptions(
@@ -228,15 +250,17 @@ class _Dial extends StatelessWidget {
             ),
           ),
         ),
-        SpeedDialChild(
-          child: Icon(Icons.calendar_today),
+        _theemedDialChild(
+          context: context,
+          icon: Icons.calendar_today,
           label: localization.date,
           onTap: () => addFieldFunc(
             DateFieldOptions(title: localization.date),
           ),
         ),
-        SpeedDialChild(
-          child: Icon(Icons.short_text),
+        _theemedDialChild(
+          context: context,
+          icon: Icons.short_text,
           label: localization.textFieldName,
           onTap: () => addFieldFunc(
             TextFieldOptions(
@@ -244,8 +268,9 @@ class _Dial extends StatelessWidget {
             ),
           ),
         ),
-        SpeedDialChild(
-          child: Icon(Icons.text_fields),
+        _theemedDialChild(
+          context: context,
+          icon: Icons.text_fields,
           label: localization.subsection,
           onTap: () => addFieldFunc(
             SectionFieldOptions(
@@ -254,8 +279,9 @@ class _Dial extends StatelessWidget {
             ),
           ),
         ),
-        SpeedDialChild(
-          child: Icon(Icons.title),
+        _theemedDialChild(
+          context: context,
+          icon: Icons.title,
           label: localization.section,
           onTap: () => addFieldFunc(
             SectionFieldOptions(
