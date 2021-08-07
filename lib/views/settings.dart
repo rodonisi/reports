@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -69,6 +70,7 @@ class SettingsBody extends StatelessWidget {
           if (Platform.isMacOS) _MacosSettings(),
           _GeneralSettings(),
           if (!Platform.isMacOS) _DBSettings(),
+          _Info(),
         ],
       ),
     );
@@ -360,6 +362,47 @@ class __DefaultNamingViewState extends State<_DefaultNamingView> {
         title: Text(widget.title),
       ),
       body: _getBody(),
+    );
+  }
+}
+
+class _Info extends StatelessWidget {
+  const _Info({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(16.0),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return AboutListTile(
+                    applicationIcon: Image.asset(
+                      'assets/icon/icon.png',
+                      height: 64.0,
+                      width: 64.0,
+                    ),
+                    applicationVersion: 'v' + snapshot.data!.version,
+                    applicationLegalese: '© 2021 Simon Rodoni',
+                  );
+                } else if (snapshot.hasError)
+                  return Center(
+                    child: Text(snapshot.error!.toString()),
+                  );
+
+                return Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
