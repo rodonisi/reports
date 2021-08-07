@@ -52,6 +52,9 @@ class PreferenceKeys {
 
   /// Bool. Wheter the client is in read-only mode.
   static const String readerMode = 'readerMode';
+
+  /// Int. The theme mode of the client;
+  static const String themeMode = 'themeMode';
 }
 
 class PreferencesModel extends ChangeNotifier {
@@ -73,6 +76,10 @@ class PreferencesModel extends ChangeNotifier {
 
   bool getBool(String key, {bool defaultValue = false}) {
     return _prefs.getBool(key) ?? defaultValue;
+  }
+
+  int getInt(String key, {int defaultValue = 0}) {
+    return _prefs.getInt(key) ?? defaultValue;
   }
 
   String get dropboxAccessToken {
@@ -153,6 +160,21 @@ class PreferencesModel extends ChangeNotifier {
     return getBool(PreferenceKeys.readerMode, defaultValue: false);
   }
 
+  int get themeModeValue {
+    return getInt(PreferenceKeys.themeMode, defaultValue: 2);
+  }
+
+  ThemeMode get themeMode {
+    switch (themeModeValue) {
+      case 0:
+        return ThemeMode.light;
+      case 1:
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
   Future<void> initializeString(String key, String value) async {
     if (_prefs.getString(key) == null) setString(key, value);
   }
@@ -171,6 +193,13 @@ class PreferencesModel extends ChangeNotifier {
   Future<void> setBool(String key, bool value) async {
     logger.d('Setting boolean preference $key: $value');
     final saved = await _prefs.setBool(key, value);
+    if (!saved) throw Exception('Failed to store preference $key');
+    notifyListeners();
+  }
+
+  Future<void> setInt(String key, int value) async {
+    logger.d('Setting boolean preference $key: $value');
+    final saved = await _prefs.setInt(key, value);
     if (!saved) throw Exception('Failed to store preference $key');
     notifyListeners();
   }
@@ -221,6 +250,28 @@ class PreferencesModel extends ChangeNotifier {
 
   set readerMode(bool value) {
     setBool(PreferenceKeys.readerMode, value);
+  }
+
+  set themeModeValue(int value) {
+    if (value < 0 || value > 2)
+      throw ArgumentError.value(value, 'illegal theme mode');
+    setInt(PreferenceKeys.themeMode, value);
+  }
+
+  set themeMode(ThemeMode mode) {
+    int value;
+    switch (mode) {
+      case ThemeMode.light:
+        value = 0;
+        break;
+      case ThemeMode.dark:
+        value = 1;
+        break;
+      default:
+        value = 2;
+    }
+
+    themeModeValue = value;
   }
 
   /// Get the default name for a new report or layout synchronously based on the

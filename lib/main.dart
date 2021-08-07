@@ -65,7 +65,7 @@ class ReportsApp extends StatelessWidget {
         title: 'Reports',
         theme: lightTheme,
         darkTheme: darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: prefs.themeMode,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Home(),

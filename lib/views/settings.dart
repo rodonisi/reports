@@ -67,10 +67,48 @@ class SettingsBody extends StatelessWidget {
       drawer: showDrawer ? Drawer(child: MenuDrawer()) : null,
       body: ListView(
         children: [
+          _AppearanceSettings(),
           if (Platform.isMacOS) _MacosSettings(),
           _GeneralSettings(),
           if (!Platform.isMacOS) _DBSettings(),
           _Info(),
+        ],
+      ),
+    );
+  }
+}
+
+class _AppearanceSettings extends StatelessWidget {
+  const _AppearanceSettings({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final prefs = context.watch<PreferencesModel>();
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text('Appearance'),
+            subtitle: DropdownButton<ThemeMode>(
+              value: prefs.themeMode,
+              items: [
+                DropdownMenuItem(
+                  child: Text('Light'),
+                  value: ThemeMode.light,
+                ),
+                DropdownMenuItem(
+                  child: Text('Dark'),
+                  value: ThemeMode.dark,
+                ),
+                DropdownMenuItem(
+                  child: Text('System'),
+                  value: ThemeMode.system,
+                ),
+              ],
+              onChanged: (value) => prefs.themeMode = value!,
+            ),
+          ),
         ],
       ),
     );
