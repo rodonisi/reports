@@ -9,9 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/logger.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';
 import 'package:reports/widgets/directory_viewer.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/widgets/wrap_navigator.dart';
+
+// -----------------------------------------------------------------------------
+// - ImportReportsView Widget Implementation
+// -----------------------------------------------------------------------------
 
 /// Displays the selected legal files (illegal files are ignored) and import
 /// options when importing reports.
@@ -26,92 +32,25 @@ class ImportReportsView extends StatefulWidget {
 class _ImportReportsViewState extends State<ImportReportsView> {
   bool _importAsLayouts = false;
   String _destination = '';
+  String? _chooserPath;
   String _reportsDirectory = '';
-  bool _initComplete = false;
+  late AppLocalizations _localizations;
 
-  void _setDestinationCallback(String newDestination) {
+  void _setDestinationCallback() {
     setState(() {
-      _destination = newDestination;
-      Navigator.popUntil(context, ModalRoute.withName('ImportLayout'));
+      _destination = _chooserPath ?? '';
+      _chooserPath = null;
+    });
+  }
+
+  void _setChooserPath(String? path) {
+    setState(() {
+      _chooserPath = path;
     });
   }
 
   String _getRelativePath(String path) {
     return p.relative(path, from: _reportsDirectory);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _destination = context.read<PreferencesModel>().reportsPath;
-    _reportsDirectory = _destination;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    if (!_initComplete) Container();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.importReports),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.cancel_rounded,
-            color: Colors.red,
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                _saveCallback(context);
-              },
-              icon: Icon(
-                Icons.check,
-                color: Colors.green,
-              ))
-        ],
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 200,
-            child: Card(
-              margin: EdgeInsets.all(16.0),
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: widget.files.length,
-                  itemBuilder: (context, index) =>
-                      Text(widget.files[index].name),
-                ),
-              ),
-            ),
-          ),
-          ContainerTile(
-            title: Text(localizations.destination),
-            trailing: Text(_getRelativePath(_destination)),
-            enabled: !_importAsLayouts,
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => _DestinationChooser(
-                    path: _reportsDirectory,
-                    onSelected: _setDestinationCallback,
-                    getRelativePath: _getRelativePath,
-                  ),
-                )),
-          ),
-          SwitchListTile.adaptive(
-            tileColor: Theme.of(context).cardColor,
-            value: _importAsLayouts,
-            title: Text(localizations.importAsLayout),
-            onChanged: (value) => setState(() => _importAsLayouts = value),
-          ),
-        ],
-      ),
-    );
   }
 
   void _saveCallback(BuildContext context) {
@@ -147,6 +86,108 @@ class _ImportReportsViewState extends State<ImportReportsView> {
 
     Navigator.pop(context);
   }
+
+  AppBar _getAppBar() {
+    return AppBar(
+      title: Text(_localizations.importReports),
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: Icon(
+          Icons.close_rounded,
+          color: Colors.red,
+        ),
+      ),
+      actions: [
+        IconButton(
+            onPressed: () async {
+              _saveCallback(context);
+            },
+            icon: Icon(
+              Icons.check,
+              color: Colors.green,
+            ))
+      ],
+    );
+  }
+
+  Widget _getBody() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 200,
+          child: Card(
+            margin: EdgeInsets.all(16.0),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: widget.files.length,
+                itemBuilder: (context, index) => Text(widget.files[index].name),
+              ),
+            ),
+          ),
+        ),
+        ContainerTile(
+          title: Text(_localizations.destination),
+          subtitle: Text(_getRelativePath(_destination)),
+          enabled: !_importAsLayouts,
+          onTap: () => setState(() => _chooserPath = _destination),
+        ),
+        SwitchListTile.adaptive(
+          value: _importAsLayouts,
+          title: Text(_localizations.importAsLayout),
+          onChanged: (value) => setState(() => _importAsLayouts = value),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _destination = context.read<PreferencesModel>().reportsPath;
+    _reportsDirectory = _destination;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _localizations = AppLocalizations.of(context)!;
+
+    final pagesList = <MaterialPage>[];
+    if (_chooserPath != null) {
+      final paths = getSubPaths(_getRelativePath(_chooserPath!));
+      paths.forEach((element) {
+        final fullPath =
+            p.join(_reportsDirectory, element == '.' ? '' : element);
+        pagesList.add(
+          MaterialPage(
+            name: fullPath,
+            child: _DestinationChooser(
+              path: fullPath,
+              onSelected: _setDestinationCallback,
+              setPath: _setChooserPath,
+            ),
+          ),
+        );
+      });
+    }
+
+    return WrapNavigator(
+      child: MaterialPage(
+        child: Scaffold(
+          appBar: _getAppBar(),
+          body: _getBody(),
+        ),
+      ),
+      additionalPages: pagesList,
+      onPopPage: (route, result) {
+        final dir = route.settings.name ?? '';
+        setState(() =>
+            _chooserPath = dir == _reportsDirectory ? null : p.dirname(dir));
+
+        return route.didPop(result);
+      },
+    );
+  }
 }
 
 class _DestinationChooser extends StatelessWidget {
@@ -154,11 +195,11 @@ class _DestinationChooser extends StatelessWidget {
     Key? key,
     required this.path,
     required this.onSelected,
-    required this.getRelativePath,
+    required this.setPath,
   }) : super(key: key);
   final String path;
-  final void Function(String path) onSelected;
-  final String Function(String path) getRelativePath;
+  final void Function() onSelected;
+  final void Function(String path) setPath;
 
   @override
   Widget build(BuildContext context) {
@@ -166,27 +207,19 @@ class _DestinationChooser extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(getRelativePath(path)),
+        title: Text(p.basename(path)),
         actions: [
           TextButton(
-            onPressed: () => onSelected(path),
+            onPressed: onSelected,
             child: Text(localizations.select),
           ),
         ],
       ),
       body: DirectoryViewer(
-          fileAction: (file) {},
-          directoryAction: (Directory item) => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => _DestinationChooser(
-                    path: item.path,
-                    onSelected: onSelected,
-                    getRelativePath: getRelativePath,
-                  ),
-                ),
-              ),
-          directoryPath: path),
+        fileAction: (file) {},
+        directoryAction: (Directory item) => setPath(item.path),
+        directoryPath: path,
+      ),
     );
   }
 }
