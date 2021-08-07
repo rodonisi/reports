@@ -22,6 +22,40 @@ import 'package:provider/provider.dart';
 // -----------------------------------------------------------------------------
 import 'package:reports/widgets/container_tile.dart';
 
+/// Displays the menu navigator as a navigation rail.
+class MenuRail extends StatelessWidget {
+  const MenuRail({Key? key, this.extended = false}) : super(key: key);
+
+  final bool extended;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final prefs = context.watch<AppStateModel>();
+    return NavigationRail(
+      extended: extended,
+      destinations: [
+        NavigationRailDestination(
+          icon: Icon(ReportsIcons.report),
+          label: Text(localizations.reportsTitle),
+        ),
+        NavigationRailDestination(
+          icon: Icon(ReportsIcons.layout),
+          label: Text(localizations.layoutsTitle),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.settings),
+          label: Text(localizations.settings),
+        ),
+      ],
+      selectedIndex: prefs.getIndexFromPage(),
+      onDestinationSelected: (index) {
+        prefs.setPageFromIndex(index);
+      },
+    );
+  }
+}
+
 // -----------------------------------------------------------------------------
 // - MenuDrawer Widget Implementation
 // -----------------------------------------------------------------------------

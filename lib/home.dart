@@ -16,7 +16,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 800) return _WideLayout();
+        if (constraints.maxWidth > 500)
+          return _WideLayout(extend: constraints.maxWidth > 800);
 
         return _NarrowLayout();
       },
@@ -25,7 +26,9 @@ class Home extends StatelessWidget {
 }
 
 class _WideLayout extends StatelessWidget {
-  const _WideLayout({Key? key}) : super(key: key);
+  const _WideLayout({Key? key, this.extend = false}) : super(key: key);
+  final bool extend;
+
   Widget _getChildFromPage(Pages? page) {
     switch (page) {
       case Pages.reports:
@@ -44,7 +47,7 @@ class _WideLayout extends StatelessWidget {
     final appState = context.watch<AppStateModel>();
     return Scaffold(
       body: SideBarLayout(
-        sidebar: MenuDrawer(),
+        sidebar: MenuRail(extended: extend),
         body: _getChildFromPage(appState.currentPage),
       ),
     );
