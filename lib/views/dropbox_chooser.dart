@@ -9,8 +9,8 @@ import 'package:reports/widgets/container_tile.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/dropbox_utils.dart';
-import 'package:reports/common/logger.dart';
+import 'package:reports/utilities/dropbox_utils.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/views/settings.dart';
 
 // -----------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/models/preferences_model.dart';
-import 'package:reports/common/logger.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

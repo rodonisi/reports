@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
-import 'package:reports/common/logger.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 
 // -----------------------------------------------------------------------------

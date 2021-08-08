@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reports/common/logger.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';

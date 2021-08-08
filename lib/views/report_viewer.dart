@@ -13,7 +13,7 @@ import 'package:share_plus/share_plus.dart';
 // -----------------------------------------------------------------------------
 // - Local Imports
 // -----------------------------------------------------------------------------
-import 'package:reports/common/dropbox_utils.dart';
+import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';

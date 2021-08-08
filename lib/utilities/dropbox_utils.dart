@@ -7,7 +7,7 @@ import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
-import 'package:reports/common/logger.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 
 /// Authorize Dropbox access with token, if present, or ask for authorization.
