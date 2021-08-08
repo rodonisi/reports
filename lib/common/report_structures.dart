@@ -50,7 +50,7 @@ abstract class FieldOptions {
   }
 }
 
-/// Class containing the options specific to a text field.
+/// Representation of the options specific to a text field.
 class TextFieldOptions extends FieldOptions {
   static const String linesID = 'lines';
   static const String numericID = 'numeric';
@@ -85,7 +85,7 @@ class TextFieldOptions extends FieldOptions {
   }
 }
 
-/// Contains the options specific to a section field.
+/// Representation of the options specific to a section field.
 class SectionFieldOptions extends FieldOptions {
   static const String fontSizeID = 'font_size';
   static const double sectionSize = 32.0;
@@ -142,7 +142,7 @@ class DateFieldFormats {
   }
 }
 
-/// Contains the options specific to a date field.
+/// Representation of the options specific to a date field.
 class DateFieldOptions extends FieldOptions {
   static const String modeID = 'mode';
   DateFieldOptions({
@@ -172,7 +172,7 @@ class DateFieldOptions extends FieldOptions {
   }
 }
 
-/// Contains the options specific to a date range field.
+/// Representation of the options specific to a date range field.
 class DateRangeFieldOptions extends FieldOptions {
   static const String modeID = 'mode';
   static const String showTotalID = 'show_total';
@@ -228,7 +228,7 @@ abstract class FieldData {
   dynamic serialize();
 }
 
-/// A text field's data.
+/// Representation of text field's data.
 class TextFieldData extends FieldData {
   String data;
   TextFieldData({required this.data});
@@ -242,7 +242,7 @@ class TextFieldData extends FieldData {
   }
 }
 
-/// A date field's data.
+/// Representation of date field's data.
 class DateFieldData extends FieldData {
   DateTime data;
   DateFieldData({required this.data});
@@ -256,6 +256,7 @@ class DateFieldData extends FieldData {
   }
 }
 
+/// Representation of date range field's data.
 class DateRangeFieldData extends FieldData {
   static const String startID = 'start';
   static const String endID = 'end';
@@ -286,7 +287,7 @@ class DateRangeFieldData extends FieldData {
 // - FileHeader keys
 // -----------------------------------------------------------------------------
 
-/// Contains the key for the file headers
+/// Contains the key for the file headers.
 class FileHeader {
   static const String versionID = 'version';
   static const String typeID = 'type';
