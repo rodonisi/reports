@@ -25,6 +25,7 @@ int fileSystemEntityComparator(FileSystemEntity a, FileSystemEntity b) {
   return a.path.compareTo(b.path);
 }
 
+/// Get the list of layouts stored in the local layouts directory.
 List<File> getLayoutsList(BuildContext context) {
   final dir = context.read<PreferencesModel>().layoutsDirectory;
   final list = dir.listSync();
