@@ -1,4 +1,11 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+
+// -----------------------------------------------------------------------------
+// - ControlledTextField Widget Implementation
+// -----------------------------------------------------------------------------
 
 /// A textfield with embedded editing controller which accepts an initial value.
 class ControlledTextField extends StatefulWidget {

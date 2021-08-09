@@ -7,10 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/views/form_builder.dart';

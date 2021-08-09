@@ -1,6 +1,13 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 
-// Displays a side bar layout.
+// -----------------------------------------------------------------------------
+// - SideBarLayout Widget Implementation
+// -----------------------------------------------------------------------------
+
+/// Displays a side bar layout.
 class SideBarLayout extends StatelessWidget {
   const SideBarLayout(
       {Key? key, required this.sidebar, required this.body, this.width})

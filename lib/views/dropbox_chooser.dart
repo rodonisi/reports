@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/container_tile.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/views/settings.dart';

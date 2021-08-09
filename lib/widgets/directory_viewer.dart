@@ -11,7 +11,7 @@ import 'package:reports/widgets/container_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
-// - DirectoryViewer Implementation
+// - DirectoryViewer Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays a content of a directory as a list.

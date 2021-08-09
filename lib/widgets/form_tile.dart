@@ -1,14 +1,14 @@
 // -----------------------------------------------------------------------------
-// - Local Imports
+// - Packages
 // -----------------------------------------------------------------------------
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:reports/common/report_structures.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
-import 'package:provider/provider.dart';
 
 // -----------------------------------------------------------------------------
 // - FormTileContent Widget Implementation

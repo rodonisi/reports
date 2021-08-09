@@ -1,6 +1,12 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// -----------------------------------------------------------------------------
+// - SaveButton Widget Implementation
+// -----------------------------------------------------------------------------
 class SaveButton extends StatelessWidget {
   const SaveButton({Key? key, required this.onPressed}) : super(key: key);
 

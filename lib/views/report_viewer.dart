@@ -7,15 +7,11 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:reports/models/preferences_model.dart';
 import 'package:share_plus/share_plus.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
+import 'package:reports/common/report_structures.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
-import 'package:reports/common/report_structures.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
 import 'package:reports/widgets/save_button.dart';

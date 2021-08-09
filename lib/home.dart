@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/app_state.dart';
@@ -6,6 +9,10 @@ import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/report_list.dart';
 import 'package:reports/views/settings.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
+
+// -----------------------------------------------------------------------------
+// - Home View Implementation
+// -----------------------------------------------------------------------------
 
 /// Displays the main page of the app. This adapts to the width of the window,
 /// displaying either a navigable single-page layout, or a sidebar layout.

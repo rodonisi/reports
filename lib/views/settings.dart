@@ -8,15 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:reports/utilities/logger.dart';
-import 'package:reports/models/preferences_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:file_selector/file_selector.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
+import 'package:reports/utilities/logger.dart';
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';

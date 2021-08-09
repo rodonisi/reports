@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------------
+// - Packages
+// -----------------------------------------------------------------------------
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +11,9 @@ import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// -----------------------------------------------------------------------------
+// - PreferencesModel Implementation
+// -----------------------------------------------------------------------------
 class Defaults {
   static const bool layoutNameDate = false;
   static const bool layoutNameTime = false;

@@ -6,20 +6,16 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:provider/provider.dart';
-import 'package:reports/models/preferences_model.dart';
-import 'package:reports/widgets/save_button.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// -----------------------------------------------------------------------------
-// - Local Imports
-// -----------------------------------------------------------------------------
+import 'package:provider/provider.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_tile.dart';
+import 'package:reports/widgets/save_button.dart';
+import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
 // - FormBuilderArgs Class Implementation
