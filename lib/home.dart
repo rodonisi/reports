@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 500)
-          return _WideLayout(extend: constraints.maxWidth > 800);
+          return _WideLayout(extend: constraints.maxWidth > 900);
 
         return _NarrowLayout();
       },

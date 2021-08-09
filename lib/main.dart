@@ -18,7 +18,6 @@ import 'package:reports/models/preferences_model.dart';
 void main() {
   // Only allow portrait mode
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // Initialize Dropbox.
   if (!Platform.isMacOS)
