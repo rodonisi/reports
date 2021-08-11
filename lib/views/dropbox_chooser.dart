@@ -8,6 +8,7 @@ import 'package:reports/widgets/container_tile.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/views/settings.dart';
+import 'package:reports/widgets/loading_indicator.dart';
 
 // -----------------------------------------------------------------------------
 // - DropboxChooser Widget Implementation
@@ -62,7 +63,7 @@ class _DropboxChooserState extends State<DropboxChooser> {
 
                 dbBackupEverything(context);
               },
-              icon: Icon(Icons.check)),
+              icon: const Icon(Icons.check)),
         ],
       ),
       body: FutureBuilder(
@@ -99,16 +100,7 @@ class _DropboxChooserState extends State<DropboxChooser> {
               child: Text(snapshot.error.toString()),
             );
 
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16.0),
-                Text('Loading'),
-              ],
-            ),
-          );
+          return const LoadingIndicator();
         },
       ),
     );
