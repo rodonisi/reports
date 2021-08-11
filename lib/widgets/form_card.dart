@@ -21,7 +21,7 @@ import 'package:reports/widgets/controlled_text_field.dart';
 /// to be provided. Futhermore the fields are disabled and tapping the cards
 /// reveal the field options. If data is passed then the returned card is in the
 /// viewer state, i.e. the fields are enabled and the remove buttons hidden.
-class FormCard extends StatelessWidget {
+class FormCard extends StatefulWidget {
   const FormCard({Key? key, required this.options, this.data, this.onDelete})
       : super(key: key);
 
@@ -29,32 +29,37 @@ class FormCard extends StatelessWidget {
   final FieldData? data;
   final void Function()? onDelete;
 
+  @override
+  _FormCardState createState() => _FormCardState();
+}
+
+class _FormCardState extends State<FormCard> {
+  final ValueNotifier<bool> _showOptions = ValueNotifier(false);
   Widget _getCard() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: data == null
+        child: widget.data == null
             ? _FormBuilderCardContent(
-                options: options,
-                onDelete: onDelete!,
+                options: widget.options,
+                onDelete: widget.onDelete!,
               )
             : _FormCardContent(
-                options: options,
-                data: data,
+                options: widget.options,
+                data: widget.data,
               ),
       ),
     );
   }
 
   Widget _getFormCard() {
-    final showOptions = ValueNotifier(false);
     return ValueListenableBuilder<bool>(
-        valueListenable: showOptions,
+        valueListenable: _showOptions,
         builder: (context, value, _) {
           return Provider<bool>.value(
             value: value,
             child: GestureDetector(
-              onTap: () => showOptions.value = !showOptions.value,
+              onTap: () => _showOptions.value = !_showOptions.value,
               child: _getCard(),
             ),
           );
@@ -63,23 +68,23 @@ class FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (options is SectionFieldOptions) {
-      if (data == null)
+    if (widget.options is SectionFieldOptions) {
+      if (widget.data == null)
         return Padding(
           padding: const EdgeInsets.only(right: 20.0),
           child: _DeleteButtonRow(
-            child: _FormCardContent(options: options),
-            onDelete: onDelete!,
+            child: _FormCardContent(options: widget.options),
+            onDelete: widget.onDelete!,
           ),
         );
       else
         return _FormCardContent(
-          options: options,
+          options: widget.options,
           enabled: false,
         );
     }
 
-    return data == null ? _getFormCard() : _getCard();
+    return widget.data == null ? _getFormCard() : _getCard();
   }
 }
 
