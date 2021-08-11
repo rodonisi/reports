@@ -7,13 +7,14 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/widgets/loading_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
-import 'package:reports/widgets/form_tile.dart';
+import 'package:reports/widgets/form_card.dart';
 import 'package:reports/widgets/save_button.dart';
 
 // -----------------------------------------------------------------------------
@@ -33,8 +34,6 @@ class ReportViewerArgs {
 
 /// Displays the report viewer for a new or existing report.
 class ReportViewer extends StatefulWidget {
-  static const String routeName = '/report_viewer';
-
   final ReportViewerArgs args;
   ReportViewer({Key? key, required this.args}) : super(key: key);
 
@@ -49,6 +48,64 @@ class _ReportViewerState extends State<ReportViewer> {
   bool loaded = false;
 
   late bool _isNew;
+
+  void _initializeData() {
+    if (report.data.length < report.layout.fields.length) {
+      for (var element in report.layout.fields) {
+        switch (element.fieldType) {
+          case FieldTypes.date:
+            report.data.add(DateFieldData(data: DateTime.now()));
+            break;
+          case FieldTypes.dateRange:
+            report.data.add(DateRangeFieldData.empty());
+            break;
+          default:
+            report.data.add(TextFieldData(data: ''));
+        }
+      }
+    }
+  }
+
+  void _reinitializeData() {
+    setState(() {
+      report.data.clear();
+      _initializeData();
+    });
+  }
+
+  void _saveCallback() async {
+    final localizations = AppLocalizations.of(context)!;
+
+    final reportString = await report.toJSON();
+    var destPath = '';
+    var fromPath = '';
+
+    if (_isNew) {
+      destPath = joinAndSetExtension(widget.args.path, report.title);
+    } else {
+      destPath = joinAndSetExtension(p.dirname(widget.args.path), report.title);
+      if (destPath != widget.args.path) fromPath = widget.args.path;
+    }
+
+    // Write the report to file.
+    final didWrite = await writeToFile(reportString, destPath,
+        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
+    if (!didWrite) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(localizations.fileExists(localizations.report)),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
+
+    // Backup the newly created file to dropbox if option is enabled.
+    if (context.read<PreferencesModel>().dropboxEnabled) {
+      // Backup to dropbox.
+      dbBackupFile(context, destPath);
+    }
+
+    Navigator.pop(context);
+  }
 
   @override
   void initState() {
@@ -86,38 +143,11 @@ class _ReportViewerState extends State<ReportViewer> {
     super.initState();
   }
 
-  void _initializeData() {
-    if (report.data.length < report.layout.fields.length) {
-      for (var element in report.layout.fields) {
-        switch (element.fieldType) {
-          case FieldTypes.date:
-            report.data.add(DateFieldData(data: DateTime.now()));
-            break;
-          case FieldTypes.dateRange:
-            report.data.add(DateRangeFieldData.empty());
-            break;
-          default:
-            report.data.add(TextFieldData(data: ''));
-        }
-      }
-    }
-  }
-
-  void _reinitializeData() {
-    setState(() {
-      report.data.clear();
-      _initializeData();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // If the report file is not available yet, just display a progress
     // indicator.
-    if (!loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
+    if (!loaded) return const LoadingIndicator();
 
     // Initialize the data structures if not present.
     _initializeData();
@@ -140,15 +170,15 @@ class _ReportViewerState extends State<ReportViewer> {
     return Scaffold(
       appBar: AppBar(
         title: ControlledTextField(
-          decoration: InputDecoration(border: InputBorder.none),
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          decoration: const InputDecoration(border: InputBorder.none),
+          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
           hasClearButton: true,
           maxLines: 1,
           initialValue: report.title,
           onChanged: (value) => report.title = value,
         ),
         leading: IconButton(
-          icon: Icon(Icons.close_rounded),
+          icon: const Icon(Icons.close_rounded),
           color: Colors.red,
           onPressed: () => Navigator.pop(context),
         ),
@@ -164,12 +194,12 @@ class _ReportViewerState extends State<ReportViewer> {
             : null,
       ),
       body: ListView.builder(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         shrinkWrap: true,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: report.layout.fields.length,
         itemBuilder: (context, i) {
-          return _FormViewerCard(
+          return FormCard(
             options: report.layout.fields[i],
             data: report.data[i],
           );
@@ -179,87 +209,14 @@ class _ReportViewerState extends State<ReportViewer> {
           ? null
           : SafeArea(
               bottom: true,
-              child: SaveButton(onPressed: _saveReport),
+              child: SaveButton(onPressed: _saveCallback),
             ),
-    );
-  }
-
-  void _saveReport() async {
-    final localizations = AppLocalizations.of(context)!;
-
-    final reportString = await report.toJSON();
-    var destPath = '';
-    var fromPath = '';
-
-    if (_isNew) {
-      destPath = joinAndSetExtension(widget.args.path, report.title);
-    } else {
-      destPath = joinAndSetExtension(p.dirname(widget.args.path), report.title);
-      if (destPath != widget.args.path) fromPath = widget.args.path;
-    }
-
-    // Write the report to file.
-    final didWrite = await writeToFile(reportString, destPath,
-        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
-    if (!didWrite) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations.fileExists(localizations.report)),
-        backgroundColor: Colors.red,
-      ));
-      return;
-    }
-
-    // Backup the newly created file to dropbox if option is enabled.
-    if (context.read<PreferencesModel>().dropboxEnabled) {
-      // Backup to dropbox.
-      dbBackupFile(context, destPath);
-    }
-
-    Navigator.pop(context);
-  }
-}
-
-// -----------------------------------------------------------------------------
-// - _FormViewerCard Widget Declaration
-// -----------------------------------------------------------------------------
-class _FormViewerCard extends StatelessWidget {
-  const _FormViewerCard({
-    Key? key,
-    required this.options,
-    required this.data,
-  }) : super(key: key);
-
-  final FieldOptions options;
-  final FieldData data;
-
-  @override
-  Widget build(BuildContext context) {
-    if (options is SectionFieldOptions)
-      return FormTileContent(
-        options: options,
-        enabled: false,
-      );
-
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: FormTileContent(
-                options: options,
-                data: data,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
 
 // -----------------------------------------------------------------------------
-// - _LayoutSelector Widget Implementation
+// - Private Widgets
 // -----------------------------------------------------------------------------
 
 class _LayoutSelector extends StatefulWidget {

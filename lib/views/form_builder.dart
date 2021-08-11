@@ -13,7 +13,8 @@ import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
-import 'package:reports/widgets/form_tile.dart';
+import 'package:reports/widgets/form_card.dart';
+import 'package:reports/widgets/loading_indicator.dart';
 import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -34,8 +35,6 @@ class FormBuilderArgs {
 
 /// Displays a form builder.
 class FormBuilder extends StatefulWidget {
-  static const String routeName = '/formBuilder';
-
   final FormBuilderArgs args;
   FormBuilder({Key? key, required this.args}) : super(key: key);
 
@@ -58,106 +57,7 @@ class _FormBuilderState extends State<FormBuilder> {
     });
   }
 
-  @override
-  void initState() {
-    // Read layout from file
-    final futureLayout = File(widget.args.path).readAsString();
-
-    // Add completition callback for when the file has been read.
-    futureLayout.then((value) {
-      setState(() {
-        layout = ReportLayout.fromJSON(value);
-        loaded = true;
-        _isNew = false;
-      });
-    }).catchError((error, stackTrace) async {
-      final defaultName = context.read<PreferencesModel>().defaultLayoutName;
-      setState(() {
-        layout = ReportLayout(
-          name: defaultName,
-          fields: [],
-        );
-        loaded = true;
-        _isNew = true;
-      });
-    });
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // If the layout is not yet available just return a progress indicator.
-    if (!loaded)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
-    // Add the share action only if we're viewing an existing report.
-    final List<Widget> shareAction = [];
-    if (!_isNew)
-      shareAction.add(
-        IconButton(
-          icon: Icon(Icons.adaptive.share),
-          onPressed: () {
-            final layoutsDir =
-                context.read<PreferencesModel>().layoutsDirectory;
-            Share.shareFiles(
-              ['$layoutsDir/${layout.name}.json'],
-            );
-          },
-        ),
-      );
-
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: ControlledTextField(
-          decoration: InputDecoration(border: InputBorder.none),
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
-          hasClearButton: true,
-          maxLines: 1,
-          initialValue: layout.name,
-          onChanged: (value) => layout.name = value,
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.close_rounded),
-          color: Colors.red,
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: shareAction,
-      ),
-      body: ReorderableListView.builder(
-        padding: EdgeInsets.all(16.0),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: layout.fields.length,
-        itemBuilder: (context, i) {
-          return _FormBuilderCard(
-            key: Key('layoutItem$i'),
-            options: layout.fields[i],
-            removeFunc: () => _removeField(i),
-          );
-        },
-        onReorder: (oldPos, newPos) {
-          final item = layout.fields.removeAt(oldPos);
-          // We need to decrease the new index if it was previosuly in a lower
-          // earlier position, because we already deleted the entry.
-          if (newPos > oldPos) newPos--;
-          if (newPos < layout.fields.length)
-            layout.fields.insert(newPos, item);
-          else
-            layout.fields.add(item);
-        },
-      ),
-      floatingActionButton: _Dial(addFieldFunc: _addField),
-      bottomNavigationBar: SafeArea(
-        bottom: true,
-        child: SaveButton(onPressed: _save),
-      ),
-    );
-  }
-
-  void _save() async {
+  void _saveCallback() async {
     final localizations = AppLocalizations.of(context)!;
     if (layout.fields.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -197,10 +97,106 @@ class _FormBuilderState extends State<FormBuilder> {
 
     Navigator.pop(context);
   }
+
+  @override
+  void initState() {
+    // Read layout from file
+    final futureLayout = File(widget.args.path).readAsString();
+
+    // Add completition callback for when the file has been read.
+    futureLayout.then((value) {
+      setState(() {
+        layout = ReportLayout.fromJSON(value);
+        loaded = true;
+        _isNew = false;
+      });
+    }).catchError((error, stackTrace) async {
+      final defaultName = context.read<PreferencesModel>().defaultLayoutName;
+      setState(() {
+        layout = ReportLayout(
+          name: defaultName,
+          fields: [],
+        );
+        loaded = true;
+        _isNew = true;
+      });
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // If the layout is not yet available just return a progress indicator.
+    if (!loaded) return const LoadingIndicator();
+
+    // Add the share action only if we're viewing an existing report.
+    final List<Widget> shareAction = [];
+    if (!_isNew)
+      shareAction.add(
+        IconButton(
+          icon: Icon(Icons.adaptive.share),
+          onPressed: () {
+            final layoutsDir =
+                context.read<PreferencesModel>().layoutsDirectory;
+            Share.shareFiles(
+              ['$layoutsDir/${layout.name}.json'],
+            );
+          },
+        ),
+      );
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: ControlledTextField(
+          decoration: InputDecoration(border: InputBorder.none),
+          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          hasClearButton: true,
+          maxLines: 1,
+          initialValue: layout.name,
+          onChanged: (value) => layout.name = value,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.close_rounded),
+          color: Colors.red,
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: shareAction,
+      ),
+      body: ReorderableListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: layout.fields.length,
+        itemBuilder: (context, i) {
+          return FormCard(
+            key: ValueKey('LayoutItem$i'),
+            options: layout.fields[i],
+            onDelete: () => _removeField(i),
+          );
+        },
+        onReorder: (oldPos, newPos) {
+          final item = layout.fields.removeAt(oldPos);
+          // We need to decrease the new index if it was previosuly in a lower
+          // earlier position, because we already deleted the entry.
+          if (newPos > oldPos) newPos--;
+          if (newPos < layout.fields.length)
+            layout.fields.insert(newPos, item);
+          else
+            layout.fields.add(item);
+        },
+      ),
+      floatingActionButton: _Dial(addFieldFunc: _addField),
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: SaveButton(onPressed: _saveCallback),
+      ),
+    );
+  }
 }
 
 // -----------------------------------------------------------------------------
-// - _Dial Widget Implementation
+// - Private Widgets
 // -----------------------------------------------------------------------------
 class _Dial extends StatelessWidget {
   const _Dial({Key? key, required this.addFieldFunc}) : super(key: key);
@@ -286,84 +282,6 @@ class _Dial extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// - _FormBuilderCard Widget Implementation
-// -----------------------------------------------------------------------------
-class _FormBuilderCard extends StatefulWidget {
-  const _FormBuilderCard({
-    Key? key,
-    required this.options,
-    required this.removeFunc,
-  }) : super(key: key);
-  final FieldOptions options;
-  final Function() removeFunc;
-
-  @override
-  __FormBuilderCardState createState() => __FormBuilderCardState();
-}
-
-class __FormBuilderCardState extends State<_FormBuilderCard>
-    with TickerProviderStateMixin {
-  final _animationDuration = 150;
-  bool isOpts = true;
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.options is SectionFieldOptions)
-      return Row(
-        children: [
-          Expanded(
-            child: FormTileContent(options: widget.options),
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onPressed: () => widget.removeFunc(),
-          ),
-        ],
-      );
-
-    return GestureDetector(
-      onTap: () => setState(() => isOpts = !isOpts),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: AnimatedSize(
-                  duration: Duration(milliseconds: _animationDuration),
-                  reverseDuration: Duration(milliseconds: _animationDuration),
-                  vsync: this,
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: _animationDuration),
-                    reverseDuration: Duration(milliseconds: 0),
-                    child: isOpts
-                        ? FormTileContent(
-                            options: widget.options,
-                            enabled: false,
-                          )
-                        : FormTileOptions(
-                            options: widget.options,
-                          ),
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.delete_forever),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onPressed: () => widget.removeFunc(),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
