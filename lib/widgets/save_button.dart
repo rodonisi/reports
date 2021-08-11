@@ -15,7 +15,7 @@ class SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: ElevatedButton(
         onPressed: onPressed,
         child: Text(AppLocalizations.of(context)!.save),
