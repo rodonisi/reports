@@ -95,9 +95,7 @@ class _AppearanceSettings extends StatelessWidget {
               activeColor: prefs.accentColor,
             );
           },
-          separatorBuilder: (context, index) => const Divider(
-            height: 0.0,
-          ),
+          separatorBuilder: (context, index) => const Divider(height: 0.0),
         ));
   }
 
@@ -108,29 +106,35 @@ class _AppearanceSettings extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         children: [
-          ListTile(
-            title: const Text('Appearance'),
-            subtitle: DropdownButton<ThemeMode>(
-              value: prefs.themeMode,
-              items: [
-                const DropdownMenuItem(
-                  child: const Text('Light'),
-                  value: ThemeMode.light,
-                ),
-                const DropdownMenuItem(
-                  child: const Text('Dark'),
-                  value: ThemeMode.dark,
-                ),
-                const DropdownMenuItem(
-                  child: const Text('System'),
-                  value: ThemeMode.system,
-                ),
-              ],
-              onChanged: (value) => prefs.themeMode = value!,
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: ListTile(
+              title: const Text('Appearance'),
+              subtitle: DropdownButton<ThemeMode>(
+                underline: Container(),
+                value: prefs.themeMode,
+                items: [
+                  const DropdownMenuItem(
+                    child: const Text('Light'),
+                    value: ThemeMode.light,
+                  ),
+                  const DropdownMenuItem(
+                    child: const Text('Dark'),
+                    value: ThemeMode.dark,
+                  ),
+                  const DropdownMenuItem(
+                    child: const Text('System'),
+                    value: ThemeMode.system,
+                  ),
+                ],
+                onChanged: (value) => prefs.themeMode = value!,
+              ),
             ),
           ),
+          Divider(height: 0.0),
           ListTile(
             title: const Text('Accent Color'),
+            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
