@@ -16,6 +16,7 @@ import 'package:reports/utilities/logger.dart';
 import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/widgets/loading_indicator.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
@@ -60,14 +61,14 @@ class SettingsBody extends StatelessWidget {
       appBar: AppBar(
         title: Text(localizations.settings),
       ),
-      drawer: showDrawer ? Drawer(child: MenuDrawer()) : null,
+      drawer: showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       body: ListView(
         children: [
-          _AppearanceSettings(),
-          if (Platform.isMacOS) _MacosSettings(),
+          const _AppearanceSettings(),
+          if (Platform.isMacOS) const _MacosSettings(),
           _GeneralSettings(),
-          if (!Platform.isMacOS) _DBSettings(),
-          _Info(),
+          if (!Platform.isMacOS) const _DBSettings(),
+          const _Info(),
         ],
       ),
     );
@@ -81,7 +82,7 @@ class _AppearanceSettings extends StatelessWidget {
     logger.d(Colors.primaries.first.toString());
     return Scaffold(
         appBar: AppBar(
-          title: Text('Accent Color'),
+          title: const Text('Accent Color'),
         ),
         body: ListView.separated(
           itemCount: prefs.colors.length,
@@ -94,7 +95,7 @@ class _AppearanceSettings extends StatelessWidget {
               activeColor: prefs.accentColor,
             );
           },
-          separatorBuilder: (context, index) => Divider(
+          separatorBuilder: (context, index) => const Divider(
             height: 0.0,
           ),
         ));
@@ -104,24 +105,24 @@ class _AppearanceSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         children: [
           ListTile(
-            title: Text('Appearance'),
+            title: const Text('Appearance'),
             subtitle: DropdownButton<ThemeMode>(
               value: prefs.themeMode,
               items: [
-                DropdownMenuItem(
-                  child: Text('Light'),
+                const DropdownMenuItem(
+                  child: const Text('Light'),
                   value: ThemeMode.light,
                 ),
-                DropdownMenuItem(
-                  child: Text('Dark'),
+                const DropdownMenuItem(
+                  child: const Text('Dark'),
                   value: ThemeMode.dark,
                 ),
-                DropdownMenuItem(
-                  child: Text('System'),
+                const DropdownMenuItem(
+                  child: const Text('System'),
                   value: ThemeMode.system,
                 ),
               ],
@@ -129,7 +130,7 @@ class _AppearanceSettings extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Accent Color'),
+            title: const Text('Accent Color'),
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -149,11 +150,11 @@ class _MacosSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         children: [
           ListTile(
-            title: Text('Default Path'),
+            title: const Text('Default Path'),
             subtitle: Text(prefs.defaultPath),
             onTap: () async {
               final dir = await getDirectoryPath();
@@ -162,7 +163,7 @@ class _MacosSettings extends StatelessWidget {
             },
           ),
           SwitchListTile.adaptive(
-            title: Text('Reader Mode'),
+            title: const Text('Reader Mode'),
             value: prefs.readerMode,
             onChanged: (value) => prefs.readerMode = value,
           ),
@@ -185,14 +186,14 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
     final localizations = AppLocalizations.of(context)!;
 
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
             title: Text(localizations.defaultReportNaming),
-            trailing: Icon(Icons.keyboard_arrow_right_rounded),
+            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -205,12 +206,10 @@ class __GeneralSettingsState extends State<_GeneralSettings> {
               ),
             ),
           ),
-          Divider(
-            height: 0.0,
-          ),
+          const Divider(height: 0.0),
           ListTile(
             title: Text(localizations.defaultLayoutNaming),
-            trailing: Icon(Icons.keyboard_arrow_right_rounded),
+            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -241,7 +240,7 @@ class _DBSettings extends StatelessWidget {
     final dbSettingsList = <Widget>[
       SwitchListTile.adaptive(
         title: Text(localizations.dropboxBackup),
-        secondary: Icon(FontAwesomeIcons.dropbox),
+        secondary: const Icon(FontAwesomeIcons.dropbox),
         value: prefs.dropboxEnabled,
         onChanged: (value) async {
           if (!value) dbUnlink(context);
@@ -253,7 +252,7 @@ class _DBSettings extends StatelessWidget {
     // Only show further settings if Dropbox is enabled.
     if (prefs.dropboxEnabled) {
       dbSettingsList.add(
-        _DBLoginButton(),
+        const _DBLoginButton(),
       );
       // Add default backup path chooser.
       dbSettingsList.add(
@@ -265,7 +264,7 @@ class _DBSettings extends StatelessWidget {
 
     // Generate settings card.
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(children: dbSettingsList),
     );
   }
@@ -284,7 +283,7 @@ class _DBLoginButton extends StatelessWidget {
     // Show the sign in button if Dropbox is not authorized
     if (!isAuthorized)
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: [
             Expanded(
@@ -302,7 +301,7 @@ class _DBLoginButton extends StatelessWidget {
 
     // Show the sign out button otherwise.
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
           Expanded(
@@ -332,7 +331,7 @@ class _DBPathTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(AppLocalizations.of(context)!.backupLocation),
-      leading: Icon(Icons.folder),
+      leading: const Icon(Icons.folder),
       trailing: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
       onTap: () => Navigator.pushNamed(context, DropboxChooser.routeName,
           arguments: DropboxChooserArgs()),
@@ -410,9 +409,9 @@ class __DefaultNamingViewState extends State<_DefaultNamingView> {
     return ListView(
       children: [
         Card(
-          margin: EdgeInsets.all(16.0),
+          margin: const EdgeInsets.all(16.0),
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(children: _getSettings()),
           ),
         ),
@@ -437,9 +436,9 @@ class _Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             FutureBuilder<PackageInfo>(
@@ -460,9 +459,7 @@ class _Info extends StatelessWidget {
                     child: Text(snapshot.error!.toString()),
                   );
 
-                return Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
+                return const LoadingIndicator();
               },
             ),
           ],

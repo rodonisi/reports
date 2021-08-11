@@ -121,7 +121,7 @@ class _ReportsListState extends State<ReportsList> {
   Widget _getNewFolderDialog(BuildContext context) {
     String folderName = '';
     return AlertDialog(
-      title: Text('New Folder'),
+      title: const Text('New Folder'),
       content: ControlledTextField(
         hasClearButton: true,
         onChanged: (value) => folderName = value,
@@ -136,7 +136,7 @@ class _ReportsListState extends State<ReportsList> {
             }
             Navigator.pop(context);
           },
-          child: Text('Create'),
+          child: const Text('Create'),
         ),
       ],
     );
@@ -176,16 +176,16 @@ class _ReportsListState extends State<ReportsList> {
                 builder: _getNewFolderDialog,
               );
             },
-            icon: Icon(Icons.create_new_folder),
+            icon: const Icon(Icons.create_new_folder),
           ),
         ],
       ),
-      drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
+      drawer: _showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       floatingActionButton: prefs.readerMode
           ? null
           : FloatingActionButton(
               backgroundColor: prefs.accentColor,
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () async {
                 final layouts = getLayoutsList(context);
                 if (layouts.isNotEmpty)

@@ -92,7 +92,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
       title: Text(_localizations.importReports),
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: Icon(
+        icon: const Icon(
           Icons.close_rounded,
           color: Colors.red,
         ),
@@ -102,7 +102,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
             onPressed: () async {
               _saveCallback(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.check,
               color: Colors.green,
             ))
@@ -116,9 +116,9 @@ class _ImportReportsViewState extends State<ImportReportsView> {
         Flexible(
           fit: FlexFit.tight,
           child: Card(
-            margin: EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(16.0),
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: ListView.builder(
                 itemCount: widget.files.length,
                 itemBuilder: (context, index) => Row(
@@ -127,7 +127,7 @@ class _ImportReportsViewState extends State<ImportReportsView> {
                     IconButton(
                       onPressed: () =>
                           setState(() => widget.files.removeAt(index)),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.cancel,
                         color: Colors.red,
                       ),

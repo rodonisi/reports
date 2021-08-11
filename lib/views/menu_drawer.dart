@@ -36,15 +36,15 @@ class MenuRail extends StatelessWidget {
       extended: extended,
       destinations: [
         NavigationRailDestination(
-          icon: Icon(ReportsIcons.report),
+          icon: const Icon(ReportsIcons.report),
           label: Text(localizations.reportsTitle),
         ),
         NavigationRailDestination(
-          icon: Icon(ReportsIcons.layout),
+          icon: const Icon(ReportsIcons.layout),
           label: Text(localizations.layoutsTitle),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.settings),
+          icon: const Icon(Icons.settings),
           label: Text(localizations.settings),
         ),
       ],
@@ -67,7 +67,7 @@ class MenuDrawer extends StatelessWidget {
   const MenuDrawer({Key? key}) : super(key: key);
 
   Widget _getSeparator() {
-    return SizedBox(
+    return const SizedBox(
       height: 32.0,
     );
   }
@@ -80,18 +80,18 @@ class MenuDrawer extends StatelessWidget {
       body: SafeArea(
         top: true,
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
           children: [
             ContainerTile(
               title: Text(localizations.reportsTitle),
-              leading: Icon(ReportsIcons.report),
+              leading: const Icon(ReportsIcons.report),
               selected: appState.currentPage == Pages.reports,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.reports,
             ),
             ContainerTile(
               title: Text(localizations.layoutsTitle),
-              leading: Icon(ReportsIcons.layout),
+              leading: const Icon(ReportsIcons.layout),
               selected: appState.currentPage == Pages.layouts,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.layouts,
@@ -103,7 +103,7 @@ class MenuDrawer extends StatelessWidget {
             ],
             ContainerTile(
               title: Text(localizations.settings),
-              leading: Icon(Icons.settings),
+              leading: const Icon(Icons.settings),
               selected: appState.currentPage == Pages.settings,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.settings,
@@ -138,7 +138,7 @@ class _ImportTile extends StatelessWidget {
             builder: (context) {
               return ImportReportsView(files: list);
             },
-            settings: RouteSettings(name: 'ImportLayout'),
+            settings: const RouteSettings(name: 'ImportLayout'),
           );
         }
       }
@@ -193,7 +193,7 @@ class _ImportTile extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
     return ContainerTile(
       title: Text(localizations.import),
-      leading: Icon(Icons.save_alt),
+      leading: const Icon(Icons.save_alt),
       onTap: () {
         showModalBottomSheet(
           context: context,

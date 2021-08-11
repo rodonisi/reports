@@ -56,7 +56,7 @@ class _ControlledTextFieldState extends State<ControlledTextField> {
     InputDecoration? decoration = widget.decoration;
     if (widget.hasClearButton) {
       final bodyColor = Theme.of(context).textTheme.bodyText1!.color;
-      decoration = widget.decoration ?? InputDecoration();
+      decoration = widget.decoration ?? const InputDecoration();
       decoration = decoration.copyWith(
           suffixIcon: _isEditing
               ? IconButton(

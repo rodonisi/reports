@@ -41,7 +41,7 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
 
     return Slidable(
       key: ObjectKey(item),
-      actionPane: SlidableDrawerActionPane(),
+      actionPane: const SlidableDrawerActionPane(),
       secondaryActions: [
         IconSlideAction(
           icon: Icons.adaptive.share,
@@ -59,7 +59,8 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
       child: ContainerTile(
         title: Text(p.basenameWithoutExtension(item.path)),
         leading: Icon(isFile ? widget.fileIcon : Icons.folder),
-        trailing: isFile ? null : Icon(Icons.keyboard_arrow_right_rounded),
+        trailing:
+            isFile ? null : const Icon(Icons.keyboard_arrow_right_rounded),
         onTap: isFile
             ? () => widget.fileAction(item as File)
             : () => widget.directoryAction(item as Directory),

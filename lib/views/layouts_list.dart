@@ -98,10 +98,10 @@ class _LayoutsListState extends State<LayoutsList> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: prefs.accentColor,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: _fabCallback,
       ),
-      drawer: _showDrawer ? Drawer(child: MenuDrawer()) : null,
+      drawer: _showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       body: DirectoryViewer(
         fileIcon: ReportsIcons.layout,
         fileAction: _fileActionCallback,
