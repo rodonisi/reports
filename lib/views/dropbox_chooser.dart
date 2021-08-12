@@ -85,10 +85,12 @@ class _DropboxChooserState extends State<DropboxChooser> {
                   leading: Icon(isFile ? Icons.text_snippet : Icons.folder),
                   trailing:
                       isFile ? null : Icon(Icons.arrow_forward_ios_rounded),
-                  onTap: () => Navigator.pushNamed(
-                      context, DropboxChooser.routeName,
-                      arguments:
-                          DropboxChooserArgs(name: name, path: itemPath)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return DropboxChooser(
+                          args: DropboxChooserArgs(name: name, path: itemPath));
+                    },
+                  )),
                   enabled: !isFile,
                 );
               },

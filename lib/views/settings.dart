@@ -36,6 +36,7 @@ class Settings extends StatelessWidget {
     return WrapNavigator(
       child: MaterialPage(
         key: SettingsBody.valueKey,
+        name: routeName,
         child: SettingsBody(),
       ),
     );
@@ -336,9 +337,16 @@ class _DBPathTile extends StatelessWidget {
     return ListTile(
       title: Text(AppLocalizations.of(context)!.backupLocation),
       leading: const Icon(Icons.folder),
-      trailing: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
-      onTap: () => Navigator.pushNamed(context, DropboxChooser.routeName,
-          arguments: DropboxChooserArgs()),
+      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+      subtitle: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return DropboxChooser(args: DropboxChooserArgs());
+          },
+        ),
+      ),
     );
   }
 }
