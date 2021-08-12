@@ -195,7 +195,7 @@ class _ImportTile extends StatelessWidget {
       title: Text(localizations.import),
       leading: const Icon(Icons.save_alt),
       onTap: () {
-        showModalBottomSheet(
+        showBarModalBottomSheet(
           context: context,
           builder: (context) => Column(
             mainAxisSize: MainAxisSize.min,
