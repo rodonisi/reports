@@ -3,20 +3,14 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
-import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:file_selector/file_selector.dart';
-import 'package:reports/models/preferences_model.dart';
-import 'package:reports/utilities/dropbox_utils.dart';
-import 'package:reports/utilities/logger.dart';
-import 'package:reports/views/dropbox_chooser.dart';
 import 'package:reports/views/menu_drawer.dart';
-import 'package:reports/widgets/controlled_text_field.dart';
-import 'package:reports/widgets/loading_indicator.dart';
+import 'package:reports/views/settings/appearance_settings.dart';
+import 'package:reports/views/settings/dropbox_settings.dart';
+import 'package:reports/views/settings/general_settings.dart';
+import 'package:reports/views/settings/info.dart';
+import 'package:reports/views/settings/macos_settings.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
@@ -24,7 +18,7 @@ import 'package:reports/widgets/wrap_navigator.dart';
 // - Layouts Widget Implementation
 // -----------------------------------------------------------------------------
 
-/// Displays the SettingsBody view wrapped in a navigator.
+/// Displays the _SettingsBody view wrapped in a navigator.
 class Settings extends StatelessWidget {
   static const String routeName = '/settings';
   static const ValueKey valueKey = ValueKey('Settings');
@@ -35,22 +29,22 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return WrapNavigator(
       child: MaterialPage(
-        key: SettingsBody.valueKey,
+        key: _SettingsBody.valueKey,
         name: routeName,
-        child: SettingsBody(),
+        child: _SettingsBody(),
       ),
     );
   }
 }
 // -----------------------------------------------------------------------------
-// - SettingsBody View Implementation
+// - _SettingsBody View Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays the main settings view for the application.
-class SettingsBody extends StatelessWidget {
+class _SettingsBody extends StatelessWidget {
   static const ValueKey valueKey = ValueKey('SettingsBody');
 
-  SettingsBody({Key? key}) : super(key: key);
+  _SettingsBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,418 +59,12 @@ class SettingsBody extends StatelessWidget {
       drawer: showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       body: ListView(
         children: [
-          const _AppearanceSettings(),
-          if (Platform.isMacOS) const _MacosSettings(),
-          _GeneralSettings(),
-          if (!Platform.isMacOS) const _DBSettings(),
-          const _Info(),
+          const AppearanceSettings(),
+          if (Platform.isMacOS) const MacosSettings(),
+          GeneralSettings(),
+          if (!Platform.isMacOS) const DropboxSettings(),
+          const Info(),
         ],
-      ),
-    );
-  }
-}
-
-class _AppearanceSettings extends StatelessWidget {
-  const _AppearanceSettings({Key? key}) : super(key: key);
-
-  Widget _getColorSelectionView(PreferencesModel prefs) {
-    logger.d(Colors.primaries.first.toString());
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Accent Color'),
-        ),
-        body: ListView.separated(
-          itemCount: prefs.colors.length,
-          itemBuilder: (context, index) {
-            return RadioListTile<int>(
-              value: index,
-              groupValue: prefs.accentColorValue,
-              onChanged: (value) => prefs.accentColorValue = value!,
-              title: Text(prefs.colorNames[index]),
-              activeColor: prefs.accentColor,
-            );
-          },
-          separatorBuilder: (context, index) => const Divider(height: 0.0),
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final prefs = context.watch<PreferencesModel>();
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ListTile(
-              title: const Text('Appearance'),
-              subtitle: DropdownButton<ThemeMode>(
-                underline: Container(),
-                value: prefs.themeMode,
-                items: [
-                  const DropdownMenuItem(
-                    child: const Text('Light'),
-                    value: ThemeMode.light,
-                  ),
-                  const DropdownMenuItem(
-                    child: const Text('Dark'),
-                    value: ThemeMode.dark,
-                  ),
-                  const DropdownMenuItem(
-                    child: const Text('System'),
-                    value: ThemeMode.system,
-                  ),
-                ],
-                onChanged: (value) => prefs.themeMode = value!,
-              ),
-            ),
-          ),
-          Divider(height: 0.0),
-          ListTile(
-            title: const Text('Accent Color'),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => _getColorSelectionView(prefs),
-                )),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MacosSettings extends StatelessWidget {
-  const _MacosSettings({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final prefs = context.watch<PreferencesModel>();
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        children: [
-          ListTile(
-            title: const Text('Default Path'),
-            subtitle: Text(prefs.defaultPath),
-            onTap: () async {
-              final dir = await getDirectoryPath();
-              logger.d(dir);
-              if (dir != null) prefs.defaultPath = dir;
-            },
-          ),
-          SwitchListTile.adaptive(
-            title: const Text('Reader Mode'),
-            value: prefs.readerMode,
-            onChanged: (value) => prefs.readerMode = value,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _GeneralSettings extends StatefulWidget {
-  _GeneralSettings({Key? key}) : super(key: key);
-
-  @override
-  __GeneralSettingsState createState() => __GeneralSettingsState();
-}
-
-class __GeneralSettingsState extends State<_GeneralSettings> {
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            title: Text(localizations.defaultReportNaming),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => _DefaultNamingView(
-                  title: localizations.defaultReportNaming,
-                  namePref: PreferenceKeys.reportBaseName,
-                  datePref: PreferenceKeys.reportNameDate,
-                  timePref: PreferenceKeys.reportNameTime,
-                ),
-              ),
-            ),
-          ),
-          const Divider(height: 0.0),
-          ListTile(
-            title: Text(localizations.defaultLayoutNaming),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => _DefaultNamingView(
-                  title: localizations.defaultLayoutNaming,
-                  namePref: PreferenceKeys.layoutBaseName,
-                  datePref: PreferenceKeys.layoutNameDate,
-                  timePref: PreferenceKeys.layoutNameTime,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DBSettings extends StatelessWidget {
-  const _DBSettings({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    final prefs = context.watch<PreferencesModel>();
-
-    // The list of Dropbox-related settings.
-    final dbSettingsList = <Widget>[
-      SwitchListTile.adaptive(
-        title: Text(localizations.dropboxBackup),
-        secondary: const Icon(FontAwesomeIcons.dropbox),
-        value: prefs.dropboxEnabled,
-        onChanged: (value) async {
-          if (!value) dbUnlink(context);
-          prefs.dropboxEnabled = value;
-        },
-      ),
-    ];
-
-    // Only show further settings if Dropbox is enabled.
-    if (prefs.dropboxEnabled) {
-      dbSettingsList.add(
-        const _DBLoginButton(),
-      );
-      // Add default backup path chooser.
-      if (prefs.dropboxAuthorized)
-        dbSettingsList.add(
-          _DBPathTile(
-            dbPath: prefs.dropboxPath,
-          ),
-        );
-    }
-
-    // Generate settings card.
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(children: dbSettingsList),
-    );
-  }
-}
-
-class _DBLoginButton extends StatelessWidget {
-  const _DBLoginButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final prefs = context.watch<PreferencesModel>();
-    final localizations = AppLocalizations.of(context)!;
-    // TODO: Find a better way to determine this.
-    final isAuthorized = prefs.dropboxAuthorized;
-
-    // Show the sign in button if Dropbox is not authorized
-    if (!isAuthorized)
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () async {
-                  Dropbox.authorize();
-                  prefs.dropboxAuthorized = true;
-                },
-                child: Text(localizations.signIn),
-              ),
-            ),
-          ],
-        ),
-      );
-
-    // Show the sign out button otherwise.
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Colors.red),
-              onPressed: () async {
-                dbUnlink(context);
-              },
-              child: Text(localizations.signOut),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DBPathTile extends StatelessWidget {
-  const _DBPathTile({
-    Key? key,
-    this.dbPath,
-  }) : super(key: key);
-
-  final String? dbPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(AppLocalizations.of(context)!.backupLocation),
-      leading: const Icon(Icons.folder),
-      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-      subtitle: Text((dbPath == null || dbPath!.isEmpty) ? '/' : dbPath!),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return DropboxChooser(args: DropboxChooserArgs());
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _DefaultNamingView extends StatefulWidget {
-  _DefaultNamingView({
-    Key? key,
-    required this.title,
-    required this.namePref,
-    required this.datePref,
-    required this.timePref,
-  }) : super(key: key);
-
-  final String title;
-  final String namePref;
-  final String datePref;
-  final String timePref;
-
-  @override
-  __DefaultNamingViewState createState() => __DefaultNamingViewState();
-}
-
-class __DefaultNamingViewState extends State<_DefaultNamingView> {
-  Widget _getDivider() {
-    return Divider(height: 0.0);
-  }
-
-  List<Widget> _getSettings() {
-    final localizations = AppLocalizations.of(context)!;
-    final prefs = Provider.of<PreferencesModel>(context);
-    return [
-      ListTile(
-        title: Text(localizations.baseName),
-        subtitle: ControlledTextField(
-          initialValue: prefs.getString(widget.namePref),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-          ),
-          onChanged: (value) => prefs.setString(widget.namePref, value),
-          maxLines: 1,
-        ),
-      ),
-      _getDivider(),
-      SwitchListTile.adaptive(
-        title: Text(localizations.includeDate),
-        value: prefs.getBool(widget.datePref),
-        onChanged: (value) => prefs.setBool(widget.datePref, value),
-      ),
-      _getDivider(),
-      SwitchListTile.adaptive(
-        title: Text(localizations.inlcudeTime),
-        value: prefs.getBool(widget.timePref),
-        onChanged: (value) => prefs.setBool(widget.timePref, value),
-      ),
-      _getDivider(),
-      ListTile(
-        title: Text(localizations.preview),
-        subtitle: Text(
-          PreferencesModel.constructName(
-            prefs.getString(widget.namePref),
-            prefs.getBool(widget.datePref),
-            prefs.getBool(widget.timePref),
-          ),
-        ),
-      ),
-    ];
-  }
-
-  Widget _getBody() {
-    return ListView(
-      children: [
-        Card(
-          margin: const EdgeInsets.all(16.0),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(children: _getSettings()),
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: _getBody(),
-    );
-  }
-}
-
-class _Info extends StatelessWidget {
-  const _Info({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return AboutListTile(
-                    applicationIcon: Image.asset(
-                      'assets/icon/icon.png',
-                      height: 64.0,
-                      width: 64.0,
-                    ),
-                    applicationVersion: 'v' + snapshot.data!.version,
-                    applicationLegalese: '© 2021 Simon Rodoni',
-                  );
-                } else if (snapshot.hasError)
-                  return Center(
-                    child: Text(snapshot.error!.toString()),
-                  );
-
-                return const LoadingIndicator();
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
