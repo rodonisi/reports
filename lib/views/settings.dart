@@ -260,11 +260,12 @@ class _DBSettings extends StatelessWidget {
         const _DBLoginButton(),
       );
       // Add default backup path chooser.
-      dbSettingsList.add(
-        _DBPathTile(
-          dbPath: prefs.dropboxPath,
-        ),
-      );
+      if (prefs.dropboxAuthorized)
+        dbSettingsList.add(
+          _DBPathTile(
+            dbPath: prefs.dropboxPath,
+          ),
+        );
     }
 
     // Generate settings card.
