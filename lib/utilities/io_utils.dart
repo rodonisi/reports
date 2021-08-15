@@ -47,7 +47,7 @@ Future<bool> writeToFile(String string, String destination,
     return false;
   }
 
-  if (renameFrom.isNotEmpty) {
+  if (renameFrom.isNotEmpty && renameFrom != destination) {
     logger.d('Renaming file: $renameFrom => $destination');
     destFile = await File(renameFrom).rename(destination);
   }

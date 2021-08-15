@@ -2,7 +2,6 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'dart:io';
-import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -43,49 +42,50 @@ class FormBuilder extends StatefulWidget {
 }
 
 class _FormBuilderState extends State<FormBuilder> {
-  late ReportLayout layout;
-  bool loaded = false;
+  late ReportLayout _layout;
+  bool _loaded = false;
   bool _isNew = false;
 
   void _addField(FieldOptions options) {
-    setState(() => layout.fields.add(options));
+    setState(() => _layout.fields.add(options));
   }
 
   void _removeField(int i) {
     setState(() {
-      layout.fields.removeAt(i);
+      _layout.fields.removeAt(i);
     });
   }
 
   void _saveCallback() async {
     final localizations = AppLocalizations.of(context)!;
-    if (layout.fields.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+    // Don't save if the layout is empty.
+    if (_layout.fields.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           content: Text(localizations.layoutCannotBeEmpty),
-          backgroundColor: Colors.red));
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
-    final layoutString = await layout.toJSON();
-    var destPath = '';
-    var fromPath = '';
-
-    if (_isNew) {
-      destPath = joinAndSetExtension(
-          context.read<PreferencesModel>().layoutsPath, layout.name);
-    } else {
-      destPath = joinAndSetExtension(p.dirname(widget.args.path), layout.name);
-      if (destPath != widget.args.path) fromPath = widget.args.path;
-    }
+    // Get the encoded layout.
+    final layoutString = await _layout.toJSON();
+    var destPath = joinAndSetExtension(
+        context.read<PreferencesModel>().layoutsPath, _layout.name);
 
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,
-        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
+        checkExisting: destPath != widget.args.path,
+        renameFrom: widget.args.path);
     if (!didWrite) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations.fileExists(localizations.layout)),
-        backgroundColor: Colors.red,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.fileExists(localizations.layout)),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
@@ -106,18 +106,18 @@ class _FormBuilderState extends State<FormBuilder> {
     // Add completition callback for when the file has been read.
     futureLayout.then((value) {
       setState(() {
-        layout = ReportLayout.fromJSON(value);
-        loaded = true;
+        _layout = ReportLayout.fromJSON(value);
+        _loaded = true;
         _isNew = false;
       });
     }).catchError((error, stackTrace) async {
       final defaultName = context.read<PreferencesModel>().defaultLayoutName;
       setState(() {
-        layout = ReportLayout(
+        _layout = ReportLayout(
           name: defaultName,
           fields: [],
         );
-        loaded = true;
+        _loaded = true;
         _isNew = true;
       });
     });
@@ -128,7 +128,7 @@ class _FormBuilderState extends State<FormBuilder> {
   @override
   Widget build(BuildContext context) {
     // If the layout is not yet available just return a progress indicator.
-    if (!loaded) return const LoadingIndicator();
+    if (!_loaded) return const LoadingIndicator();
 
     // Add the share action only if we're viewing an existing report.
     final List<Widget> shareAction = [];
@@ -140,7 +140,7 @@ class _FormBuilderState extends State<FormBuilder> {
             final layoutsDir =
                 context.read<PreferencesModel>().layoutsDirectory;
             Share.shareFiles(
-              ['$layoutsDir/${layout.name}.json'],
+              ['$layoutsDir/${_layout.name}.json'],
             );
           },
         ),
@@ -154,8 +154,8 @@ class _FormBuilderState extends State<FormBuilder> {
           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
           hasClearButton: true,
           maxLines: 1,
-          initialValue: layout.name,
-          onChanged: (value) => layout.name = value,
+          initialValue: _layout.name,
+          onChanged: (value) => _layout.name = value,
         ),
         leading: IconButton(
           icon: const Icon(Icons.close_rounded),
@@ -167,23 +167,23 @@ class _FormBuilderState extends State<FormBuilder> {
       body: ReorderableListView.builder(
         padding: const EdgeInsets.all(16.0),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: layout.fields.length,
+        itemCount: _layout.fields.length,
         itemBuilder: (context, i) {
           return FormCard(
             key: ValueKey('LayoutItem$i'),
-            options: layout.fields[i],
+            options: _layout.fields[i],
             onDelete: () => _removeField(i),
           );
         },
         onReorder: (oldPos, newPos) {
-          final item = layout.fields.removeAt(oldPos);
+          final item = _layout.fields.removeAt(oldPos);
           // We need to decrease the new index if it was previosuly in a lower
           // earlier position, because we already deleted the entry.
           if (newPos > oldPos) newPos--;
-          if (newPos < layout.fields.length)
-            layout.fields.insert(newPos, item);
+          if (newPos < _layout.fields.length)
+            _layout.fields.insert(newPos, item);
           else
-            layout.fields.add(item);
+            _layout.fields.add(item);
         },
       ),
       floatingActionButton: _Dial(addFieldFunc: _addField),
