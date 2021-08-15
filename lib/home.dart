@@ -39,7 +39,7 @@ class _WideLayout extends StatelessWidget {
   Widget _getChildFromPage(Pages? page) {
     switch (page) {
       case Pages.reports:
-        return Reports();
+        return ReportsList();
       case Pages.layouts:
         return LayoutsList();
       case Pages.settings:
@@ -72,7 +72,7 @@ class _NarrowLayout extends StatelessWidget {
         if (appState.currentPage == null)
           MaterialPage(key: MenuDrawer.valueKey, child: MenuDrawer())
         else if (appState.currentPage == Pages.reports)
-          MaterialPage(key: Reports.valueKey, child: Reports())
+          MaterialPage(key: ReportsList.valueKey, child: ReportsList())
         else if (appState.currentPage == Pages.layouts)
           MaterialPage(key: LayoutsList.valueKey, child: LayoutsList())
         else if (appState.currentPage == Pages.settings)
@@ -81,7 +81,7 @@ class _NarrowLayout extends StatelessWidget {
       onPopPage: (route, result) {
         final page = route.settings as MaterialPage;
 
-        if (page.key == Reports.valueKey ||
+        if (page.key == ReportsList.valueKey ||
             page.key == LayoutsList.valueKey ||
             page.key == Settings.valueKey) appState.currentPage = null;
 

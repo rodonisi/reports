@@ -22,15 +22,14 @@ import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - Reports Widget Implementation
+// - ReportsList Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays a nested navigator managing the reports navigation.
-class Reports extends StatelessWidget {
-  static const routeName = "/reports";
-  static const ValueKey valueKey = ValueKey('Reports');
+class ReportsList extends StatelessWidget {
+  static const ValueKey valueKey = ValueKey('ReportsList');
 
-  const Reports({
+  const ReportsList({
     Key? key,
   }) : super(key: key);
 
@@ -47,9 +46,9 @@ class Reports extends StatelessWidget {
       paths.forEach((element) {
         pagesList.add(
           MaterialPage(
-            key: ValueKey(p.join(ReportsList.valueKey.value, element)),
+            key: ValueKey(p.join(_Body.valueKey.value, element)),
             name: p.join(prefs.reportsPath, element),
-            child: ReportsList(
+            child: _Body(
               path: p.join(prefs.reportsPath, element),
             ),
           ),
@@ -58,8 +57,8 @@ class Reports extends StatelessWidget {
     }
     return WrapNavigator(
       child: MaterialPage(
-        key: ReportsList.valueKey,
-        child: ReportsList(
+        key: _Body.valueKey,
+        child: _Body(
           path: '',
         ),
       ),
@@ -77,14 +76,14 @@ class Reports extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// - ReportsList Widget Implementation
+// - _Body Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays a directory navigator for the reports folder.
-class ReportsList extends StatefulWidget {
-  static const ValueKey valueKey = ValueKey('ReportsList');
+class _Body extends StatefulWidget {
+  static const ValueKey valueKey = ValueKey('ReportsListBody');
 
-  const ReportsList({Key? key, required this.path}) : super(key: key);
+  const _Body({Key? key, required this.path}) : super(key: key);
 
   /// The full path to the reports directory to display. If an empty path ('') is
   /// provided, the base reports directory $reportsDirectory is picked.
@@ -94,7 +93,7 @@ class ReportsList extends StatefulWidget {
   _ReportsListState createState() => _ReportsListState();
 }
 
-class _ReportsListState extends State<ReportsList> {
+class _ReportsListState extends State<_Body> {
   late Directory _dir;
   late bool _showDrawer;
 
@@ -105,10 +104,7 @@ class _ReportsListState extends State<ReportsList> {
         context: context,
         bounce: true,
         closeProgressThreshold: 0.4,
-        builder: (context) {
-          final args = ReportViewerArgs(path: item.path);
-          return ReportViewer(args: args);
-        },
+        builder: (context) => ReportViewer(path: item.path),
       ).then(
         (value) => setState(() {}),
       ),
@@ -193,10 +189,7 @@ class _ReportsListState extends State<ReportsList> {
                     context: context,
                     bounce: true,
                     closeProgressThreshold: 0.4,
-                    builder: (context) {
-                      final args = ReportViewerArgs(path: _dir.path);
-                      return ReportViewer(args: args);
-                    },
+                    builder: (context) => ReportViewer(path: _dir.path),
                   ).then((value) => setState(() {}));
                 else
                   ScaffoldMessenger.of(context).showSnackBar(

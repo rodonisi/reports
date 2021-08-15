@@ -18,24 +18,13 @@ import 'package:reports/widgets/form_card.dart';
 import 'package:reports/widgets/save_button.dart';
 
 // -----------------------------------------------------------------------------
-// - ReportViewerArgs Class Implementation
-// -----------------------------------------------------------------------------
-
-/// Arguments class for the report viewer.
-class ReportViewerArgs {
-  ReportViewerArgs({required this.path});
-
-  final String path;
-}
-
-// -----------------------------------------------------------------------------
 // - ReportViewer Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays the report viewer for a new or existing report.
 class ReportViewer extends StatefulWidget {
-  final ReportViewerArgs args;
-  ReportViewer({Key? key, required this.args}) : super(key: key);
+  final String path;
+  ReportViewer({Key? key, required this.path}) : super(key: key);
 
   @override
   _ReportViewerState createState() => _ReportViewerState();
@@ -81,15 +70,15 @@ class _ReportViewerState extends State<ReportViewer> {
     var fromPath = '';
 
     if (_isNew) {
-      destPath = joinAndSetExtension(widget.args.path, report.title);
+      destPath = joinAndSetExtension(widget.path, report.title);
     } else {
-      destPath = joinAndSetExtension(p.dirname(widget.args.path), report.title);
-      if (destPath != widget.args.path) fromPath = widget.args.path;
+      destPath = joinAndSetExtension(p.dirname(widget.path), report.title);
+      if (destPath != widget.path) fromPath = widget.path;
     }
 
     // Write the report to file.
     final didWrite = await writeToFile(reportString, destPath,
-        checkExisting: destPath != widget.args.path, renameFrom: fromPath);
+        checkExisting: destPath != widget.path, renameFrom: fromPath);
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(localizations.fileExists(localizations.report)),
@@ -110,7 +99,7 @@ class _ReportViewerState extends State<ReportViewer> {
   @override
   void initState() {
     // Read the report from file
-    final futureReport = File(widget.args.path).readAsString();
+    final futureReport = File(widget.path).readAsString();
 
     // Add completition callback for when the file has been read.
     futureReport.then((value) {
