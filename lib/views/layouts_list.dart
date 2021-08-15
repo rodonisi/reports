@@ -16,43 +16,41 @@ import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
 // -----------------------------------------------------------------------------
-// - Layouts Widget Implementation
+// - LayoutsList Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays the LayoutsList widget wrapped in a navigator.
-class Layouts extends StatelessWidget {
-  static const String routeName = '/layouts';
-  static const ValueKey valueKey = ValueKey('Layouts');
+class LayoutsList extends StatelessWidget {
+  static const ValueKey valueKey = ValueKey('LayoutsList');
 
-  const Layouts({Key? key}) : super(key: key);
+  const LayoutsList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WrapNavigator(
       child: MaterialPage(
-        key: LayoutsList.valueKey,
-        child: LayoutsList(),
+        key: _Body.valueKey,
+        child: _Body(),
       ),
     );
   }
 }
 
 // -----------------------------------------------------------------------------
-// - LayoutsList Widget Implementation
+// - _Body Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays the layouts directory list.
-class LayoutsList extends StatefulWidget {
-  static const String routeName = '/layouts';
-  static const ValueKey valueKey = ValueKey('LayoutsList');
+class _Body extends StatefulWidget {
+  static const ValueKey valueKey = ValueKey('LayoutsListBody');
 
-  LayoutsList({Key? key}) : super(key: key);
+  _Body({Key? key}) : super(key: key);
 
   @override
   _LayoutsListState createState() => _LayoutsListState();
 }
 
-class _LayoutsListState extends State<LayoutsList> {
+class _LayoutsListState extends State<_Body> {
   late bool _showDrawer;
 
   void _fileActionCallback(File item) {
@@ -61,10 +59,7 @@ class _LayoutsListState extends State<LayoutsList> {
       bounce: true,
       closeProgressThreshold: 0.4,
       builder: (context) {
-        final args = FormBuilderArgs(
-          path: item.path,
-        );
-        return FormBuilder(args: args);
+        return FormBuilder(path: item.path);
       },
     ).then((value) => setState(() {}));
   }
@@ -75,8 +70,7 @@ class _LayoutsListState extends State<LayoutsList> {
       bounce: true,
       closeProgressThreshold: 0.4,
       builder: (context) {
-        final args = FormBuilderArgs(path: '');
-        return FormBuilder(args: args);
+        return FormBuilder();
       },
     ).then((value) => setState(() {}));
   }

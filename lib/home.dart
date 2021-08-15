@@ -41,7 +41,7 @@ class _WideLayout extends StatelessWidget {
       case Pages.reports:
         return Reports();
       case Pages.layouts:
-        return Layouts();
+        return LayoutsList();
       case Pages.settings:
         return Settings();
       case null:
@@ -74,7 +74,7 @@ class _NarrowLayout extends StatelessWidget {
         else if (appState.currentPage == Pages.reports)
           MaterialPage(key: Reports.valueKey, child: Reports())
         else if (appState.currentPage == Pages.layouts)
-          MaterialPage(key: Layouts.valueKey, child: Layouts())
+          MaterialPage(key: LayoutsList.valueKey, child: LayoutsList())
         else if (appState.currentPage == Pages.settings)
           MaterialPage(key: Settings.valueKey, child: Settings())
       ],
@@ -82,7 +82,7 @@ class _NarrowLayout extends StatelessWidget {
         final page = route.settings as MaterialPage;
 
         if (page.key == Reports.valueKey ||
-            page.key == Layouts.valueKey ||
+            page.key == LayoutsList.valueKey ||
             page.key == Settings.valueKey) appState.currentPage = null;
 
         return route.didPop(result);

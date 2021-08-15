@@ -18,24 +18,13 @@ import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
 
 // -----------------------------------------------------------------------------
-// - FormBuilderArgs Class Implementation
-// -----------------------------------------------------------------------------
-
-/// Arguments class for the form builder.
-class FormBuilderArgs {
-  FormBuilderArgs({required this.path});
-
-  final String path;
-}
-
-// -----------------------------------------------------------------------------
 // - FormBuilder Widget Implementation
 // -----------------------------------------------------------------------------
 
 /// Displays a form builder.
 class FormBuilder extends StatefulWidget {
-  final FormBuilderArgs args;
-  FormBuilder({Key? key, required this.args}) : super(key: key);
+  final String path;
+  FormBuilder({Key? key, this.path = ''}) : super(key: key);
 
   @override
   _FormBuilderState createState() => _FormBuilderState();
@@ -77,8 +66,8 @@ class _FormBuilderState extends State<FormBuilder> {
 
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,
-        checkExisting: destPath != widget.args.path,
-        renameFrom: widget.args.path);
+        checkExisting: destPath != widget.path,
+        renameFrom: widget.path);
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -101,7 +90,7 @@ class _FormBuilderState extends State<FormBuilder> {
   @override
   void initState() {
     // Read layout from file
-    final futureLayout = File(widget.args.path).readAsString();
+    final futureLayout = File(widget.path).readAsString();
 
     // Add completition callback for when the file has been read.
     futureLayout.then((value) {
