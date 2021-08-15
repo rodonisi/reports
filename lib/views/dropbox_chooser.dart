@@ -39,6 +39,17 @@ class DropboxChooser extends StatefulWidget {
 class _DropboxChooserState extends State<DropboxChooser> {
   late Future<dynamic> _listFuture;
 
+  void _selectPathCallback() async {
+    final prefs = context.read<PreferencesModel>();
+    prefs.dropboxPath = widget.path;
+
+    logger.d('New dropbox path: ${widget.path}');
+
+    Navigator.popUntil(context, ModalRoute.withName(Settings.routeName));
+
+    dbBackupEverything(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,18 +63,9 @@ class _DropboxChooserState extends State<DropboxChooser> {
         title: Text(widget.name),
         actions: [
           IconButton(
-              onPressed: () async {
-                final prefs = context.read<PreferencesModel>();
-                prefs.dropboxPath = widget.path;
-
-                logger.d('New dropbox path: ${widget.path}');
-
-                Navigator.popUntil(
-                    context, ModalRoute.withName(Settings.routeName));
-
-                dbBackupEverything(context);
-              },
-              icon: const Icon(Icons.check)),
+            onPressed: _selectPathCallback,
+            icon: const Icon(Icons.check),
+          ),
         ],
       ),
       body: FutureBuilder(
@@ -85,12 +87,16 @@ class _DropboxChooserState extends State<DropboxChooser> {
                   leading: Icon(isFile ? Icons.text_snippet : Icons.folder),
                   trailing:
                       isFile ? null : Icon(Icons.arrow_forward_ios_rounded),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return DropboxChooser(
-                          args: DropboxChooserArgs(name: name, path: itemPath));
-                    },
-                  )),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return DropboxChooser(
+                            args:
+                                DropboxChooserArgs(name: name, path: itemPath));
+                      },
+                    ),
+                  ),
                   enabled: !isFile,
                 );
               },
