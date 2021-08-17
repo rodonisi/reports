@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
-import 'package:file_selector/file_selector.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -25,7 +25,7 @@ class MacosSettings extends StatelessWidget {
           title: const Text('Default Path'),
           subtitle: Text(prefs.defaultPath),
           onTap: () async {
-            final dir = await getDirectoryPath();
+            final dir = await FilePicker.platform.getDirectoryPath();
             logger.d(dir);
             if (dir != null) prefs.defaultPath = dir;
           },

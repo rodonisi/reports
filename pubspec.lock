@@ -57,13 +57,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  cross_file:
-    dependency: transitive
-    description:
-      name: cross_file
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1+4"
   crypto:
     dependency: transitive
     description:
@@ -112,42 +105,14 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.0"
   file_picker:
     dependency: "direct main"
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
-  file_selector:
-    dependency: "direct main"
-    description:
-      name: file_selector
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.2"
-  file_selector_macos:
-    dependency: "direct main"
-    description:
-      name: file_selector_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4+1"
-  file_selector_platform_interface:
-    dependency: transitive
-    description:
-      name: file_selector_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
-  file_selector_web:
-    dependency: transitive
-    description:
-      name: file_selector_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.1+1"
+    version: "4.0.0"
   flutter:
     dependency: "direct main"
     description: flutter
