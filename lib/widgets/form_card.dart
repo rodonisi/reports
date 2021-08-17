@@ -205,7 +205,6 @@ class _FormCardContent extends StatelessWidget {
         options: options as SectionFieldOptions,
         enabled: enabled,
       );
-    ;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
