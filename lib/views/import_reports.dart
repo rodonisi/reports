@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/io_utils.dart';
@@ -111,45 +112,34 @@ class _ImportReportsViewState extends State<ImportReportsView> {
   }
 
   Widget _getBody() {
-    return Column(
-      children: [
-        Flexible(
-          fit: FlexFit.tight,
-          child: Card(
-            margin: const EdgeInsets.all(16.0),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
-                itemCount: widget.files.length,
-                itemBuilder: (context, index) => Row(
-                  children: [
-                    Expanded(child: Text(widget.files[index].name)),
-                    IconButton(
-                      onPressed: () =>
-                          setState(() => widget.files.removeAt(index)),
-                      icon: const Icon(
-                        Icons.cancel,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return SafeArea(
+      bottom: true,
+      child: Column(
+        children: [
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: widget.files.map<Widget>((item) {
+                return _ImportGridItem(
+                  item: item,
+                  onDelete: () => setState(() => widget.files.remove(item)),
+                );
+              }).toList(),
             ),
           ),
-        ),
-        ContainerTile(
-          title: Text(_localizations.destination),
-          subtitle: Text(_getRelativePath(_destination)),
-          enabled: !_importAsLayouts,
-          onTap: () => setState(() => _chooserPath = _destination),
-        ),
-        SwitchListTile.adaptive(
-          value: _importAsLayouts,
-          title: Text(_localizations.importAsLayout),
-          onChanged: (value) => setState(() => _importAsLayouts = value),
-        ),
-      ],
+          ContainerTile(
+            title: Text(_localizations.destination),
+            subtitle: Text(_getRelativePath(_destination)),
+            enabled: !_importAsLayouts,
+            onTap: () => setState(() => _chooserPath = _destination),
+          ),
+          SwitchListTile.adaptive(
+            value: _importAsLayouts,
+            title: Text(_localizations.importAsLayout),
+            onChanged: (value) => setState(() => _importAsLayouts = value),
+          ),
+        ],
+      ),
     );
   }
 
@@ -198,6 +188,57 @@ class _ImportReportsViewState extends State<ImportReportsView> {
 
         return route.didPop(result);
       },
+    );
+  }
+}
+
+class _ImportGridItem extends StatelessWidget {
+  const _ImportGridItem({
+    Key? key,
+    required this.item,
+    required this.onDelete,
+  }) : super(key: key);
+
+  final PlatformFile item;
+  final void Function() onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: const Icon(ReportsIcons.report),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    item.name,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTap: onDelete,
+              child: const Icon(
+                Icons.cancel,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
