@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 // -----------------------------------------------------------------------------
 
 /// The pages that can be active from the main navigator.
-enum Pages { reports, layouts, settings }
+enum Pages { reports, layouts, import, settings }
 
 /// The model of the main app state.
 class AppStateModel extends ChangeNotifier {

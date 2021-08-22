@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/app_state.dart';
+import 'package:reports/views/import_reports.dart';
 import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/report_list.dart';
@@ -42,6 +43,8 @@ class _WideLayout extends StatelessWidget {
         return ReportsList();
       case Pages.layouts:
         return LayoutsList();
+      case Pages.import:
+        return ImportView();
       case Pages.settings:
         return Settings();
       case null:
@@ -75,6 +78,8 @@ class _NarrowLayout extends StatelessWidget {
           MaterialPage(key: ReportsList.valueKey, child: ReportsList())
         else if (appState.currentPage == Pages.layouts)
           MaterialPage(key: LayoutsList.valueKey, child: LayoutsList())
+        else if (appState.currentPage == Pages.import)
+          MaterialPage(key: ImportView.valueKey, child: ImportView())
         else if (appState.currentPage == Pages.settings)
           MaterialPage(key: Settings.valueKey, child: Settings())
       ],

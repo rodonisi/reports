@@ -88,3 +88,20 @@ List<String> getSubPaths(String path) {
 
   return list;
 }
+
+/// Copy the file stored in the source path to destination. Returns false if a
+/// file already exists on destination.
+bool copyFile(String source, String destination) {
+  // Get file.
+  final file = File(source);
+
+  // Check if file exists
+  if (File(destination).existsSync()) return false;
+
+  // Copy the file to the destination.
+  file.copy(destination);
+
+  logger.d('Copied file $source to $destination');
+
+  return true;
+}

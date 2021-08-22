@@ -63,10 +63,12 @@ class ReportsApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.white,
           primarySwatch: prefs.accentColor,
+          accentColor: prefs.accentColor,
           brightness: Brightness.light,
         ),
         darkTheme: ThemeData(
           primarySwatch: prefs.accentColor,
+          accentColor: prefs.accentColor,
           brightness: Brightness.dark,
         ),
         themeMode: prefs.themeMode,
