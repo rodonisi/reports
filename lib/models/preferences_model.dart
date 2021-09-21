@@ -69,7 +69,6 @@ class PreferenceKeys {
 class PreferencesModel extends ChangeNotifier {
   late SharedPreferences _prefs;
   late String localDocsPath;
-  bool loading = true;
 
   /// The list of valid accent colors.
   final colors = const <MaterialColor>[
@@ -94,7 +93,6 @@ class PreferencesModel extends ChangeNotifier {
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
     localDocsPath = (await getApplicationDocumentsDirectory()).path;
-    loading = false;
 
     notifyListeners();
   }

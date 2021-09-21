@@ -45,12 +45,6 @@ class ReportsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
 
-    // Just returna a progrss indicator if the preferences have not loaded yet.
-    if (prefs.loading)
-      return Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-
     return GestureDetector(
       onTap: () {
         // Get current focus.
