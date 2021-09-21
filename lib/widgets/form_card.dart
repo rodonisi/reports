@@ -116,7 +116,6 @@ class __FormBuilderCardContentState extends State<_FormBuilderCardContent>
       child: AnimatedSize(
         duration: Duration(milliseconds: _animationDuration),
         reverseDuration: Duration(milliseconds: _animationDuration),
-        vsync: this,
         child: context.watch<bool>()
             ? _FormCardOptions(
                 options: widget.options,

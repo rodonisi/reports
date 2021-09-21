@@ -80,7 +80,6 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
     final prefs = context.watch<PreferencesModel>();
 
     return AnimatedSize(
-      vsync: this,
       duration: Duration(milliseconds: 150),
       child: Column(
         mainAxisSize: MainAxisSize.min,
