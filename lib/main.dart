@@ -15,17 +15,17 @@ import 'package:reports/models/preferences_model.dart';
 // -----------------------------------------------------------------------------
 // - App Entry Point
 // -----------------------------------------------------------------------------
-void main() {
+void main() async {
   // Only allow portrait mode
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Dropbox.
   if (!Platform.isMacOS)
-    Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
+    await Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
 
   // Declare and initialize providers.
   final prefs = PreferencesModel();
-  prefs.initialize();
+  await prefs.initialize();
   final appState = AppStateModel();
 
   // Run app
