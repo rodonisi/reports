@@ -50,6 +50,7 @@ class ReportsApp extends StatelessWidget {
         // Get current focus.
         final currentFocus = FocusScope.of(context);
 
+        // Unfocus on tapping anywhere outside the keyboard to hide it.
         if (!currentFocus.hasPrimaryFocus) currentFocus.focusedChild!.unfocus();
       },
       child: MaterialApp(
