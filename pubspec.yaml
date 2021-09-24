@@ -23,8 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,10 +38,10 @@ dependencies:
   shared_preferences: ^2.0.6
   dropbox_client: ^0.8.0
   font_awesome_flutter: ^9.1.0
-  intl: ^0.17.0
   modal_bottom_sheet: ^2.0.0
   package_info_plus: ^1.0.4
   file_picker: ^4.0.0
+  easy_localization: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +51,6 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
 flutter:
-  generate: true
   fonts:
     - family: ReportsIcons
       fonts:
@@ -65,6 +62,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icon/icon.png
+    - assets/translations/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -94,7 +92,3 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon/icon.png"
-flutter_intl:
-  enabled: true
-  localizely:
-    project_id: 8355ffd5-25fe-4c57-89bd-2646b832031f

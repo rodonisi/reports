@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class MacosSettings extends StatelessWidget {
     return ListCard(
       children: [
         ListTile(
-          title: const Text('Default Path'),
+          title: const Text('settings.macos.path').tr(),
           subtitle: Text(prefs.defaultPath),
           onTap: () async {
             final dir = await FilePicker.platform.getDirectoryPath();
@@ -31,7 +32,7 @@ class MacosSettings extends StatelessWidget {
           },
         ),
         SwitchListTile.adaptive(
-          title: const Text('Reader Mode'),
+          title: const Text('settings.macos.reader_mode').tr(),
           value: prefs.readerMode,
           onChanged: (value) => prefs.readerMode = value,
         ),

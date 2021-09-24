@@ -3,11 +3,11 @@
 // -----------------------------------------------------------------------------
 import 'dart:convert';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -41,7 +41,6 @@ class _ImportViewState extends State<ImportView> {
   String _reportsDirectory = '';
   List<PlatformFile> _reports = [];
   List<PlatformFile> _layouts = [];
-  late AppLocalizations _localizations;
 
   void _setDestinationCallback() {
     setState(() {
@@ -71,7 +70,7 @@ class _ImportViewState extends State<ImportView> {
 
   void _saveCallback() {
     if (_reports.isEmpty && _layouts.isEmpty) {
-      _showSnackBar('No files selected!');
+      _showSnackBar('import.no_files'.tr());
       return;
     }
     // Get destination directory.
@@ -99,10 +98,10 @@ class _ImportViewState extends State<ImportView> {
 
     if (hadError)
       // Show failure snackbar.
-      _showSnackBar('Failed to import some files.');
+      _showSnackBar('import.error'.tr());
     else
       // Show success snackbar.
-      _showSnackBar('Succesfully imported files!', color: Colors.green);
+      _showSnackBar('import.success'.tr(), color: Colors.green);
 
     setState(() {
       // Clear import lists.
@@ -113,7 +112,7 @@ class _ImportViewState extends State<ImportView> {
 
   AppBar _getAppBar() {
     return AppBar(
-      title: Text(_localizations.importReports),
+      title: Text('import.title').tr(),
     );
   }
 
@@ -123,7 +122,7 @@ class _ImportViewState extends State<ImportView> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: ElevatedButton(
-          child: Text('Import'),
+          child: Text('import.import_button').tr(),
           onPressed: _saveCallback,
         ),
       ),
@@ -139,8 +138,6 @@ class _ImportViewState extends State<ImportView> {
 
   @override
   Widget build(BuildContext context) {
-    _localizations = AppLocalizations.of(context)!;
-
     final pagesList = <MaterialPage>[];
     if (_chooserPath != null) {
       final paths = getSubPaths(_getRelativePathCallback(_chooserPath!));
@@ -214,13 +211,6 @@ class _ImportViewBody extends StatefulWidget {
 }
 
 class __ImportViewBodyState extends State<_ImportViewBody> {
-  late AppLocalizations _localizations;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   List<Widget> _getReportsOptions() {
     return [
       Padding(
@@ -229,12 +219,12 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
           horizontal: 16.0,
         ),
         child: Text(
-          'Reports Options',
+          'import.reports_options',
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        ).tr(),
       ),
       ContainerTile(
-        title: Text(_localizations.destination),
+        title: Text('import.destination').tr(),
         subtitle: Text(
           p.relative(widget.destination,
               from: context.read<PreferencesModel>().reportsPath),
@@ -244,7 +234,7 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
       ),
       SwitchListTile.adaptive(
         value: widget.getImportAsLayouts(),
-        title: Text(_localizations.importAsLayout),
+        title: Text('import.as_layout').tr(),
         onChanged: (value) =>
             setState(() => widget.setImportAsLayoutsCallback(value)),
       ),
@@ -253,7 +243,6 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    _localizations = AppLocalizations.of(context)!;
     return SafeArea(
       bottom: true,
       child: Column(
@@ -320,7 +309,7 @@ class _GridView extends StatelessWidget {
     if (files.isEmpty && layouts.isEmpty)
       return Center(
         child: TextButton(
-          child: Text('Select Files'),
+          child: Text('import.select_files').tr(),
           onPressed: () {
             FilePicker.platform.pickFiles(
                 allowMultiple: true,
@@ -425,15 +414,13 @@ class _DestinationChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(p.basename(path)),
         actions: [
           TextButton(
             onPressed: onSelected,
-            child: Text(localizations.select),
+            child: Text('import.select').tr(),
           ),
         ],
       ),

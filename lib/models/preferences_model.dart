@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -81,13 +82,13 @@ class PreferencesModel extends ChangeNotifier {
   ];
 
   /// The list of names for the respective accent colors.
-  final colorNames = const <String>[
-    'Blue',
-    'Green',
-    'Purple',
-    'Red',
-    'Orange',
-    'Yellow',
+  final colorNames = [
+    'settings.appearance.colors.blue',
+    'settings.appearance.colors.green',
+    'settings.appearance.colors.purple',
+    'settings.appearance.colors.red',
+    'settings.appearance.colors.orange',
+    'settings.appearance.colors.yellow',
   ];
 
   Future<void> initialize() async {
@@ -97,16 +98,43 @@ class PreferencesModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getString(String key, {String defaultValue = ''}) {
-    return _prefs.getString(key) ?? defaultValue;
+  String getString(String key,
+      {String defaultValue = '', bool ensureInitialized = false}) {
+    final value = _prefs.getString(key);
+    if (value == null) {
+      if (ensureInitialized) {
+        setString(key, defaultValue);
+      }
+      return defaultValue;
+    }
+
+    return value;
   }
 
-  bool getBool(String key, {bool defaultValue = false}) {
-    return _prefs.getBool(key) ?? defaultValue;
+  bool getBool(String key,
+      {bool defaultValue = false, bool ensureInitialized = false}) {
+    final value = _prefs.getBool(key);
+    if (value == null) {
+      if (ensureInitialized) {
+        setBool(key, defaultValue);
+      }
+      return defaultValue;
+    }
+
+    return value;
   }
 
-  int getInt(String key, {int defaultValue = 0}) {
-    return _prefs.getInt(key) ?? defaultValue;
+  int getInt(String key,
+      {int defaultValue = 0, bool ensureInitialized = false}) {
+    final value = _prefs.getInt(key);
+    if (value == null) {
+      if (ensureInitialized) {
+        setInt(key, defaultValue);
+      }
+      return defaultValue;
+    }
+
+    return value;
   }
 
   String get dropboxAccessToken {
@@ -126,7 +154,11 @@ class PreferencesModel extends ChangeNotifier {
   }
 
   String get layoutBaseName {
-    return getString(PreferenceKeys.layoutBaseName);
+    return getString(
+      PreferenceKeys.layoutBaseName,
+      defaultValue: '@.capitalize:keywords.layout'.tr(),
+      ensureInitialized: true,
+    );
   }
 
   bool get layoutNameDate {
@@ -144,7 +176,11 @@ class PreferencesModel extends ChangeNotifier {
   }
 
   String get reportBaseName {
-    return getString(PreferenceKeys.reportBaseName);
+    return getString(
+      PreferenceKeys.reportBaseName,
+      defaultValue: '@.capitalize:keywords.report'.tr(),
+      ensureInitialized: true,
+    );
   }
 
   bool get reportNameDate {

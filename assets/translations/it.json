@@ -1,0 +1,123 @@
+{
+    "builder": {
+        "empty": "Il @:keywords.layout non può essere vuoto",
+        "field_options": {
+            "common": {},
+            "date": {
+                "header": "@.capitalize:keywords.options @:builder.fields.date",
+                "mode": "Modalità",
+                "modes": {
+                    "date": "@:builder.fields.date",
+                    "date_time": "@:builder.fields.date e @:builder.field_options.date.modes.time",
+                    "time": "Ora"
+                }
+            },
+            "date_range": {
+                "header": "@.capitalize:keywords.options @:builder.fields.date_range",
+                "summary": "Mostra Riassunto"
+            },
+            "text": {
+                "header": "@.capitalize:keywords.options @:builder.fields.text",
+                "lines": "Righe",
+                "numeric": "Tastiera Numerica"
+            }
+        },
+        "fields": {
+            "date": "Data",
+            "date_range": "Intervallo Data",
+            "section": "Titolo",
+            "subsection": "Sottotitolo",
+            "text": "Testo"
+        }
+    },
+    "import": {
+        "as_layout": "@:import.import come @.capitalize:keywords.layout",
+        "destination": "Destinazione",
+        "error": "Impossibile importare alcuni @:keywords.file.",
+        "import": "Importa",
+        "import_button": "@:import.import",
+        "no_files": "Nessun @:keywords.file selezionato!",
+        "reports_options": "Opzioni @.capitalize:keywords.reports",
+        "select": "Seleziona",
+        "select_files": "@:import.select @.capitalize:keywords.files",
+        "success": "Importato @:keywords.file con successo!",
+        "title": "@:import.import"
+    },
+    "keywords": {
+        "create": "crea",
+        "day": {
+            "one": "{} giorno",
+            "other": "{} giorni",
+            "zero": "{} giorni"
+        },
+        "days": "giorni",
+        "file": "file",
+        "files": "file",
+        "hour": {
+            "one": "{} ora",
+            "other": "{} ore",
+            "zero": "{} ore"
+        },
+        "layout": "layout",
+        "layouts": "layout",
+        "loading": "caricamento",
+        "minute": {
+            "one": "{} minuto",
+            "other": "{} minuti",
+            "zero": "{} minuti"
+        },
+        "option": "opzione",
+        "options": "opzioni",
+        "report": "rapporto",
+        "reports": "rapporti",
+        "save": "salva",
+        "title": "titolo"
+    },
+    "layout": "Layout",
+    "report": "Rapporto",
+    "reports_list": {
+        "new_folder": "Nuova Cartella",
+        "requires_layouts": "Impossibile creare un @:keywords.report senza nessun @:keywords.layouts"
+    },
+    "settings": {
+        "appearance": {
+            "appearance": "Apparenza",
+            "colors": {
+                "blue": "Blu",
+                "green": "Verde",
+                "orange": "Arancione",
+                "purple": "Viola",
+                "red": "Rosso",
+                "yellow": "Giallo"
+            },
+            "dark": "Scuro",
+            "light": "Chiaro",
+            "primary_color": "Colore Primario",
+            "system": "Sistema"
+        },
+        "dropbox": {
+            "backup": "Backup su Dropbox",
+            "location": "Posizione Backup",
+            "signin": "Accedi",
+            "signout": "Esci"
+        },
+        "general": {
+            "include": "Includi",
+            "include_date": "@:settings.general.include Data",
+            "include_time": "@:settings.general.include Ora",
+            "layout_naming": "@:settings.general.naming @.capitalize:keywords.layout",
+            "name": "Nome",
+            "naming": "Denominazione",
+            "preview": "Anteprima",
+            "report_naming": "@:settings.general.naming @.capitalize:keywords.report"
+        },
+        "macos": {
+            "path": "Percorso Default",
+            "reader_mode": "Modalità Lettura"
+        },
+        "settings": "Impostazioni"
+    },
+    "utility": {
+        "file_exists": "Un @:keywords.file col nome {} esiste già."
+    }
+}

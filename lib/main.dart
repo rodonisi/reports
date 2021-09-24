@@ -4,9 +4,9 @@
 import 'dart:io';
 
 import 'package:dropbox_client/dropbox_client.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/home.dart';
 import 'package:reports/models/app_state.dart';
@@ -19,6 +19,8 @@ void main() async {
   // Only allow portrait mode
   WidgetsFlutterBinding.ensureInitialized();
 
+  await EasyLocalization.ensureInitialized();
+
   // Initialize Dropbox.
   if (!Platform.isMacOS)
     await Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
@@ -30,12 +32,17 @@ void main() async {
 
   // Run app
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<PreferencesModel>.value(value: prefs),
-        ChangeNotifierProvider<AppStateModel>.value(value: appState)
-      ],
-      child: ReportsApp(),
+    EasyLocalization(
+      supportedLocales: [Locale('en'), Locale('it')],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en'),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<PreferencesModel>.value(value: prefs),
+          ChangeNotifierProvider<AppStateModel>.value(value: appState)
+        ],
+        child: ReportsApp(),
+      ),
     ),
   );
 }
@@ -64,8 +71,9 @@ class ReportsApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         themeMode: prefs.themeMode,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         home: Home(),
       ),
     );

@@ -3,9 +3,9 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -88,7 +88,7 @@ class _LayoutsListState extends State<_Body> {
     final prefs = context.read<PreferencesModel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.layoutsTitle),
+        title: Text('@.capitalize:keywords.layouts').tr(),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: prefs.accentColor,

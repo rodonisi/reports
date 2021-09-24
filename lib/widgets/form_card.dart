@@ -2,9 +2,9 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:date_field/date_field.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -379,14 +379,14 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
     final duration = widget.data.end.difference(widget.data.start);
     var total = '';
     if (duration.inDays > 0) {
-      total = '${duration.inDays} days, ';
+      total = 'keywords.day'.plural(duration.inDays) + ', ';
     }
 
     if (duration.inHours > 0) {
-      total += '${duration.inHours.remainder(24)} hours, ';
+      total += 'keywords.hour'.plural(duration.inHours.remainder(24)) + ', ';
     }
 
-    total += '${duration.inMinutes.remainder(60)} minutes';
+    total += 'keywords.minute'.plural(duration.inMinutes.remainder(60));
 
     return total;
   }
@@ -477,7 +477,6 @@ class _FormCardOptions extends StatelessWidget {
 
 List<Widget> _getCommonOptions(
     BuildContext context, FieldOptions options, String title) {
-  final localization = AppLocalizations.of(context)!;
   final opts = [
     Text(
       title,
@@ -488,9 +487,9 @@ List<Widget> _getCommonOptions(
     ),
     Divider(),
     Text(
-      localization.title,
+      '@.capitalize:keywords.title',
       style: TextStyle(fontWeight: FontWeight.bold),
-    ),
+    ).tr(),
     ControlledTextField(
       initialValue: options.title,
       onChanged: (value) => options.title = value,
@@ -511,23 +510,22 @@ class _TextFieldOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ..._getCommonOptions(
-            context, options, localization.textFieldOptionsHeader),
+            context, options, 'builder.field_options.text.header'.tr()),
         Text(
-          localization.lines,
+          'builder.field_options.text.lines',
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        ).tr(),
         ControlledTextField(
           initialValue: options.lines.toString(),
           onChanged: (value) => options.lines = int.parse(value),
           keyboardType: TextInputType.number,
         ),
         _SwitchOption(
-          title: localization.numericKeyboard,
+          title: 'builder.field_options.text.numeric'.tr(),
           getter: options.getNumeric,
           setter: options.setNumeric,
         ),
@@ -543,30 +541,29 @@ class _DateFieldOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ..._getCommonOptions(
-            context, options, localizations.dateFieldOptionsHeader),
+            context, options, 'builder.field_options.date.header'.tr()),
         Text(
-          localizations.mode,
+          'builder.field_options.date.mode',
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        ).tr(),
         _DropdownOption<String>(
           getter: () => options.mode,
           setter: (String value) => options.mode = value,
           items: [
             DropdownMenuItem(
-              child: Text(localizations.date),
+              child: Text('builder.field_options.date.modes.date').tr(),
               value: DateFieldFormats.dateModeID,
             ),
             DropdownMenuItem(
-              child: Text(localizations.time),
+              child: Text('builder.field_options.date.modes.time').tr(),
               value: DateFieldFormats.timeModeID,
             ),
             DropdownMenuItem(
-              child: Text(localizations.dateAndTime),
+              child: Text('builder.field_options.date.modes.date_time').tr(),
               value: DateFieldFormats.dateTimeModeID,
             )
           ],
@@ -583,28 +580,27 @@ class _DateRangeFieldOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ..._getCommonOptions(
-            context, options, localizations.dateFieldOptionsHeader),
+            context, options, 'builder.field_options.date_range.header'.tr()),
         Text(
-          localizations.mode,
+          'builder.field_options.date.mode',
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        ).tr(),
         _DropdownOption<String>(
           items: [
             DropdownMenuItem(
-              child: Text(localizations.date),
+              child: Text('builder.field_options.date.modes.date').tr(),
               value: DateFieldFormats.dateModeID,
             ),
             DropdownMenuItem(
-              child: Text(localizations.time),
+              child: Text('builder.field_options.date.modes.time').tr(),
               value: DateFieldFormats.timeModeID,
             ),
             DropdownMenuItem(
-              child: Text(localizations.dateAndTime),
+              child: Text('builder.field_options.date.modes.date_time').tr(),
               value: DateFieldFormats.dateTimeModeID,
             )
           ],
@@ -612,7 +608,7 @@ class _DateRangeFieldOptions extends StatelessWidget {
           setter: (String value) => options.mode = value,
         ),
         _SwitchOption(
-          title: 'Show summary',
+          title: 'builder.field_options.date_range.summary'.tr(),
           getter: () => options.showTotal,
           setter: (value) => options.showTotal = value,
         ),

@@ -2,10 +2,10 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/widgets/loading_indicator.dart';
 import 'package:share_plus/share_plus.dart';
@@ -63,8 +63,6 @@ class _ReportViewerState extends State<ReportViewer> {
   }
 
   void _saveCallback() async {
-    final localizations = AppLocalizations.of(context)!;
-
     final reportString = await report.toJSON();
     var destPath = '';
     var fromPath = '';
@@ -81,7 +79,7 @@ class _ReportViewerState extends State<ReportViewer> {
         checkExisting: destPath != widget.path, renameFrom: fromPath);
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations.fileExists(localizations.report)),
+        content: Text('utiliry.file_exists').tr(args: [report.title]),
         backgroundColor: Colors.red,
       ));
       return;
@@ -109,14 +107,11 @@ class _ReportViewerState extends State<ReportViewer> {
         _isNew = false;
       });
     }).catchError((error, stackTrace) async {
-      final localizations = AppLocalizations.of(context)!;
       final layouts = getLayoutsList(context);
       // Read the first available layout.
       final layoutString = await layouts.first.readAsString();
 
       final prefs = context.read<PreferencesModel>();
-      prefs.initializeString(
-          PreferenceKeys.reportBaseName, localizations.report);
       final defaultName = prefs.defaultReportName;
       setState(() {
         report = Report(

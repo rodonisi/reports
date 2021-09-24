@@ -3,9 +3,9 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/common/reports_icons_icons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -22,22 +22,21 @@ class MenuRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     final prefs = context.watch<AppStateModel>();
     return NavigationRail(
       extended: extended,
       destinations: [
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.report),
-          label: Text(localizations.reportsTitle),
+          label: Text('@.capitalize:keywords.reports').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.layout),
-          label: Text(localizations.layoutsTitle),
+          label: Text('@.capitalize:keywords.layouts').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.settings),
-          label: Text(localizations.settings),
+          label: Text('settings.settings').tr(),
         ),
       ],
       selectedIndex: prefs.getIndexFromPage(),
@@ -66,7 +65,6 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     final appState = context.read<AppStateModel>();
     return Scaffold(
       body: SafeArea(
@@ -75,14 +73,14 @@ class MenuDrawer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
           children: [
             ContainerTile(
-              title: Text(localizations.reportsTitle),
+              title: Text('@.capitalize:keywords.reports').tr(),
               leading: const Icon(ReportsIcons.report),
               selected: appState.currentPage == Pages.reports,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.reports,
             ),
             ContainerTile(
-              title: Text(localizations.layoutsTitle),
+              title: Text('@.capitalize:keywords.layouts').tr(),
               leading: const Icon(ReportsIcons.layout),
               selected: appState.currentPage == Pages.layouts,
               onTap: () =>
@@ -91,7 +89,7 @@ class MenuDrawer extends StatelessWidget {
             _getSeparator(),
             if (!Platform.isMacOS) ...[
               ListTile(
-                title: Text(localizations.import),
+                title: Text('import.import').tr(),
                 leading: const Icon(Icons.save_alt),
                 selected: appState.currentPage == Pages.import,
                 onTap: () => appState.currentPage = Pages.import,
@@ -99,7 +97,7 @@ class MenuDrawer extends StatelessWidget {
               _getSeparator(),
             ],
             ContainerTile(
-              title: Text(localizations.settings),
+              title: Text('settings.settings').tr(),
               leading: const Icon(Icons.settings),
               selected: appState.currentPage == Pages.settings,
               onTap: () =>

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {
@@ -11,7 +12,7 @@ class LoadingIndicator extends StatelessWidget {
         children: [
           const CircularProgressIndicator.adaptive(),
           const SizedBox(height: 16.0),
-          const Text('Loading'),
+          const Text('@.capitalize:keywords.loading').tr(),
         ],
       ),
     );

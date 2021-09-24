@@ -2,11 +2,11 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/utilities/logger.dart';
@@ -117,7 +117,7 @@ class _ReportsListState extends State<_Body> {
   Widget _getNewFolderDialog(BuildContext context) {
     String folderName = '';
     return AlertDialog(
-      title: const Text('New Folder'),
+      title: const Text('reports_list.new_folder').tr(),
       content: ControlledTextField(
         hasClearButton: true,
         onChanged: (value) => folderName = value,
@@ -132,7 +132,7 @@ class _ReportsListState extends State<_Body> {
             }
             Navigator.pop(context);
           },
-          child: const Text('Create'),
+          child: const Text('@.capitalize:keywords.create').tr(),
         ),
       ],
     );
@@ -162,8 +162,9 @@ class _ReportsListState extends State<_Body> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.path.isEmpty
-            ? AppLocalizations.of(context)!.reportsTitle
-            : p.basename(widget.path)),
+                ? '@.capitalize:keywords.reports'
+                : p.basename(widget.path))
+            .tr(),
         actions: [
           IconButton(
             onPressed: () {
@@ -194,8 +195,7 @@ class _ReportsListState extends State<_Body> {
                 else
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                          AppLocalizations.of(context)!.reportRequiresLayout),
+                      content: Text('reports_list.requires_layouts').tr(),
                     ),
                   );
               },

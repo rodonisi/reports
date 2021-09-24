@@ -3,9 +3,9 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
@@ -46,13 +46,11 @@ class _FormBuilderState extends State<FormBuilder> {
   }
 
   void _saveCallback() async {
-    final localizations = AppLocalizations.of(context)!;
-
     // Don't save if the layout is empty.
     if (_layout.fields.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.layoutCannotBeEmpty),
+          content: Text('builder.empty').tr(),
           backgroundColor: Colors.red,
         ),
       );
@@ -66,12 +64,11 @@ class _FormBuilderState extends State<FormBuilder> {
 
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,
-        checkExisting: destPath != widget.path,
-        renameFrom: widget.path);
+        checkExisting: destPath != widget.path, renameFrom: widget.path);
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.fileExists(localizations.layout)),
+          content: Text('utility.file_exists').tr(args: [_layout.name]),
           backgroundColor: Colors.red,
         ),
       );
@@ -212,7 +209,6 @@ class _Dial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return SpeedDial(
       icon: Icons.add,
@@ -224,38 +220,38 @@ class _Dial extends StatelessWidget {
         _theemedDialChild(
           context: context,
           icon: Icons.date_range,
-          label: localization.dateRange,
+          label: 'builder.fields.date_range'.tr(),
           onTap: () => addFieldFunc(
             DateRangeFieldOptions(
-              title: localization.dateRange,
+              title: 'builder.fields.date_range'.tr(),
             ),
           ),
         ),
         _theemedDialChild(
           context: context,
           icon: Icons.calendar_today,
-          label: localization.date,
+          label: 'builder.fields.date'.tr(),
           onTap: () => addFieldFunc(
-            DateFieldOptions(title: localization.date),
+            DateFieldOptions(title: 'builder.fields.date'.tr()),
           ),
         ),
         _theemedDialChild(
           context: context,
           icon: Icons.short_text,
-          label: localization.textFieldName,
+          label: 'builder.fields.text'.tr(),
           onTap: () => addFieldFunc(
             TextFieldOptions(
-              title: localization.text,
+              title: 'builder.fields.text'.tr(),
             ),
           ),
         ),
         _theemedDialChild(
           context: context,
           icon: Icons.text_fields,
-          label: localization.subsection,
+          label: 'builder.fields.subsection'.tr(),
           onTap: () => addFieldFunc(
             SectionFieldOptions(
-              title: localization.subsection,
+              title: 'builder.fields.subsection'.tr(),
               fontSize: SectionFieldOptions.subsectionSize,
             ),
           ),
@@ -263,10 +259,10 @@ class _Dial extends StatelessWidget {
         _theemedDialChild(
           context: context,
           icon: Icons.title,
-          label: localization.section,
+          label: 'builder.fields.section'.tr(),
           onTap: () => addFieldFunc(
             SectionFieldOptions(
-              title: localization.section,
+              title: 'builder.fields.section'.tr(),
             ),
           ),
         ),

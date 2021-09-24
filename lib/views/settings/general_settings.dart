@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -19,31 +19,33 @@ class GeneralSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final prefs = context.read<PreferencesModel>();
 
     return ListCard(
       children: [
         ListTile(
-          title: Text(localizations.defaultReportNaming),
+          title: Text('settings.general.layout_naming').tr(),
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           onTap: () => showBarModalBottomSheet(
             context: context,
             builder: (context) => _DefaultNamingView(
-              title: localizations.defaultReportNaming,
+              title: 'settings.general.layout_naming'.tr(),
               namePref: PreferenceKeys.reportBaseName,
+              defaultName: prefs.layoutBaseName,
               datePref: PreferenceKeys.reportNameDate,
               timePref: PreferenceKeys.reportNameTime,
             ),
           ),
         ),
         ListTile(
-          title: Text(localizations.defaultLayoutNaming),
+          title: Text('settings.general.report_naming').tr(),
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           onTap: () => showBarModalBottomSheet(
             context: context,
             builder: (context) => _DefaultNamingView(
-              title: localizations.defaultLayoutNaming,
+              title: 'settings.general.report_naming'.tr(),
               namePref: PreferenceKeys.layoutBaseName,
+              defaultName: prefs.reportBaseName,
               datePref: PreferenceKeys.layoutNameDate,
               timePref: PreferenceKeys.layoutNameTime,
             ),
@@ -59,12 +61,14 @@ class _DefaultNamingView extends StatefulWidget {
     Key? key,
     required this.title,
     required this.namePref,
+    required this.defaultName,
     required this.datePref,
     required this.timePref,
   }) : super(key: key);
 
   final String title;
   final String namePref;
+  final String defaultName;
   final String datePref;
   final String timePref;
 
@@ -76,7 +80,6 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     final prefs = context.watch<PreferencesModel>();
 
     return AnimatedSize(
@@ -87,9 +90,13 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: ListTile(
-              title: Text(localizations.baseName),
+              title: Text('settings.general.name').tr(),
               subtitle: ControlledTextField(
-                initialValue: prefs.getString(widget.namePref),
+                initialValue: prefs.getString(
+                  widget.namePref,
+                  defaultValue: widget.defaultName,
+                  ensureInitialized: true,
+                ),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding:
@@ -101,17 +108,17 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
             ),
           ),
           SwitchListTile.adaptive(
-            title: Text(localizations.includeDate),
+            title: Text('settings.general.include_date').tr(),
             value: prefs.getBool(widget.datePref),
             onChanged: (value) => prefs.setBool(widget.datePref, value),
           ),
           SwitchListTile.adaptive(
-            title: Text(localizations.inlcudeTime),
+            title: Text('settings.general.include_time').tr(),
             value: prefs.getBool(widget.timePref),
             onChanged: (value) => prefs.setBool(widget.timePref, value),
           ),
           ListTile(
-            title: Text(localizations.preview),
+            title: Text('settings.general.preview').tr(),
             subtitle: Text(
               PreferencesModel.constructName(
                 prefs.getString(widget.namePref),

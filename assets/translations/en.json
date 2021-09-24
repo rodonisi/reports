@@ -1,0 +1,123 @@
+{
+    "builder": {
+        "empty": "@.capitalize:keywords.layout cannot be empty",
+        "field_options": {
+            "common": {},
+            "date": {
+                "header": "@:builder.fields.date @.capitalize:keywords.options",
+                "mode": "Mode",
+                "modes": {
+                    "date": "@:builder.fields.date",
+                    "date_time": "@:builder.fields.date and @:builder.field_options.date.modes.time",
+                    "time": "Time"
+                }
+            },
+            "date_range": {
+                "header": "@:builder.fields.date_range @.capitalize:keywords.options",
+                "summary": "Show Summary"
+            },
+            "text": {
+                "header": "@:builder.fields.text @.capitalize:keywords.options",
+                "lines": "Lines",
+                "numeric": "Numeric Keyboard"
+            }
+        },
+        "fields": {
+            "date": "Date",
+            "date_range": "Date Range",
+            "section": "Section",
+            "subsection": "Subsection",
+            "text": "Text"
+        }
+    },
+    "import": {
+        "as_layout": "@:import.import as @.capitalize:keywords.layout",
+        "destination": "Destination",
+        "error": "Failed to import some @.capitalize:keywords.files.",
+        "import": "Import",
+        "import_button": "@:import.import",
+        "no_files": "No @:keywords.files selected!",
+        "reports_options": "@.capitalize:keywords.reports @.capitalize:keywords.options",
+        "select": "Select",
+        "select_files": "@:import.select @.capitalize:keywords.file",
+        "success": "Successfully imported @:keywords.files!",
+        "title": "@:import.import"
+    },
+    "keywords": {
+        "create": "create",
+        "day": {
+            "one": "{} day",
+            "other": "{} days",
+            "zero": "{} days"
+        },
+        "days": "days",
+        "file": "file",
+        "files": "files",
+        "hour": {
+            "one": "{} hour",
+            "other": "{} hours",
+            "zero": "{} hours"
+        },
+        "layout": "layout",
+        "layouts": "layouts",
+        "loading": "loading",
+        "minute": {
+            "one": "{} minute",
+            "other": "{} minutes",
+            "zero": "{} minutes"
+        },
+        "option": "option",
+        "options": "options",
+        "report": "report",
+        "reports": "reports",
+        "save": "save",
+        "title": "title"
+    },
+    "layout": "Layout",
+    "report": "Report",
+    "reports_list": {
+        "new_folder": "New Folder",
+        "requires_layouts": "Cannot create a @:keywords.report without any @:keywords.layouts"
+    },
+    "settings": {
+        "appearance": {
+            "appearance": "Appearance",
+            "colors": {
+                "blue": "Blue",
+                "green": "Green",
+                "orange": "Orange",
+                "purple": "Purple",
+                "red": "Red",
+                "yellow": "Yellow"
+            },
+            "dark": "Dark",
+            "light": "Light",
+            "primary_color": "Primary Color",
+            "system": "System"
+        },
+        "dropbox": {
+            "backup": "Backup to Dropbox",
+            "location": "Backup Location",
+            "signin": "Sign In",
+            "signout": "Sign Out"
+        },
+        "general": {
+            "include": "Include",
+            "include_date": "@:settings.general.include Date",
+            "include_time": "@:settings.general.include Time",
+            "layout_naming": "@.capitalize:keywords.layout @:settings.general.naming",
+            "name": "Name",
+            "naming": "Naming",
+            "preview": "Preview",
+            "report_naming": "@.capitalize:keywords.report @:settings.general.naming"
+        },
+        "macos": {
+            "path": "Default Path",
+            "reader_mode": "Reader Mode"
+        },
+        "settings": "Settings"
+    },
+    "utility": {
+        "file_exists": "A @:keywords.file named {} already exists."
+    }
+}

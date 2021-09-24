@@ -3,8 +3,8 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/settings/appearance_settings.dart';
 import 'package:reports/views/settings/dropbox_settings.dart';
@@ -51,10 +51,9 @@ class _SettingsBody extends StatelessWidget {
     // Only show the drawer if in narrow layout.
     final showDrawer =
         context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
-    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.settings),
+        title: Text('settings.settings').tr(),
       ),
       drawer: showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       body: ListView(
