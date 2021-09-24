@@ -37,6 +37,7 @@
         "import": "Importa",
         "import_button": "@:import.import",
         "no_files": "Nessun @:keywords.file selezionato!",
+        "pick": "Seleziona",
         "reports_options": "Opzioni @.capitalize:keywords.reports",
         "select": "Seleziona",
         "select_files": "@:import.select @.capitalize:keywords.files",

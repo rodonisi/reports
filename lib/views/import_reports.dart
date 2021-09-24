@@ -295,34 +295,31 @@ class _GridView extends StatelessWidget {
 
   void _processFiles(FilePickerResult pickedFiles) {
     pickedFiles.files.removeWhere((element) => element.isReport == null);
-    pickedFiles.files.forEach((element) {
-      if (element.isReport!)
-        files.add(element);
-      else
-        layouts.add(element);
+    pickedFiles.files.forEach((picked) {
+      if (picked.isReport! &&
+          files.indexWhere((element) => picked.path == element.path) < 0) {
+        files.add(picked);
+      } else if (!picked.isReport! &&
+          layouts.indexWhere((element) => picked.path == element.path) < 0) {
+        layouts.add(picked);
+      }
     });
     setState(() {});
   }
 
+  void _pickFilesCallback() {
+    FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['.json']).then((pickedFiles) {
+      if (pickedFiles != null) {
+        _processFiles(pickedFiles);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (files.isEmpty && layouts.isEmpty)
-      return Center(
-        child: TextButton(
-          child: Text('import.select_files').tr(),
-          onPressed: () {
-            FilePicker.platform.pickFiles(
-                allowMultiple: true,
-                type: FileType.custom,
-                allowedExtensions: ['.json']).then((pickedFiles) {
-              if (pickedFiles != null) {
-                _processFiles(pickedFiles);
-              }
-            });
-          },
-        ),
-      );
-
     return GridView.count(
       crossAxisCount: 3,
       children: [
@@ -339,8 +336,33 @@ class _GridView extends StatelessWidget {
             item: item,
             onDelete: () => setState(() => layouts.remove(item)),
           );
-        }).toList()
+        }).toList(),
+        _PickFilesItem(onTap: _pickFilesCallback)
       ],
+    );
+  }
+}
+
+class _PickFilesItem extends StatelessWidget {
+  const _PickFilesItem({Key? key, required this.onTap}) : super(key: key);
+
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: ElevatedButton(
+        onPressed: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: FittedBox(child: Icon(Icons.add))),
+            Flexible(child: Text('import.pick').tr()),
+          ],
+        ),
+      ),
     );
   }
 }
