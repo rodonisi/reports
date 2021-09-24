@@ -47,28 +47,31 @@ class _AppearanceSelectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        RadioListTile<ThemeMode>(
-          title: Text('settings.appearance.light').tr(),
-          value: ThemeMode.light,
-          groupValue: prefs.themeMode,
-          onChanged: (value) => prefs.themeMode = value!,
-        ),
-        RadioListTile<ThemeMode>(
-          title: Text('settings.appearance.dark').tr(),
-          value: ThemeMode.dark,
-          groupValue: prefs.themeMode,
-          onChanged: (value) => prefs.themeMode = value!,
-        ),
-        RadioListTile<ThemeMode>(
-          title: Text('settings.appearance.system').tr(),
-          value: ThemeMode.system,
-          groupValue: prefs.themeMode,
-          onChanged: (value) => prefs.themeMode = value!,
-        )
-      ],
+    return SafeArea(
+      bottom: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RadioListTile<ThemeMode>(
+            title: Text('settings.appearance.light').tr(),
+            value: ThemeMode.light,
+            groupValue: prefs.themeMode,
+            onChanged: (value) => prefs.themeMode = value!,
+          ),
+          RadioListTile<ThemeMode>(
+            title: Text('settings.appearance.dark').tr(),
+            value: ThemeMode.dark,
+            groupValue: prefs.themeMode,
+            onChanged: (value) => prefs.themeMode = value!,
+          ),
+          RadioListTile<ThemeMode>(
+            title: Text('settings.appearance.system').tr(),
+            value: ThemeMode.system,
+            groupValue: prefs.themeMode,
+            onChanged: (value) => prefs.themeMode = value!,
+          )
+        ],
+      ),
     );
   }
 }

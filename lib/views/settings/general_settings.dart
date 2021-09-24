@@ -82,57 +82,60 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
 
-    return AnimatedSize(
-      duration: Duration(milliseconds: 150),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ListTile(
-              title: Text('settings.general.name').tr(),
-              subtitle: ControlledTextField(
-                initialValue: prefs.getString(
-                  widget.namePref,
-                  defaultValue: widget.defaultName,
-                  ensureInitialized: true,
+    return SafeArea(
+      bottom: true,
+      child: AnimatedSize(
+          duration: Duration(milliseconds: 150),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: ListTile(
+                  title: Text('settings.general.name').tr(),
+                  subtitle: ControlledTextField(
+                    initialValue: prefs.getString(
+                      widget.namePref,
+                      defaultValue: widget.defaultName,
+                      ensureInitialized: true,
+                    ),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                    ),
+                    onChanged: (value) =>
+                        prefs.setString(widget.namePref, value),
+                    maxLines: 1,
+                  ),
                 ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+              ),
+              SwitchListTile.adaptive(
+                title: Text('settings.general.include_date').tr(),
+                value: prefs.getBool(widget.datePref),
+                onChanged: (value) => prefs.setBool(widget.datePref, value),
+              ),
+              SwitchListTile.adaptive(
+                title: Text('settings.general.include_time').tr(),
+                value: prefs.getBool(widget.timePref),
+                onChanged: (value) => prefs.setBool(widget.timePref, value),
+              ),
+              ListTile(
+                title: Text('settings.general.preview').tr(),
+                subtitle: Text(
+                  PreferencesModel.constructName(
+                    prefs.getString(widget.namePref),
+                    prefs.getBool(widget.datePref),
+                    prefs.getBool(widget.timePref),
+                  ),
                 ),
-                onChanged: (value) => prefs.setString(widget.namePref, value),
-                maxLines: 1,
               ),
-            ),
-          ),
-          SwitchListTile.adaptive(
-            title: Text('settings.general.include_date').tr(),
-            value: prefs.getBool(widget.datePref),
-            onChanged: (value) => prefs.setBool(widget.datePref, value),
-          ),
-          SwitchListTile.adaptive(
-            title: Text('settings.general.include_time').tr(),
-            value: prefs.getBool(widget.timePref),
-            onChanged: (value) => prefs.setBool(widget.timePref, value),
-          ),
-          ListTile(
-            title: Text('settings.general.preview').tr(),
-            subtitle: Text(
-              PreferencesModel.constructName(
-                prefs.getString(widget.namePref),
-                prefs.getBool(widget.datePref),
-                prefs.getBool(widget.timePref),
+              // Add a spacer when the keyboard is shown
+              SizedBox(
+                height: MediaQuery.of(context).viewInsets.bottom,
               ),
-            ),
-          ),
-          // Add a spacer when the keyboard is shown
-          SizedBox(
-            height: MediaQuery.of(context).viewInsets.bottom,
-          ),
-        ],
-      ),
+            ],
+          )),
     );
   }
 }
