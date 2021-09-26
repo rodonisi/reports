@@ -200,8 +200,6 @@ class _Dial extends StatelessWidget {
         icon,
         color: theme.iconTheme.color,
       ),
-      backgroundColor: theme.backgroundColor,
-      labelBackgroundColor: theme.backgroundColor,
       label: label,
       onTap: onTap,
     );
@@ -213,9 +211,8 @@ class _Dial extends StatelessWidget {
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
-      iconTheme: theme.iconTheme,
+      iconTheme: theme.primaryIconTheme,
       backgroundColor: context.read<PreferencesModel>().accentColor,
-      overlayColor: theme.primaryColor,
       children: [
         _theemedDialChild(
           context: context,
