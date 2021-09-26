@@ -18,7 +18,11 @@ class SaveButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text('@.capitalize:keywords.save').tr(),
+        child: Text(
+          '@.capitalize:keywords.save',
+          style: TextStyle(
+              color: Theme.of(context).primaryTextTheme.bodyText1?.color),
+        ).tr(),
       ),
     );
   }
