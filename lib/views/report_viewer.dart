@@ -242,6 +242,8 @@ class __LayoutSelectorState extends State<_LayoutSelector> {
     return DropdownButton<File>(
         items: _menuItems,
         value: _selectedLayout,
+        style: Theme.of(context).primaryTextTheme.button,
+        dropdownColor: Theme.of(context).colorScheme.primary,
         onChanged: (value) async {
           _selectedLayout = value!;
           // Read layout.
