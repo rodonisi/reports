@@ -196,10 +196,7 @@ class _Dial extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     return SpeedDialChild(
-      child: Icon(
-        icon,
-        color: theme.iconTheme.color,
-      ),
+      child: Icon(icon),
       label: label,
       onTap: onTap,
     );
