@@ -9,7 +9,7 @@ void main() {
     'test default layout',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        wrapWidgetScaffold(
+        WrapApp(
           widget: ControlledTextField(
             initialValue: 'test',
           ),
@@ -28,7 +28,7 @@ void main() {
     (WidgetTester tester) async {
       final focusNode = FocusNode();
       await tester.pumpWidget(
-        wrapWidgetScaffold(
+        WrapApp(
           widget: ControlledTextField(
             initialValue: 'test',
             hasClearButton: true,

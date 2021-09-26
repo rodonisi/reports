@@ -11,12 +11,15 @@ void main() {
     await tester.runAsync(() async {
       final directory = await Directory.systemTemp.createTemp();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileAction: (item) {},
-        directoryAction: (item) {},
-        directoryPath: directory.path,
-      )));
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final findListTile = find.byType(ListTile);
 
@@ -29,12 +32,15 @@ void main() {
       final directory = await Directory.systemTemp.createTemp();
       await File('${directory.path}/test.json').create();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileAction: (item) {},
-        directoryAction: (item) {},
-        directoryPath: directory.path,
-      )));
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final findListTile = find.byType(ListTile);
       final findTestText = find.text('test');
@@ -51,12 +57,15 @@ void main() {
       await File('${directory.path}/test.json').create();
       await File('${directory.path}/test2.json').create();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileAction: (item) {},
-        directoryAction: (item) {},
-        directoryPath: directory.path,
-      )));
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final findListTile = find.byType(ListTile);
       final findTestText = find.text('test');
@@ -75,12 +84,15 @@ void main() {
       await Directory('${directory.path}/dir').create();
       await File('${directory.path}/test.json').create();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileAction: (item) {},
-        directoryAction: (item) {},
-        directoryPath: directory.path,
-      )));
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final findListTile = find.byType(ListTile);
 
@@ -111,13 +123,16 @@ void main() {
       await Directory('${directory.path}/dir').create();
       await File('${directory.path}/test.json').create();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileIcon: Icons.ac_unit,
-        fileAction: (item) {},
-        directoryAction: (item) {},
-        directoryPath: directory.path,
-      )));
+            fileIcon: Icons.ac_unit,
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final evaluate = findListTile.evaluate();
 
@@ -141,12 +156,15 @@ void main() {
       await Directory('${directory.path}/dir').create();
       await File('${directory.path}/test.json').create();
 
-      await tester.pumpWidget(wrapWidgetScaffold(
+      await tester.pumpWidget(
+        WrapApp(
           widget: DirectoryViewer(
-        fileAction: (item) => print('file'),
-        directoryAction: (item) => print('dir'),
-        directoryPath: directory.path,
-      )));
+            fileAction: (item) => print('file'),
+            directoryAction: (item) => print('dir'),
+            directoryPath: directory.path,
+          ),
+        ),
+      );
 
       final findListTile = find.byType(ListTile);
       await tester.tap(findListTile.first);

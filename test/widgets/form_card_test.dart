@@ -1,7 +1,10 @@
 import 'package:date_field/date_field.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,9 +23,21 @@ class TapTestHandler {
   }
 }
 
-void main() {
-  setUp(() {
+void main() async {
+  late PreferencesModel model;
+
+  setUp(() async {
+    const dir = './test/resources';
+    const channel = MethodChannel(
+      'plugins.flutter.io/path_provider',
+    );
+    channel.setMockMethodCallHandler((MethodCall methodCall) async {
+      return dir;
+    });
     SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+    model = PreferencesModel();
+    await model.initialize();
   });
 
   // ---------------------------------------------------------------------------
@@ -33,16 +48,22 @@ void main() {
     final options = SectionFieldOptions(title: title);
 
     // --------------------
-    group('layout builder', () {
+    group('builder', () {
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
+
         // There should be no wrapping card or title.
         expect(find.byType(Card), findsNothing);
         expect(find.byType(Text), findsNothing);
@@ -62,15 +83,21 @@ void main() {
         expect(find.byType(IconButton), findsOneWidget);
         expect(find.byIcon(Icons.delete_forever), findsOneWidget);
       });
+
       testWidgets('input interaction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The initial test should be the one given in the options constructor.
         expect(find.text(title), findsOneWidget);
@@ -81,16 +108,22 @@ void main() {
         expect(find.text(title), findsNothing);
         expect(find.text(testString), findsOneWidget);
       });
+
       testWidgets('delete button interaction', (WidgetTester tester) async {
         final tapTestHandler = TapTestHandler();
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: tapTestHandler.increment,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                onDelete: tapTestHandler.increment,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findDeleteButton = find.byIcon(Icons.delete_forever);
 
@@ -110,18 +143,23 @@ void main() {
     });
 
     // --------------------
-    group('report viewer', () {
+    group('viewer', () {
       final data = TextFieldData(data: '');
 
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              data: data,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                data: data,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The delete icon should not be shown.
         expect(find.byIcon(Icons.delete_forever), findsNothing);
@@ -147,16 +185,21 @@ void main() {
       fontSize: SectionFieldOptions.subsectionSize,
     );
 
-    group('layout builder', () {
+    group('builder', () {
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
+
         // There should be no wrapping card or title.
         expect(find.byType(Card), findsNothing);
         expect(find.byType(Text), findsNothing);
@@ -178,14 +221,18 @@ void main() {
       });
 
       testWidgets('input interaction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The initial test should be the one given in the options constructor.
         expect(find.text(title), findsOneWidget);
@@ -196,16 +243,21 @@ void main() {
         expect(find.text(title), findsNothing);
         expect(find.text(testString), findsOneWidget);
       });
+
       testWidgets('delete button interaction', (WidgetTester tester) async {
         final tapTestHandler = TapTestHandler();
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              onDelete: tapTestHandler.increment,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              widget: FormCard(
+                options: options,
+                onDelete: tapTestHandler.increment,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findDeleteButton = find.byIcon(Icons.delete_forever);
 
@@ -225,18 +277,22 @@ void main() {
     });
 
     // --------------------
-    group('report viewer', () {
+    group('viewer', () {
       final data = TextFieldData(data: '');
 
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              data: data,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              widget: FormCard(
+                options: options,
+                data: data,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The delete icon should not be shown.
         expect(find.byIcon(Icons.delete_forever), findsNothing);
@@ -259,16 +315,20 @@ void main() {
     final title = 'text';
     final options = TextFieldOptions(title: title);
 
-    group('layout builder', () {
+    group('builder', () {
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
@@ -288,15 +348,20 @@ void main() {
         expect(find.byType(IconButton), findsOneWidget);
         expect(find.byIcon(Icons.delete_forever), findsOneWidget);
       });
+
       testWidgets('builder interaction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The date fields are diplayed in the initial state.
         expect(find.byType(TextField), findsOneWidget);
@@ -319,16 +384,21 @@ void main() {
 
         expect(find.byType(TextField), findsOneWidget);
       });
+
       testWidgets('delete button interaction', (WidgetTester tester) async {
         final tapTestHandler = TapTestHandler();
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: tapTestHandler.increment,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: tapTestHandler.increment,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findDeleteButton = find.byIcon(Icons.delete_forever);
 
@@ -348,23 +418,31 @@ void main() {
     });
 
     // --------------------
-    group('report viewer', () {
+    group('viewer', () {
       final dataString = 'test';
       TextFieldData data = TextFieldData(data: '');
+      late PreferencesModel model;
 
-      setUp(() {
+      setUp(() async {
         data = TextFieldData(data: dataString);
+        model = PreferencesModel();
+        await model.initialize();
       });
 
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              data: data,
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                data: data,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
@@ -386,15 +464,21 @@ void main() {
         expect(find.byType(IconButton), findsNothing);
         expect(find.byIcon(Icons.delete_forever), findsNothing);
       });
-      testWidgets('text field inetraction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(
-              options: options,
-              data: data,
+
+      testWidgets('text field interaction', (WidgetTester tester) async {
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(
+                options: options,
+                data: data,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findTextField = find.byType(ControlledTextField);
 
@@ -422,16 +506,20 @@ void main() {
     final options = DateFieldOptions(title: title);
 
     // --------------------
-    group('layout builder', () {
+    group('builder', () {
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
@@ -452,15 +540,20 @@ void main() {
         expect(find.byType(IconButton), findsOneWidget);
         expect(find.byIcon(Icons.delete_forever), findsOneWidget);
       });
+
       testWidgets('builder interaction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The date fields are diplayed in the initial state.
         expect(find.byType(DateTimeField), findsOneWidget);
@@ -486,14 +579,19 @@ void main() {
       });
       testWidgets('delete button interaction', (WidgetTester tester) async {
         final tapTestHandler = TapTestHandler();
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: tapTestHandler.increment,
+
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: tapTestHandler.increment,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findDeleteButton = find.byIcon(Icons.delete_forever);
 
@@ -513,7 +611,7 @@ void main() {
     });
 
     // --------------------
-    group('report viewer', () {
+    group('viewer', () {
       final dataDate = DateTime.now();
       var data = DateFieldData(data: dataDate);
 
@@ -522,11 +620,16 @@ void main() {
       });
 
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(options: options, data: data),
-          ),
-        );
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(options: options, data: data),
+            ),
+          );
+          await tester.pumpAndSettle();
+        });
 
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
@@ -559,16 +662,21 @@ void main() {
     final options = DateRangeFieldOptions(title: title);
 
     // --------------------
-    group('layout builder', () {
+    group('builder', () {
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
+
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
 
@@ -593,14 +701,18 @@ void main() {
         expect(find.byIcon(Icons.delete_forever), findsOneWidget);
       });
       testWidgets('builder interaction', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: () {},
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: () {},
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         // The date fields are diplayed in the initial state.
         expect(find.byType(DateTimeField), findsNWidgets(2));
@@ -628,14 +740,19 @@ void main() {
       });
       testWidgets('delete button interaction', (WidgetTester tester) async {
         final tapTestHandler = TapTestHandler();
-        await tester.pumpWidget(
-          wrapWidgetMaterial(
-            widget: FormCard(
-              options: options,
-              onDelete: tapTestHandler.increment,
+
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapLocalized(
+              widget: FormCard(
+                options: options,
+                onDelete: tapTestHandler.increment,
+              ),
             ),
-          ),
-        );
+          );
+          await tester.pumpAndSettle();
+        });
 
         final findDeleteButton = find.byIcon(Icons.delete_forever);
 
@@ -655,7 +772,7 @@ void main() {
     });
 
     // --------------------
-    group('report viewer', () {
+    group('viewer', () {
       final dataDate = DateTime.now();
       var data = DateRangeFieldData(start: dataDate, end: dataDate);
 
@@ -664,11 +781,16 @@ void main() {
       });
 
       testWidgets('layout', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapProviders(
-            widget: FormCard(options: options, data: data),
-          ),
-        );
+        // Required for the localization to properly initialize.
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            WrapProviders(
+              preferencesModel: model,
+              widget: FormCard(options: options, data: data),
+            ),
+          );
+          await tester.pumpAndSettle();
+        });
 
         // There should be a card wrapping the widget.
         expect(find.byType(Card), findsOneWidget);
