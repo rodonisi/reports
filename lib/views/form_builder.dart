@@ -137,7 +137,7 @@ class _FormBuilderState extends State<FormBuilder> {
         centerTitle: false,
         title: ControlledTextField(
           decoration: InputDecoration(border: InputBorder.none),
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          style: Theme.of(context).primaryTextTheme.headline6,
           hasClearButton: true,
           maxLines: 1,
           initialValue: _layout.name,

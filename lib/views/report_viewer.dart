@@ -155,7 +155,7 @@ class _ReportViewerState extends State<ReportViewer> {
       appBar: AppBar(
         title: ControlledTextField(
           decoration: const InputDecoration(border: InputBorder.none),
-          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          style: Theme.of(context).primaryTextTheme.headline6,
           hasClearButton: true,
           maxLines: 1,
           initialValue: report.title,
