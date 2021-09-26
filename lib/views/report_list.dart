@@ -182,6 +182,7 @@ class _ReportsListState extends State<_Body> {
           ? null
           : FloatingActionButton(
               backgroundColor: prefs.accentColor,
+              foregroundColor: Theme.of(context).primaryIconTheme.color,
               child: const Icon(Icons.add),
               onPressed: () async {
                 final layouts = getLayoutsList(context);

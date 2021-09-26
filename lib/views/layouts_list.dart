@@ -92,6 +92,7 @@ class _LayoutsListState extends State<_Body> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: prefs.accentColor,
+        foregroundColor: Theme.of(context).primaryIconTheme.color,
         child: const Icon(Icons.add),
         onPressed: _fabCallback,
       ),
