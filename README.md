@@ -7,6 +7,28 @@ A free and open-source work report filing app featuring a dynamic layout builder
 
 *Note*: This project is still in an early prototyping stage. Nothing is currently final and anything might be subject to change.
 
+## Screenshots
+
+### Light Mode
+
+| Layout Builder                                               | Field Options                                                | Add Fields                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder_add_field.png) |
+
+| Report Editor                                                | Import View                                                  | Settings View                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/viewer.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/settings.png) |
+
+### Dark Mode
+
+| Layout Builder                                               | Field Options                                                | Add Fields                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder_add_field.png) |
+
+| Report Editor                                                | Import View                                                  | Settings View                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/viewer.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/settings.png) |
+
 ## Installation
 * Set up flutter following the [installation guidelines](https://flutter.dev/docs/get-started/install)
 * [Optional] Enable beta macOS support:
