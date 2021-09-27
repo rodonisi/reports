@@ -13,21 +13,21 @@ A free and open-source work report filing app featuring a dynamic layout builder
 
 | Layout Builder                                               | Field Options                                                | Add Fields                                                   |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/builder_add_field.png) |
+| ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/builder_add_field.png) |
 
 | Report Editor                                                | Import View                                                  | Settings View                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/settings.png) |
+| ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/light_mode/settings.png) |
 
 ### Dark Mode
 
 | Layout Builder                                               | Field Options                                                | Add Fields                                                   |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/builder_add_field.png) |
+| ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/builder.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/builder_options.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/builder_add_field.png) |
 
 | Report Editor                                                | Import View                                                  | Settings View                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/settings.png) |
+| ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/main/screenshots/ios/dark_mode/settings.png) |
 
 ## Installation
 * Set up flutter following the [installation guidelines](https://flutter.dev/docs/get-started/install)
