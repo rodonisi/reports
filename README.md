@@ -17,7 +17,7 @@ A free and open-source work report filing app featuring a dynamic layout builder
 
 | Report Editor                                                | Import View                                                  | Settings View                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/viewer.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/settings.png) |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/light_mode/settings.png) |
 
 ### Dark Mode
 
@@ -27,7 +27,7 @@ A free and open-source work report filing app featuring a dynamic layout builder
 
 | Report Editor                                                | Import View                                                  | Settings View                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/viewer.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/settings.png) |
+| ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/report_editor.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/import.png) | ![](https://github.com/rodonisi/reports/blob/readme/screenshots/ios/dark_mode/settings.png) |
 
 ## Installation
 * Set up flutter following the [installation guidelines](https://flutter.dev/docs/get-started/install)
