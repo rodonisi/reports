@@ -62,6 +62,7 @@ class ReportsApp extends StatelessWidget {
       },
       child: MaterialApp(
         title: 'Reports',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: prefs.accentColor,
           brightness: Brightness.light,
