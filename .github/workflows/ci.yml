@@ -91,6 +91,7 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: "2.x"
+      - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: flutter build macos
   macos-release:
@@ -104,5 +105,6 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: "2.x"
+      - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: flutter build maocs --release
