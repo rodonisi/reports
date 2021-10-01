@@ -27,7 +27,7 @@ jobs:
       - run: flutter pub get
       - run: flutter test
   android-debug:
-    name: Build Android
+    name: Build Android Debug
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
       - run: flutter build apk
       - run: flutter build appbundle
   android-release:
-    name: Build Android
+    name: Build Android Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -55,7 +55,7 @@ jobs:
       - run: flutter build apk --release
       - run: flutter build appbundle --release
   ios-debug:
-    name: Build iOS
+    name: Build iOS Debug
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -68,7 +68,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build ios --no-codesign
   ios-release:
-    name: Build iOS
+    name: Build iOS Release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build ios --no-codesign --release
   macos-debug:
-    name: Build iOS
+    name: Build MacOS Debug
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -94,7 +94,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build macos --no-codesign
   macos-release:
-    name: Build iOS
+    name: Build MacOS Release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
