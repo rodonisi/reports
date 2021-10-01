@@ -1,6 +1,8 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
+import 'dart:io';
+
 import 'package:date_field/date_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,15 @@ import 'package:provider/provider.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+
+// -----------------------------------------------------------------------------
+// - FormCard Constants
+// -----------------------------------------------------------------------------
+abstract class _FormCardConstants {
+  static const deleteIcon = const Icon(Icons.cancel, color: Colors.red);
+  static const builderSectionPadding = 25.0;
+  static const dragHandleIcon = const Icon(Icons.drag_handle);
+}
 
 // -----------------------------------------------------------------------------
 // - FormCard Widget Implementation
@@ -60,7 +71,10 @@ class _FormCardState extends State<FormCard> {
             value: value,
             child: GestureDetector(
               onTap: () => _showOptions.value = !_showOptions.value,
-              child: _getCard(),
+              child: _DeleteButtonStack(
+                child: _getCard(),
+                onDelete: widget.onDelete!,
+              ),
             ),
           );
         });
@@ -70,12 +84,9 @@ class _FormCardState extends State<FormCard> {
   Widget build(BuildContext context) {
     if (widget.options is SectionFieldOptions) {
       if (widget.data == null)
-        return Padding(
-          padding: const EdgeInsets.only(right: 20.0),
-          child: _DeleteButtonRow(
-            child: _FormCardContent(options: widget.options),
-            onDelete: widget.onDelete!,
-          ),
+        return _SectionDeleteButton(
+          child: _FormCardContent(options: widget.options),
+          onDelete: widget.onDelete!,
         );
       else
         return _FormCardContent(
@@ -112,26 +123,65 @@ class __FormBuilderCardContentState extends State<_FormBuilderCardContent>
 
   @override
   Widget build(BuildContext context) {
-    return _DeleteButtonRow(
-      child: AnimatedSize(
-        duration: Duration(milliseconds: _animationDuration),
-        reverseDuration: Duration(milliseconds: _animationDuration),
-        child: context.watch<bool>()
-            ? _FormCardOptions(
-                options: widget.options,
-              )
-            : _FormCardContent(
-                options: widget.options,
-                enabled: false,
-              ),
-      ),
-      onDelete: widget.onDelete,
+    return AnimatedSize(
+      duration: Duration(milliseconds: _animationDuration),
+      reverseDuration: Duration(milliseconds: _animationDuration),
+      child: context.watch<bool>()
+          ? _FormCardOptions(
+              options: widget.options,
+            )
+          : _FormCardContent(
+              options: widget.options,
+              enabled: false,
+            ),
     );
   }
 }
 
-class _DeleteButtonRow extends StatelessWidget {
-  const _DeleteButtonRow(
+class _SectionDeleteButton extends StatelessWidget {
+  const _SectionDeleteButton(
+      {Key? key, required this.child, required this.onDelete})
+      : super(key: key);
+
+  final Widget child;
+  final void Function() onDelete;
+
+  Widget _getRow() {
+    return Row(
+      children: [
+        Expanded(child: child),
+        IconButton(
+          icon: _FormCardConstants.deleteIcon,
+          onPressed: onDelete,
+        ),
+        // The MacOS version adds drag handles by default. In the mobile version
+        // there's nothing to grab apart of the delete button, which is not
+        // very intuitive, so we manually add a drag handle icon on those
+        // versions.
+        if (!Platform.isMacOS) _FormCardConstants.dragHandleIcon,
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // In the MacOS version a drag handle is added by default on the widget,
+    // overlapping with the delete button. Move the delete button to the left to
+    // avoid this.
+    if (Platform.isMacOS) {
+      return Padding(
+        padding:
+            EdgeInsets.only(right: _FormCardConstants.builderSectionPadding),
+        child: _getRow(),
+      );
+    }
+
+    return _getRow();
+  }
+}
+
+class _DeleteButtonStack extends StatelessWidget {
+  const _DeleteButtonStack(
       {Key? key, required this.child, required this.onDelete})
       : super(key: key);
 
@@ -140,14 +190,26 @@ class _DeleteButtonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Stack(
       children: [
-        Expanded(child: child),
-        IconButton(
-          icon: const Icon(Icons.delete_forever),
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: onDelete,
+        Align(
+          alignment: Alignment.center,
+          child: Row(
+            children: [
+              Expanded(
+                child: child,
+              ),
+            ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            icon: _FormCardConstants.deleteIcon,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onPressed: onDelete,
+          ),
         ),
       ],
     );

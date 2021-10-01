@@ -81,7 +81,7 @@ void main() async {
 
         // The remove icon should be visible.
         expect(find.byType(IconButton), findsOneWidget);
-        expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+        expect(find.byIcon(Icons.cancel), findsOneWidget);
       });
 
       testWidgets('input interaction', (WidgetTester tester) async {
@@ -125,7 +125,7 @@ void main() async {
           await tester.pumpAndSettle();
         });
 
-        final findDeleteButton = find.byIcon(Icons.delete_forever);
+        final findDeleteButton = find.byIcon(Icons.cancel);
 
         // Initially there should be 0 registered taps.
         expect(tapTestHandler.taps, 0);
@@ -162,7 +162,7 @@ void main() async {
         });
 
         // The delete icon should not be shown.
-        expect(find.byIcon(Icons.delete_forever), findsNothing);
+        expect(find.byIcon(Icons.cancel), findsNothing);
         // The text field should be present and disabled.
         final findTextField = find.byType(ControlledTextField);
         final textFieldWidgets =
@@ -217,7 +217,7 @@ void main() async {
 
         // The remove icon should be visible.
         expect(find.byType(IconButton), findsOneWidget);
-        expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+        expect(find.byIcon(Icons.cancel), findsOneWidget);
       });
 
       testWidgets('input interaction', (WidgetTester tester) async {
@@ -259,7 +259,7 @@ void main() async {
           await tester.pumpAndSettle();
         });
 
-        final findDeleteButton = find.byIcon(Icons.delete_forever);
+        final findDeleteButton = find.byIcon(Icons.cancel);
 
         // Initially there should be 0 registered taps.
         expect(tapTestHandler.taps, 0);
@@ -295,7 +295,7 @@ void main() async {
         });
 
         // The delete icon should not be shown.
-        expect(find.byIcon(Icons.delete_forever), findsNothing);
+        expect(find.byIcon(Icons.cancel), findsNothing);
         // The text field should be present and disabled.
         final findTextField = find.byType(ControlledTextField);
         final textFieldWidget =
@@ -346,7 +346,7 @@ void main() async {
 
         // There should be one delete button
         expect(find.byType(IconButton), findsOneWidget);
-        expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+        expect(find.byIcon(Icons.cancel), findsOneWidget);
       });
 
       testWidgets('builder interaction', (WidgetTester tester) async {
@@ -400,7 +400,7 @@ void main() async {
           await tester.pumpAndSettle();
         });
 
-        final findDeleteButton = find.byIcon(Icons.delete_forever);
+        final findDeleteButton = find.byIcon(Icons.cancel);
 
         // Initially there should be 0 registered taps.
         expect(tapTestHandler.taps, 0);
@@ -462,7 +462,7 @@ void main() async {
 
         // There should be no delete button
         expect(find.byType(IconButton), findsNothing);
-        expect(find.byIcon(Icons.delete_forever), findsNothing);
+        expect(find.byIcon(Icons.cancel), findsNothing);
       });
 
       testWidgets('text field interaction', (WidgetTester tester) async {
@@ -538,7 +538,7 @@ void main() async {
 
         // There should be one delete button
         expect(find.byType(IconButton), findsOneWidget);
-        expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+        expect(find.byIcon(Icons.cancel), findsOneWidget);
       });
 
       testWidgets('builder interaction', (WidgetTester tester) async {
@@ -593,7 +593,7 @@ void main() async {
           await tester.pumpAndSettle();
         });
 
-        final findDeleteButton = find.byIcon(Icons.delete_forever);
+        final findDeleteButton = find.byIcon(Icons.cancel);
 
         // Initially there should be 0 registered taps.
         expect(tapTestHandler.taps, 0);
@@ -649,7 +649,7 @@ void main() async {
 
         // There should be no delete button
         expect(find.byType(IconButton), findsNothing);
-        expect(find.byIcon(Icons.delete_forever), findsNothing);
+        expect(find.byIcon(Icons.cancel), findsNothing);
       });
     });
   });
@@ -698,7 +698,7 @@ void main() async {
 
         // There should be one delete button
         expect(find.byType(IconButton), findsOneWidget);
-        expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+        expect(find.byIcon(Icons.cancel), findsOneWidget);
       });
       testWidgets('builder interaction', (WidgetTester tester) async {
         // Required for the localization to properly initialize.
@@ -754,7 +754,7 @@ void main() async {
           await tester.pumpAndSettle();
         });
 
-        final findDeleteButton = find.byIcon(Icons.delete_forever);
+        final findDeleteButton = find.byIcon(Icons.cancel);
 
         // Initially there should be 0 registered taps.
         expect(tapTestHandler.taps, 0);
@@ -814,7 +814,7 @@ void main() async {
 
         // There should be no delete button
         expect(find.byType(IconButton), findsNothing);
-        expect(find.byIcon(Icons.delete_forever), findsNothing);
+        expect(find.byIcon(Icons.cancel), findsNothing);
       });
     });
   });
