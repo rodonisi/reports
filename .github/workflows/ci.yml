@@ -92,7 +92,7 @@ jobs:
         with:
           flutter-version: "2.x"
       - run: flutter pub get
-      - run: flutter build macos --no-codesign
+      - run: flutter build macos
   macos-release:
     name: Build MacOS Release
     runs-on: macos-latest
@@ -105,4 +105,4 @@ jobs:
         with:
           flutter-version: "2.x"
       - run: flutter pub get
-      - run: flutter build maocs --no-codesign --release
+      - run: flutter build maocs --release
