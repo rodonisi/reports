@@ -107,4 +107,4 @@ jobs:
           flutter-version: "2.x"
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
-      - run: flutter build maocs --release
+      - run: flutter build macos --release
