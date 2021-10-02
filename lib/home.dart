@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:reports/views/import_reports.dart';
 import 'package:reports/views/layouts_list.dart';
@@ -24,8 +25,9 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 500)
-          return _WideLayout(extend: constraints.maxWidth > 900);
+        if (constraints.maxWidth > DrawingConstants.mediumScreen)
+          return _WideLayout(
+              extend: constraints.maxWidth > DrawingConstants.largeScreen);
 
         return _NarrowLayout();
       },

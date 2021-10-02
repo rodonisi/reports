@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -138,7 +139,10 @@ class _ImportViewState extends State<ImportView> {
     return SafeArea(
       bottom: true,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(
+          vertical: DrawingConstants.smallPadding,
+          horizontal: DrawingConstants.mediumPadding,
+        ),
         child: ElevatedButton(
           child: Text('import.import_button').tr(),
           onPressed: _saveCallback,
@@ -268,7 +272,7 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(DrawingConstants.smallPadding),
               child: _GridView(
                 files: widget.reports,
                 layouts: widget.layouts,
@@ -373,7 +377,7 @@ class _PickFilesItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(DrawingConstants.verySmallPadding),
       child: ElevatedButton(
         onPressed: onTap,
         child: Column(
@@ -420,7 +424,8 @@ class _ImportGridItem extends StatelessWidget {
                 ),
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: DrawingConstants.smallPadding),
                     child: Text(
                       item.name,
                     ),

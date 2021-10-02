@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:reports/common/constants.dart';
 
 // -----------------------------------------------------------------------------
 // - SaveButton Widget Implementation
@@ -15,7 +16,9 @@ class SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(
+          horizontal: DrawingConstants.mediumPadding,
+          vertical: DrawingConstants.smallPadding),
       child: ElevatedButton(
         onPressed: onPressed,
         child: Text(

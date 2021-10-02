@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/views/form_builder.dart';
@@ -57,7 +58,7 @@ class _LayoutsListState extends State<_Body> {
     showCupertinoModalBottomSheet(
       context: context,
       bounce: true,
-      closeProgressThreshold: 0.4,
+      closeProgressThreshold: DrawingConstants.safeSheetCloseTreshold,
       builder: (context) {
         return FormBuilder(path: item.path);
       },
@@ -68,7 +69,7 @@ class _LayoutsListState extends State<_Body> {
     showCupertinoModalBottomSheet(
       context: context,
       bounce: true,
-      closeProgressThreshold: 0.4,
+      closeProgressThreshold: DrawingConstants.safeSheetCloseTreshold,
       builder: (context) {
         return FormBuilder();
       },

@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/widgets/loading_indicator.dart';
 
 // -----------------------------------------------------------------------------
@@ -17,9 +18,9 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(DrawingConstants.mediumPadding),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(DrawingConstants.smallPadding),
         child: Column(
           children: [
             FutureBuilder<PackageInfo>(

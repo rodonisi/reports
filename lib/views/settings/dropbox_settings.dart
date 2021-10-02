@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/views/dropbox_chooser.dart';
@@ -67,7 +68,8 @@ class _DBLoginButton extends StatelessWidget {
     // Show the sign in button if Dropbox is not authorized
     if (!isAuthorized)
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(
+            horizontal: DrawingConstants.mediumPadding),
         child: Row(
           children: [
             Expanded(
@@ -85,7 +87,8 @@ class _DBLoginButton extends StatelessWidget {
 
     // Show the sign out button otherwise.
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(
+          horizontal: DrawingConstants.mediumPadding),
       child: Row(
         children: [
           Expanded(

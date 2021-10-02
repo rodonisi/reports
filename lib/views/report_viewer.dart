@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/widgets/loading_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:reports/common/report_structures.dart';
@@ -171,7 +172,7 @@ class _ReportViewerState extends State<ReportViewer> {
         actions: shareAction,
         bottom: _isNew
             ? PreferredSize(
-                preferredSize: Size(0.0, 30.0),
+                preferredSize: Size(0.0, DrawingConstants.twoRowAppBarHeight),
                 child: _LayoutSelector(
                   report: report,
                   refreshCallback: _reinitializeData,
@@ -180,7 +181,7 @@ class _ReportViewerState extends State<ReportViewer> {
             : null,
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(DrawingConstants.mediumPadding),
         shrinkWrap: true,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: report.layout.fields.length,

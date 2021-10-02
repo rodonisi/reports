@@ -2,6 +2,7 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'package:flutter/material.dart';
+import 'package:reports/common/constants.dart';
 
 // -----------------------------------------------------------------------------
 // - ListCard Widget Implementation
@@ -17,7 +18,7 @@ class ListCard extends StatelessWidget {
   final bool insertDividers;
 
   void _insertDividers() {
-    final divider = const Divider(height: 0.0);
+    final divider = const Divider(height: DrawingConstants.dividerHeight);
 
     for (var i = children.length - 1; i > 0; i -= 2) {
       children.insert(i, divider);
@@ -29,7 +30,10 @@ class ListCard extends StatelessWidget {
     if (insertDividers) _insertDividers();
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(
+        horizontal: DrawingConstants.mediumPadding,
+        vertical: DrawingConstants.smallPadding,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: children,

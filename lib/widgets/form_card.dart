@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
@@ -49,7 +50,7 @@ class _FormCardState extends State<FormCard> {
   Widget _getCard() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(DrawingConstants.mediumPadding),
         child: widget.data == null
             ? _FormBuilderCardContent(
                 options: widget.options,
@@ -472,7 +473,8 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              padding: EdgeInsets.symmetric(
+                  horizontal: DrawingConstants.smallPadding),
               child: Text('-'),
             ),
             Expanded(
@@ -705,7 +707,10 @@ class __DropdownOptionState<T> extends State<_DropdownOption<T>> {
     return DropdownButton<T>(
       isExpanded: true,
       value: widget.getter(),
-      underline: Container(color: Colors.grey, height: 1.0),
+      underline: Container(
+        color: Colors.grey,
+        height: DrawingConstants.dividerThickness,
+      ),
       items: widget.items,
       onChanged: (value) => setState(() => widget.setter(value!)),
     );

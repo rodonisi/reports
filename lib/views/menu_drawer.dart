@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +71,10 @@ class MenuDrawer extends StatelessWidget {
       body: SafeArea(
         top: true,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: DrawingConstants.smallPadding,
+            vertical: DrawingConstants.mediumPadding,
+          ),
           children: [
             ContainerTile(
               title: Text('@.capitalize:keywords.reports').tr(),

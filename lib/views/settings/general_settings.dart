@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/list_card.dart';
@@ -90,7 +91,8 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
+                padding:
+                    const EdgeInsets.only(top: DrawingConstants.smallPadding),
                 child: ListTile(
                   title: Text('settings.general.name').tr(),
                   subtitle: ControlledTextField(
@@ -101,8 +103,10 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
                     ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 0.0,
+                        horizontal: DrawingConstants.smallPadding,
+                      ),
                     ),
                     onChanged: (value) =>
                         prefs.setString(widget.namePref, value),

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:reports/common/constants.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class LoadingIndicator extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator.adaptive(),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: DrawingConstants.mediumPadding),
           const Text('@.capitalize:keywords.loading').tr(),
         ],
       ),

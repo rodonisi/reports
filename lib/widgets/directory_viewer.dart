@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';
@@ -89,7 +90,8 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
         final item = list[i];
         return _getTile(item);
       },
-      separatorBuilder: (context, i) => Divider(height: 0.0),
+      separatorBuilder: (context, i) =>
+          Divider(height: DrawingConstants.dividerHeight),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/common/constants.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -102,7 +103,7 @@ class _ReportsListState extends State<_Body> {
       fileAction: (File item) => showCupertinoModalBottomSheet(
         context: context,
         bounce: true,
-        closeProgressThreshold: 0.4,
+        closeProgressThreshold: DrawingConstants.safeSheetCloseTreshold,
         builder: (context) => ReportViewer(path: item.path),
       ).then(
         (value) => setState(() {}),
@@ -189,7 +190,8 @@ class _ReportsListState extends State<_Body> {
                   showCupertinoModalBottomSheet(
                     context: context,
                     bounce: true,
-                    closeProgressThreshold: 0.4,
+                    closeProgressThreshold:
+                        DrawingConstants.safeSheetCloseTreshold,
                     builder: (context) => ReportViewer(path: _dir.path),
                   ).then((value) => setState(() {}));
                 else
