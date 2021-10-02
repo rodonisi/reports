@@ -1,7 +1,8 @@
 <p align="center"> <img src="https://github.com/rodonisi/reports/blob/main/assets/icon/icon.png" width="100" height="100"></p>
 
 # Reports
-[![CI](https://github.com/rodonisi/reports/actions/workflows/ci.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/ci.yml)
+[![Tests](https://github.com/rodonisi/reports/actions/workflows/tests.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/tests.yml)
+[![Build](https://github.com/rodonisi/reports/actions/workflows/build.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/build.yml)
 
 A free and open-source work report filing app featuring a dynamic layout builder and report editor.
 
