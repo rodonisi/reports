@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:reports/common/reports_icons_icons.dart';
+import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/directory_viewer.dart';
 
 import '../utilities.dart';
@@ -116,17 +118,16 @@ void main() {
       expect((fileTile.leading as Icon).icon, Icons.description);
     });
   });
-  testWidgets('test custom file icon', (WidgetTester tester) async {
+  testWidgets('test report icon', (WidgetTester tester) async {
     final findListTile = find.byType(ListTile);
     await tester.runAsync(() async {
       final directory = await Directory.systemTemp.createTemp();
       await Directory('${directory.path}/dir').create();
-      await File('${directory.path}/test.json').create();
+      await File('${directory.path}/test${ReportsExtensions.report}').create();
 
       await tester.pumpWidget(
         WrapApp(
           widget: DirectoryViewer(
-            fileIcon: Icons.ac_unit,
             fileAction: (item) {},
             directoryAction: (item) {},
             directoryPath: directory.path,
@@ -144,7 +145,37 @@ void main() {
       // The file tile comes second as it should be sorted after dir.
       final fileTile = evaluate.last.widget as ListTile;
       // The leading widget should be a ac_unit icon as the argument is defined.
-      expect((fileTile.leading as Icon).icon, Icons.ac_unit);
+      expect((fileTile.leading as Icon).icon, ReportsIcons.report);
+    });
+  });
+  testWidgets('test layout icon', (WidgetTester tester) async {
+    final findListTile = find.byType(ListTile);
+    await tester.runAsync(() async {
+      final directory = await Directory.systemTemp.createTemp();
+      await Directory('${directory.path}/dir').create();
+      await File('${directory.path}/test${ReportsExtensions.layout}').create();
+
+      await tester.pumpWidget(
+        WrapApp(
+          widget: DirectoryViewer(
+            fileAction: (item) {},
+            directoryAction: (item) {},
+            directoryPath: directory.path,
+          ),
+        ),
+      );
+
+      final evaluate = findListTile.evaluate();
+
+      // The directory tile should be the first as the list is sorted by paths.
+      final dirTile = evaluate.first.widget as ListTile;
+      // The folder icon should be unaffected by the custom file icon.
+      expect((dirTile.leading as Icon).icon, Icons.folder);
+
+      // The file tile comes second as it should be sorted after dir.
+      final fileTile = evaluate.last.widget as ListTile;
+      // The leading widget should be a ac_unit icon as the argument is defined.
+      expect((fileTile.leading as Icon).icon, ReportsIcons.layout);
     });
   });
   testWidgets('test actions', (WidgetTester tester) async {

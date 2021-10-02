@@ -98,7 +98,6 @@ class _LayoutsListState extends State<_Body> {
       ),
       drawer: _showDrawer ? const Drawer(child: const MenuDrawer()) : null,
       body: DirectoryViewer(
-        fileIcon: ReportsIcons.layout,
         fileAction: _fileActionCallback,
         directoryAction: (directory) {},
         directoryPath: prefs.layoutsPath,

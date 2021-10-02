@@ -1,7 +1,6 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
-import 'dart:convert';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as p;
@@ -80,9 +79,28 @@ class _ImportViewState extends State<ImportView> {
     var hadError = false;
 
     // Iterate over reports.
-    _reports.forEach((element) {
-      final destination = p.join(destinationDirectory, element.name);
-      final didCopy = copyFile(element.path!, destination);
+    _reports.forEach((element) async {
+      bool didCopy = true;
+      if (_importAsLayouts) {
+        // Extract the layout from the report file.
+        final file = File(element.path!);
+        final jsonString = file.readAsStringSync();
+        final report = Report.fromJSON(jsonString);
+        final layoutJSON = await report.layout.toJSON();
+
+        // Write the extracted layout.
+        didCopy = await writeToFile(
+          layoutJSON,
+          joinAndSetExtension(
+            destinationDirectory,
+            report.layout.name,
+            extension: ReportsExtensions.layout,
+          ),
+        );
+      } else {
+        final destination = p.join(destinationDirectory, element.name);
+        didCopy = copyFile(element.path!, destination);
+      }
       // Set the error bool if the copy failed.
       hadError = !didCopy;
     });
@@ -265,19 +283,20 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
   }
 }
 
+enum _FileType { report, layout, other }
+
 extension _ReportsUtils on PlatformFile {
-  bool? get isReport {
+  _FileType get fileType {
     if (path != null) {
-      final jsonString = File(path!).readAsStringSync();
-      final jsonMap = jsonDecode(jsonString);
-      if (jsonMap[FileHeader.typeID] == FileHeader.reportID) {
-        return true;
-      } else if (jsonMap[FileHeader.typeID] == FileHeader.layoutID) {
-        return false;
+      final extension = getFileExtension(path!);
+      if (extension == ReportsExtensions.report) {
+        return _FileType.report;
+      } else if (extension == ReportsExtensions.layout) {
+        return _FileType.layout;
       }
     }
 
-    return null;
+    return _FileType.other;
   }
 }
 
@@ -294,12 +313,11 @@ class _GridView extends StatelessWidget {
   final void Function(void Function()) setState;
 
   void _processFiles(FilePickerResult pickedFiles) {
-    pickedFiles.files.removeWhere((element) => element.isReport == null);
     pickedFiles.files.forEach((picked) {
-      if (picked.isReport! &&
+      if (picked.fileType == _FileType.report &&
           files.indexWhere((element) => picked.path == element.path) < 0) {
         files.add(picked);
-      } else if (!picked.isReport! &&
+      } else if (picked.fileType == _FileType.layout &&
           layouts.indexWhere((element) => picked.path == element.path) < 0) {
         layouts.add(picked);
       }
@@ -308,10 +326,14 @@ class _GridView extends StatelessWidget {
   }
 
   void _pickFilesCallback() {
-    FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['.json']).then((pickedFiles) {
+    FilePicker.platform
+        .pickFiles(
+      allowMultiple: true,
+      // Cannot filter for custom types, so we have to allow all types and just
+      // filter them out later.
+      type: FileType.any,
+    )
+        .then((pickedFiles) {
       if (pickedFiles != null) {
         _processFiles(pickedFiles);
       }

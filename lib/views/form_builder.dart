@@ -60,7 +60,7 @@ class _FormBuilderState extends State<FormBuilder> {
     // Get the encoded layout.
     final layoutString = await _layout.toJSON();
     var destPath = joinAndSetExtension(
-        context.read<PreferencesModel>().layoutsPath, _layout.name);
+        context.read<PreferencesModel>().layoutsPath, _layout.name, extension: ReportsExtensions.layout);
 
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,

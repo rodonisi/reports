@@ -99,7 +99,6 @@ class _ReportsListState extends State<_Body> {
 
   Widget _getList() {
     return DirectoryViewer(
-      fileIcon: ReportsIcons.report,
       fileAction: (File item) => showCupertinoModalBottomSheet(
         context: context,
         bounce: true,

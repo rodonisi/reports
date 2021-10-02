@@ -60,21 +60,21 @@ final dateRangeLayout = ReportLayout(
 // - Sample Reports
 // -----------------------------------------------------------------------------
 final String simpleReportJSON =
-    '{"report_title":"report","version":"1.0.0","type":"report","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
+    '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"field","field_type":"text_field","lines":1,"numeric":false,"data":"value"}}';
 final simpleReport = Report(
     title: 'report',
     layout: simpleLayout,
     data: [TextFieldData(data: 'value')]);
 
 final String dateReportJSON =
-    '{"report_title":"report","version":"1.0.0","type":"report","0":{"field_name":"date","field_type":"date_field","mode":"date","data":"2021-07-20 00:28:23.288288"}}';
+    '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"date","field_type":"date_field","mode":"date","data":"2021-07-20 00:28:23.288288"}}';
 final dateReport = Report(
     title: 'report',
     layout: dateLayout,
     data: [DateFieldData(data: DateTime.parse('2021-07-20 00:28:23.288288'))]);
 
 final String dateRangeReportJSON =
-    '{"report_title":"report","version":"1.0.0","type":"report","0":{"field_name":"daterange","field_type":"date_range_field","mode":"date_and_time","show_total":true,"data":{"start":"2021-07-25 19:21:27.038217","end":"2021-07-25 19:21:27.038219"}}}';
+    '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"daterange","field_type":"date_range_field","mode":"date_and_time","show_total":true,"data":{"start":"2021-07-25 19:21:27.038217","end":"2021-07-25 19:21:27.038219"}}}';
 final dateRangeReport = Report(title: 'report', layout: dateRangeLayout, data: [
   DateRangeFieldData(
       start: DateTime.parse('2021-07-25 19:21:27.038217'),

@@ -384,6 +384,9 @@ class Report {
     // Decode the json string.
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
+    // Set the layout name
+    this.layout.name = jsonMap[FileHeader.layoutID];
+
     // Iterate over the decoded json map.
     jsonMap.forEach((key, value) {
       // Get the report title.
@@ -420,6 +423,7 @@ class Report {
     jsonMap[titleID] = title;
     jsonMap[FileHeader.versionID] = packageInfo.version;
     jsonMap[FileHeader.typeID] = FileHeader.reportID;
+    jsonMap[FileHeader.layoutID] = layout.name;
     jsonMap.addAll(_serialize(layout: layout, data: data));
 
     return jsonEncode(jsonMap);

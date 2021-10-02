@@ -16,6 +16,11 @@ import 'package:reports/models/preferences_model.dart';
 const String layoutsDirectoryPath = 'layouts';
 const String reportsDirectoryPath = 'reports';
 
+abstract class ReportsExtensions {
+  static const String report = ".report";
+  static const String layout = ".layout";
+}
+
 // -----------------------------------------------------------------------------
 // - IO Utilities
 // -----------------------------------------------------------------------------
@@ -104,4 +109,25 @@ bool copyFile(String source, String destination) {
   logger.d('Copied file $source to $destination');
 
   return true;
+}
+
+/// Get the name of the file the input path is pointing to.
+String getFileName(String path) {
+  return p.basename(path);
+}
+
+/// Get the name of the file the input path is pointing to, without the
+/// extension.
+String getFileNameWithoutExtension(String path) {
+  return p.basenameWithoutExtension(path);
+}
+
+/// Get the extension of the file the input path is pointing to.
+String getFileExtension(String path) {
+  return p.extension(path);
+}
+
+/// Get the name of the directory the path is pointing to.
+String getDirectoryName(String path) {
+  return p.dirname(path);
 }

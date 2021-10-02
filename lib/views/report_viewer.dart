@@ -3,7 +3,6 @@
 // -----------------------------------------------------------------------------
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,9 +67,12 @@ class _ReportViewerState extends State<ReportViewer> {
     var fromPath = '';
 
     if (_isNew) {
-      destPath = joinAndSetExtension(widget.path, report.title);
+      destPath = joinAndSetExtension(widget.path, report.title,
+          extension: ReportsExtensions.report);
     } else {
-      destPath = joinAndSetExtension(p.dirname(widget.path), report.title);
+      destPath = joinAndSetExtension(
+          getDirectoryName(widget.path), report.title,
+          extension: ReportsExtensions.report);
       if (destPath != widget.path) fromPath = widget.path;
     }
 
@@ -231,7 +233,7 @@ class __LayoutSelectorState extends State<_LayoutSelector> {
     // Generate the list of dropdown menu items.
     _menuItems = layoutsList
         .map<DropdownMenuItem<File>>((element) => DropdownMenuItem(
-              child: Text(p.basenameWithoutExtension(element.path)),
+              child: Text(getFileNameWithoutExtension(element.path)),
               value: element,
             ))
         .toList();

@@ -2,10 +2,10 @@
 // - Imports
 // -----------------------------------------------------------------------------
 import 'dart:io';
-import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/container_tile.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,14 +18,12 @@ import 'package:share_plus/share_plus.dart';
 class DirectoryViewer extends StatefulWidget {
   DirectoryViewer({
     Key? key,
-    this.fileIcon = Icons.description,
     this.ignoreDirectories = false,
     required this.fileAction,
     required this.directoryAction,
     required String directoryPath,
   })  : directory = Directory(directoryPath),
         super(key: key);
-  final IconData fileIcon;
   final bool ignoreDirectories;
   final void Function(File item) fileAction;
   final void Function(Directory item) directoryAction;
@@ -38,6 +36,22 @@ class DirectoryViewer extends StatefulWidget {
 class _DirectoryViewerState extends State<DirectoryViewer> {
   Widget _getTile(FileSystemEntity item) {
     final isFile = item is File;
+    final extension = getFileExtension(item.path);
+    final IconData tileIcon;
+    if (isFile) {
+      switch (extension) {
+        case ReportsExtensions.layout:
+          tileIcon = ReportsIcons.layout;
+          break;
+        case ReportsExtensions.report:
+          tileIcon = ReportsIcons.report;
+          break;
+        default:
+          tileIcon = Icons.description;
+      }
+    } else {
+      tileIcon = Icons.folder;
+    }
 
     return Slidable(
       key: ObjectKey(item),
@@ -57,8 +71,8 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
         )
       ],
       child: ContainerTile(
-        title: Text(p.basenameWithoutExtension(item.path)),
-        leading: Icon(isFile ? widget.fileIcon : Icons.folder),
+        title: Text(getFileNameWithoutExtension(item.path)),
+        leading: Icon(tileIcon),
         trailing:
             isFile ? null : const Icon(Icons.keyboard_arrow_right_rounded),
         onTap: isFile
@@ -85,7 +99,7 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
       list.removeWhere((element) => element is Directory);
 
     // Hide system files.
-    list.removeWhere((element) => p.basename(element.path).startsWith('.'));
+    list.removeWhere((element) => getFileName(element.path).startsWith('.'));
 
     // Sort list by paths
     list.sort(fileSystemEntityComparator);
