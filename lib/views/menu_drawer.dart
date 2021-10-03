@@ -29,11 +29,11 @@ class MenuRail extends StatelessWidget {
       destinations: [
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.report),
-          label: Text('@.capitalize:keywords.reports').tr(),
+          label: Text('keywords.capitalized.reports').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.layout),
-          label: Text('@.capitalize:keywords.layouts').tr(),
+          label: Text('keywords.capitalized.layouts').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.settings),
@@ -77,14 +77,14 @@ class MenuDrawer extends StatelessWidget {
           ),
           children: [
             ContainerTile(
-              title: Text('@.capitalize:keywords.reports').tr(),
+              title: Text('keywords.capitalized.reports').tr(),
               leading: const Icon(ReportsIcons.report),
               selected: appState.currentPage == Pages.reports,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.reports,
             ),
             ContainerTile(
-              title: Text('@.capitalize:keywords.layouts').tr(),
+              title: Text('keywords.capitalized.layouts').tr(),
               leading: const Icon(ReportsIcons.layout),
               selected: appState.currentPage == Pages.layouts,
               onTap: () =>

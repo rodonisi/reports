@@ -132,7 +132,7 @@ class _ReportsListState extends State<_Body> {
             }
             Navigator.pop(context);
           },
-          child: const Text('@.capitalize:keywords.create').tr(),
+          child: const Text('keywords.capitalized.create').tr(),
         ),
       ],
     );
@@ -162,7 +162,7 @@ class _ReportsListState extends State<_Body> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.path.isEmpty
-                ? '@.capitalize:keywords.reports'
+                ? 'keywords.capitalized.reports'
                 : p.basename(widget.path))
             .tr(),
         actions: [

@@ -89,7 +89,7 @@ class _LayoutsListState extends State<_Body> {
     final prefs = context.read<PreferencesModel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('@.capitalize:keywords.layouts').tr(),
+        title: Text('keywords.capitalized.layouts').tr(),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: prefs.accentColor,

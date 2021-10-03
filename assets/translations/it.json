@@ -45,6 +45,24 @@
         "title": "@:import.import"
     },
     "keywords": {
+        "capitalized": {
+            "create": "@.capitalize:keywords.create",
+            "day": "@.capitalize:keywords.day",
+            "days": "@.capitalize:keywords.days",
+            "file": "@.capitalize:keywords.file",
+            "files": "@.capitalize:keywords.files",
+            "hour": "@.capitalize:keywords.hour",
+            "layout": "@.capitalize:keywords.layout",
+            "layouts": "@.capitalize:keywords.layouts",
+            "loading": "@.capitalize:keywords.loading",
+            "minute": "@.capitalize:keywords.minute",
+            "option": "@.capitalize:keywords.option",
+            "options": "@.capitalize:keywords.options",
+            "report": "@.capitalize:keywords.report",
+            "reports": "@.capitalize:keywords.reports",
+            "save": "@.capitalize:keywords.save",
+            "title": "@.capitalize:keywords.title"
+        },
         "create": "crea",
         "day": {
             "one": "{} giorno",

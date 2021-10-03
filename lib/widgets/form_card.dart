@@ -551,7 +551,7 @@ List<Widget> _getCommonOptions(
     ),
     Divider(),
     Text(
-      '@.capitalize:keywords.title',
+      'keywords.capitalized.title',
       style: TextStyle(fontWeight: FontWeight.bold),
     ).tr(),
     ControlledTextField(

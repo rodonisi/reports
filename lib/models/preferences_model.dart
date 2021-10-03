@@ -156,7 +156,7 @@ class PreferencesModel extends ChangeNotifier {
   String get layoutBaseName {
     return getString(
       PreferenceKeys.layoutBaseName,
-      defaultValue: '@.capitalize:keywords.layout'.tr(),
+      defaultValue: 'keywords.capitalized.layout'.tr(),
       ensureInitialized: true,
     );
   }
@@ -178,7 +178,7 @@ class PreferencesModel extends ChangeNotifier {
   String get reportBaseName {
     return getString(
       PreferenceKeys.reportBaseName,
-      defaultValue: '@.capitalize:keywords.report'.tr(),
+      defaultValue: 'keywords.capitalized.report'.tr(),
       ensureInitialized: true,
     );
   }

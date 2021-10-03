@@ -13,7 +13,7 @@ class LoadingIndicator extends StatelessWidget {
         children: [
           const CircularProgressIndicator.adaptive(),
           const SizedBox(height: DrawingConstants.mediumPadding),
-          const Text('@.capitalize:keywords.loading').tr(),
+          const Text('keywords.capitalized.loading').tr(),
         ],
       ),
     );

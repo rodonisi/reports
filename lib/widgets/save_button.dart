@@ -22,7 +22,7 @@ class SaveButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         child: Text(
-          '@.capitalize:keywords.save',
+          'keywords.capitalized.save',
           style: TextStyle(
               color: Theme.of(context).primaryTextTheme.bodyText1?.color),
         ).tr(),
