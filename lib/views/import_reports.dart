@@ -346,25 +346,32 @@ class _GridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      children: [
-        ...files.map<Widget>((item) {
-          return _ImportGridItem(
-            icon: const Icon(ReportsIcons.report),
-            item: item,
-            onDelete: () => setState(() => files.remove(item)),
-          );
-        }).toList(),
-        ...layouts.map<Widget>((item) {
-          return _ImportGridItem(
-            icon: const Icon(ReportsIcons.layout),
-            item: item,
-            onDelete: () => setState(() => layouts.remove(item)),
-          );
-        }).toList(),
-        _PickFilesItem(onTap: _pickFilesCallback)
-      ],
+    final items = [
+      ...files.map<Widget>((item) {
+        return _ImportGridItem(
+          icon: const Icon(ReportsIcons.report),
+          item: item,
+          onDelete: () => setState(() => files.remove(item)),
+        );
+      }).toList(),
+      ...layouts.map<Widget>((item) {
+        return _ImportGridItem(
+          icon: const Icon(ReportsIcons.layout),
+          item: item,
+          onDelete: () => setState(() => layouts.remove(item)),
+        );
+      }).toList(),
+      _PickFilesItem(onTap: _pickFilesCallback)
+    ];
+
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 150.0,
+      ),
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int index) {
+        return items[index];
+      },
     );
   }
 }
