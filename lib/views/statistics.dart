@@ -274,38 +274,46 @@ class StatisticsDetail extends StatelessWidget {
   Widget _generateWrap(BuildContext context, Map<String, _FieldStats> stats,
       {bool showType = false}) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Wrap(
-      alignment: WrapAlignment.spaceEvenly,
-      children: stats.entries.map(
-        (element) {
-          return Card(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: screenWidth / 3,
-                minWidth: screenWidth / 10,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(DrawingConstants.smallPadding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(element.key, style: DrawingConstants.boldTextStyle),
-                    if (showType)
-                      Text(
-                        prettyFieldType(element.value.type),
-                        style: DrawingConstants.secondaryTextStyle,
-                      ),
-                    SizedBox(
-                      height: DrawingConstants.mediumPadding,
+    return Row(
+      children: [
+        Expanded(
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            children: stats.entries.map(
+              (element) {
+                return Card(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: screenWidth / 3,
+                      minWidth: screenWidth / 10,
                     ),
-                    Text(element.value.toString()),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ).toList(),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(element.key,
+                              style: DrawingConstants.boldTextStyle),
+                          if (showType)
+                            Text(
+                              prettyFieldType(element.value.type),
+                              style: DrawingConstants.secondaryTextStyle,
+                            ),
+                          SizedBox(
+                            height: DrawingConstants.mediumPadding,
+                          ),
+                          Text(element.value.toString()),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
+          ),
+        ),
+      ],
     );
   }
 
