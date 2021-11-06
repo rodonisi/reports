@@ -30,8 +30,10 @@ class AppStateModel extends ChangeNotifier {
         return 0;
       case Pages.layouts:
         return 1;
-      case Pages.settings:
+      case Pages.import:
         return 2;
+      case Pages.settings:
+        return 3;
       default:
         throw Exception('Invalid page');
     }
@@ -47,6 +49,9 @@ class AppStateModel extends ChangeNotifier {
         currentPage = Pages.layouts;
         break;
       case 2:
+        currentPage = Pages.import;
+        break;
+      case 3:
         currentPage = Pages.settings;
         break;
       default:

@@ -36,6 +36,10 @@ class MenuRail extends StatelessWidget {
           label: Text('keywords.capitalized.layouts').tr(),
         ),
         NavigationRailDestination(
+          icon: const Icon(Icons.save_alt),
+          label: Text('import.import').tr(),
+        ),
+        NavigationRailDestination(
           icon: const Icon(Icons.settings),
           label: Text('settings.settings').tr(),
         ),
@@ -91,15 +95,13 @@ class MenuDrawer extends StatelessWidget {
                   context.read<AppStateModel>().currentPage = Pages.layouts,
             ),
             _getSeparator(),
-            if (!Platform.isMacOS) ...[
-              ListTile(
-                title: Text('import.import').tr(),
-                leading: const Icon(Icons.save_alt),
-                selected: appState.currentPage == Pages.import,
-                onTap: () => appState.currentPage = Pages.import,
-              ),
-              _getSeparator(),
-            ],
+            ListTile(
+              title: Text('import.import').tr(),
+              leading: const Icon(Icons.save_alt),
+              selected: appState.currentPage == Pages.import,
+              onTap: () => appState.currentPage = Pages.import,
+            ),
+            _getSeparator(),
             ContainerTile(
               title: Text('settings.settings').tr(),
               leading: const Icon(Icons.settings),
