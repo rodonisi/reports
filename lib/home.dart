@@ -10,6 +10,7 @@ import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/report_list.dart';
 import 'package:reports/views/settings.dart';
+import 'package:reports/views/statistics.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 
 // -----------------------------------------------------------------------------
@@ -49,6 +50,8 @@ class _WideLayout extends StatelessWidget {
         return ImportView();
       case Pages.settings:
         return Settings();
+      case Pages.statistics:
+        return StatisticsList();
       case null:
         return Container();
     }
@@ -84,6 +87,8 @@ class _NarrowLayout extends StatelessWidget {
           MaterialPage(key: ImportView.valueKey, child: ImportView())
         else if (appState.currentPage == Pages.settings)
           MaterialPage(key: Settings.valueKey, child: Settings())
+        else if (appState.currentPage == Pages.statistics)
+          MaterialPage(key: StatisticsList.valueKey, child: StatisticsList())
       ],
       onPopPage: (route, result) {
         final page = route.settings as MaterialPage;

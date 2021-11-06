@@ -30,16 +30,33 @@ int fileSystemEntityComparator(FileSystemEntity a, FileSystemEntity b) {
   return a.path.compareTo(b.path);
 }
 
-/// Get the list of layouts stored in the local layouts directory.
-List<File> getLayoutsList(BuildContext context) {
-  final dir = context.read<PreferencesModel>().layoutsDirectory;
-  final list = dir.listSync();
+/// Returns a sorted list of all files in the given directory.
+List<File> getDirectoryList(Directory dir,
+    {bool ignoreSystemDirectories = true, bool recursive = false}) {
+  final list = dir.listSync(recursive: recursive);
 
+  // Filter out directories
   final List<File> selected = list.whereType<File>().toList();
+
+  // Filter out system files
+  if (ignoreSystemDirectories)
+    selected.removeWhere((File file) => p.basename(file.path).startsWith('.'));
 
   selected.sort(fileSystemEntityComparator);
 
   return selected;
+}
+
+/// Get the list of layouts stored in the local layouts directory.
+List<File> getLayoutsList(BuildContext context) {
+  final dir = context.read<PreferencesModel>().layoutsDirectory;
+  return getDirectoryList(dir);
+}
+
+/// Get the recursive list of all reports stored in the local reports directory.
+List<File> getReportsList(BuildContext context) {
+  final dir = context.read<PreferencesModel>().reportsDirectory;
+  return getDirectoryList(dir, recursive: true);
 }
 
 /// Write the given string to the destination path. Optionally check if a file
@@ -127,8 +144,18 @@ String getFileExtension(String path) {
   return p.extension(path);
 }
 
+/// Get the path of the file the input path is pointing to.
+String getRelativePath(String path, {required String from}) {
+  return p.relative(path, from: from);
+}
+
 // TODO: Rename to getDirectoryPath
 /// Get the name of the directory the path is pointing to.
 String getDirectoryName(String path) {
   return p.dirname(path);
+}
+
+// Split the path into its elements.
+List<String> splitPathElements(String path) {
+  return p.split(path);
 }

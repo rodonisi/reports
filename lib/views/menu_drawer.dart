@@ -34,6 +34,10 @@ class MenuRail extends StatelessWidget {
           label: Text('keywords.capitalized.layouts').tr(),
         ),
         NavigationRailDestination(
+          icon: const Icon(Icons.poll_outlined),
+          label: Text('keywords.capitalized.statistics').tr(),
+        ),
+        NavigationRailDestination(
           icon: const Icon(Icons.save_alt),
           label: Text('import.import').tr(),
         ),
@@ -91,6 +95,13 @@ class MenuDrawer extends StatelessWidget {
               selected: appState.currentPage == Pages.layouts,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.layouts,
+            ),
+            ContainerTile(
+              title: Text('keywords.capitalized.statistics').tr(),
+              leading: const Icon(Icons.poll_outlined),
+              selected: appState.currentPage == Pages.statistics,
+              onTap: () =>
+                  context.read<AppStateModel>().currentPage = Pages.statistics,
             ),
             _getSeparator(),
             ListTile(

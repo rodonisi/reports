@@ -49,6 +49,8 @@
             "create": "@.capitalize:keywords.create",
             "day": "@.capitalize:keywords.day",
             "days": "@.capitalize:keywords.days",
+            "directories": "@.capitalize:directories",
+            "fields": "@.capitalize:fields",
             "file": "@.capitalize:keywords.file",
             "files": "@.capitalize:keywords.files",
             "hour": "@.capitalize:keywords.hour",
@@ -61,7 +63,9 @@
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
             "save": "@.capitalize:keywords.save",
-            "title": "@.capitalize:keywords.title"
+            "statistics": "@.capitalize:keywords.statistics",
+            "title": "@.capitalize:keywords.title",
+            "types": "@.capitalize:types"
         },
         "create": "crea",
         "day": {
@@ -70,6 +74,8 @@
             "zero": "{} giorni"
         },
         "days": "giorni",
+        "directories": "Cartelle",
+        "fields": "Campi",
         "file": "file",
         "files": "file",
         "hour": {
@@ -90,7 +96,9 @@
         "report": "rapporto",
         "reports": "rapporti",
         "save": "salva",
-        "title": "titolo"
+        "statistics": "statistiche",
+        "title": "titolo",
+        "types": "Tipi"
     },
     "layout": "Layout",
     "report": "Rapporto",
@@ -135,6 +143,9 @@
             "reader_mode": "Modalità Lettura"
         },
         "settings": "Impostazioni"
+    },
+    "statistics": {
+        "no_stats": "Impossibile generare statistiche da questo layout."
     },
     "utility": {
         "file_exists": "Un @:keywords.file col nome {} esiste già."

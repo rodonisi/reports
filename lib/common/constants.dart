@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 abstract class DrawingConstants {
   // ---------------------------------------------------------------------------
   // - Padding constants
@@ -28,4 +30,12 @@ abstract class DrawingConstants {
   // ---------------------------------------------------------------------------
   static const mediumScreen = 500;
   static const largeScreen = 900;
+
+  // ---------------------------------------------------------------------------
+  // - Text Constants
+  // ---------------------------------------------------------------------------
+  static const boldTextStyle = const TextStyle(fontWeight: FontWeight.bold);
+  static const secondaryTextStyle = const TextStyle(color: Colors.grey);
+  static const titleTextStyle =
+      const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
 }
