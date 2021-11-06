@@ -127,6 +127,7 @@ String getFileExtension(String path) {
   return p.extension(path);
 }
 
+// TODO: Rename to getDirectoryPath
 /// Get the name of the directory the path is pointing to.
 String getDirectoryName(String path) {
   return p.dirname(path);
