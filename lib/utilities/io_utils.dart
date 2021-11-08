@@ -2,11 +2,13 @@
 // - Packages
 // -----------------------------------------------------------------------------
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:reports/common/rule_structures.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
 
@@ -15,6 +17,7 @@ import 'package:reports/models/preferences_model.dart';
 // -----------------------------------------------------------------------------
 const String layoutsDirectoryPath = 'layouts';
 const String reportsDirectoryPath = 'reports';
+const String statsRulesPath = 'stats_rules.json';
 
 abstract class ReportsExtensions {
   static const String report = ".report";
@@ -57,6 +60,50 @@ List<File> getLayoutsList(BuildContext context) {
 List<File> getReportsList(BuildContext context) {
   final dir = context.read<PreferencesModel>().reportsDirectory;
   return getDirectoryList(dir, recursive: true);
+}
+
+/// Get the locally stored custom statistics rules
+File getStatsRulesFile(BuildContext context) {
+  final dir = context.read<PreferencesModel>().defaultPath;
+  return File(p.join(dir, statsRulesPath));
+}
+
+/// Get the list of all statistics rules stored in the local custom rules files.
+List<Rule> getStatsRules(BuildContext context) {
+  final file = getStatsRulesFile(context);
+  if (!file.existsSync()) return [];
+
+  return (jsonDecode(file.readAsStringSync()) as List<dynamic>)
+      .map((e) => Rule.fromJson(e))
+      .toList();
+}
+
+/// Write the given rule to the statistics rules file.
+void writeStatsRule(BuildContext context, Rule rule) {
+  final rules = getStatsRules(context);
+
+  final ruleIndex = rules.indexWhere((element) => element.id == rule.id);
+  if (ruleIndex != -1) {
+    rules[ruleIndex] = rule;
+  } else {
+    rules.add(rule);
+  }
+
+  final rulesFile = getStatsRulesFile(context);
+  rulesFile.writeAsStringSync(jsonEncode(rules));
+}
+
+/// Remove the given rule from the statistics rules file.
+void removeStatsRule(BuildContext context, Rule rule) {
+  final rules = getStatsRules(context);
+
+  final ruleIndex = rules.indexWhere((element) => element.id == rule.id);
+  if (ruleIndex != -1) {
+    rules.removeAt(ruleIndex);
+  }
+
+  final rulesFile = getStatsRulesFile(context);
+  rulesFile.writeAsStringSync(jsonEncode(rules));
 }
 
 /// Write the given string to the destination path. Optionally check if a file

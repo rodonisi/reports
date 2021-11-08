@@ -65,7 +65,13 @@
             "save": "@.capitalize:keywords.save",
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
-            "types": "@.capitalize:types"
+            "types": "@.capitalize:keywords.types",
+            "rule": "@.capitalize:keywords.rule",
+            "rules": "@.capitalize:keywords.rules",
+            "name": "@.capitalize:keywords.name",
+            "field": "@.capitalize:keywords.field",
+            "operation": "@.capitalize:keywords.operation",
+            "value": "@.capitalize:keywords.value"
         },
         "create": "create",
         "day": {
@@ -98,7 +104,13 @@
         "save": "save",
         "statistics": "statistics",
         "title": "title",
-        "types": "types"
+        "types": "types",
+        "rule": "rule",
+        "rules": "rules",
+        "name": "name",
+        "field": "field",
+        "operation": "operation",
+        "value": "value"
     },
     "layout": "Layout",
     "report": "Report",
@@ -142,7 +154,18 @@
             "path": "Default Path",
             "reader_mode": "Reader Mode"
         },
-        "settings": "Settings"
+        "settings": "Settings",
+        "statistics": {
+            "custom_rules": "Custom Rules",
+            "gt": "Greater Than",
+            "gte": "Greater or Equal Than",
+            "lt": "Less Than",
+            "lte": "Less or Equal Than"
+        }
+    },
+    "form": {
+        "not_empty": "This field cannot be empty.",
+        "not_number": "The entry must be a number."
     },
     "statistics": {
         "no_stats": "No statistics can be generated from this layout."

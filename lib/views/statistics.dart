@@ -256,6 +256,68 @@ class StatisticsDetail extends StatelessWidget {
     return stats;
   }
 
+  // Get the totals for each custom rule for the given reports.
+  Map<String, _FieldStats> _getRulesStats(
+      BuildContext context, List<_PathReport> reports) {
+    final stats = <String, _FieldStats>{};
+    final rules = getStatsRules(context);
+
+    for (final report in reports) {
+      // Iterate over the rules.
+      for (final rule in rules) {
+        // Scan the fields for the given rule.
+        for (int i = 0; i < report.report.layout.fields.length; i++) {
+          final field = report.report.layout.fields[i];
+
+          if (rule.fieldType == FieldTypes.dateRange &&
+              field.fieldType == rule.fieldType) {
+            // Handle a date range rule.
+            final data = report.report.data[i] as DateRangeFieldData;
+            var duration = data.end.difference(data.start);
+            final threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+
+            var stat = _DateRangeStats(Duration.zero);
+
+            if (rule.operationFunction(duration, threshold)) {
+              // Adjust the duration to the threshold.
+              duration = rule.adjustmentFunction(duration, threshold);
+              stat = _DateRangeStats(duration);
+            }
+
+            if (stats.containsKey(rule.name)) {
+              stats[rule.name] = stats[rule.name]! + stat;
+            } else {
+              stats[rule.name] = stat;
+            }
+          } else if (rule.fieldType == FieldTypes.textField &&
+              field.fieldType == rule.fieldType &&
+              (field as TextFieldOptions).numeric) {
+            // Handle a text field rule.
+            final data = report.report.data[i] as TextFieldData;
+            var value = double.tryParse(data.data) ?? 0.0;
+            final threshold = rule.threshold!;
+
+            var stat = _TextFieldStats(0.0.toString());
+
+            if (rule.operationFunction(value, threshold)) {
+              // Adjust the value to the threshold.
+              value = rule.adjustmentFunction(value, threshold);
+              stat = _TextFieldStats(value.toString());
+            }
+
+            if (stats.containsKey(rule.name)) {
+              stats[rule.name] = stats[rule.name]! + stat;
+            } else {
+              stats[rule.name] = stat;
+            }
+          }
+        }
+      }
+    }
+
+    return stats;
+  }
+
   // Get the directories in which the given reports are stored.
   Set<String> _getDirectories(List<_PathReport> reports) {
     final directories = <String>{};
@@ -385,6 +447,7 @@ class StatisticsDetail extends StatelessWidget {
     final filteredReports = _getReportsForDirectory();
     final fieldStats = _getFieldStats(filteredReports);
     final typeStats = _getTypeStats(filteredReports);
+    final rulesStats = _getRulesStats(context, filteredReports);
     final directories = _getDirectories(filteredReports);
     final pathElements = getPathElements(context);
 
@@ -433,6 +496,17 @@ class StatisticsDetail extends StatelessWidget {
                     ).tr(),
                   ),
                   _generateWrap(context, typeStats),
+                  if (rulesStats.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Text(
+                        'settings.statistics.custom_rules',
+                        style: DrawingConstants.boldTextStyle,
+                      ).tr(),
+                    ),
+                    _generateWrap(context, rulesStats)
+                  ],
                   Padding(
                     padding:
                         const EdgeInsets.all(DrawingConstants.smallPadding),

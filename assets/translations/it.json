@@ -65,7 +65,13 @@
             "save": "@.capitalize:keywords.save",
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
-            "types": "@.capitalize:types"
+            "types": "@.capitalize:types",
+            "rule": "@.capitalize:keywords.rule",
+            "rules": "@.capitalize:keywords.rules",
+            "name": "@.capitalize:keywords.name",
+            "field": "@.capitalize:keywords.field",
+            "operation": "@.capitalize:keywords.operation",
+            "value": "@.capitalize:keywords.value"
         },
         "create": "crea",
         "day": {
@@ -98,7 +104,13 @@
         "save": "salva",
         "statistics": "statistiche",
         "title": "titolo",
-        "types": "Tipi"
+        "types": "tipi",
+        "rule": "regola",
+        "rules": "regole",
+        "name": "nome",
+        "field": "campo",
+        "operation": "operazione",
+        "value": "valore"
     },
     "layout": "Layout",
     "report": "Rapporto",
@@ -142,7 +154,18 @@
             "path": "Percorso Default",
             "reader_mode": "Modalità Lettura"
         },
-        "settings": "Impostazioni"
+        "settings": "Impostazioni",
+        "statistics": {
+            "custom_rules": "Regole Personali",
+            "gt": "Maggiore a",
+            "gte": "Maggiore o Uguale a",
+            "lt": "Minore a",
+            "lte": "Minore o Uguale a"
+        }
+    },
+    "form": {
+        "not_empty": "Questo campo non può essere vuoto.",
+        "not_number": "Il contenuto di questo campo deve essere un numero."
     },
     "statistics": {
         "no_stats": "Impossibile generare statistiche da questo layout."
