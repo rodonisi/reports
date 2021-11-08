@@ -20,7 +20,7 @@ class ListCard extends StatelessWidget {
   void _insertDividers() {
     final divider = const Divider(height: DrawingConstants.dividerHeight);
 
-    for (var i = children.length - 1; i > 0; i -= 2) {
+    for (var i = children.length - 1; i > 0; i--) {
       children.insert(i, divider);
     }
   }
