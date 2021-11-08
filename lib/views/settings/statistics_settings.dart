@@ -98,14 +98,20 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
   }
 }
 
-class _RuleCard extends StatelessWidget {
+class _RuleCard extends StatefulWidget {
   _RuleCard({Key? key, required this.rule, required this.setState})
       : super(key: key);
 
   final Rule rule;
   final setState;
 
+  @override
+  State<_RuleCard> createState() => _RuleCardState();
+}
+
+class _RuleCardState extends State<_RuleCard> {
   final _formKey = GlobalKey<FormState>();
+  bool _modified = false;
 
   String? _notEmptyValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -131,12 +137,13 @@ class _RuleCard extends StatelessWidget {
   void _submitCallback(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      rule.write(context);
+      widget.rule.write(context);
+      setState(() => _modified = false);
     }
   }
 
   void _removeCallback(BuildContext context) {
-    setState(() => rule.remove(context));
+    widget.setState(() => widget.rule.remove(context));
   }
 
   @override
@@ -160,9 +167,16 @@ class _RuleCard extends StatelessWidget {
                   FittedBox(
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.check),
-                          onPressed: () => _submitCallback(context),
+                        AnimatedOpacity(
+                          duration: DrawingConstants.animationDuration,
+                          opacity: _modified ? 1.0 : 0.0,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                            onPressed: () => _submitCallback(context),
+                          ),
                         ),
                         IconButton(
                           icon: Icon(Icons.delete_forever),
@@ -179,9 +193,10 @@ class _RuleCard extends StatelessWidget {
                   labelText: 'keywords.capitalized.name'.tr(),
                   filled: true,
                 ),
-                initialValue: rule.name,
+                initialValue: widget.rule.name,
                 validator: _notEmptyValidator,
-                onSaved: (value) => rule.name = value!,
+                onChanged: (_) => setState(() => _modified = true),
+                onSaved: (value) => widget.rule.name = value!,
               ),
               SizedBox(height: 8),
               Row(
@@ -198,14 +213,14 @@ class _RuleCard extends StatelessWidget {
                             ),
                           )
                           .toList(),
-                      onChanged: (value) {},
-                      value: rule.fieldType,
+                      onChanged: (_) => setState(() => _modified = true),
+                      value: widget.rule.fieldType,
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.field'.tr(),
                         filled: true,
                       ),
                       validator: _notEmptyValidator,
-                      onSaved: (value) => rule.fieldType = value!,
+                      onSaved: (value) => widget.rule.fieldType = value!,
                     ),
                   ),
                   SizedBox(
@@ -222,14 +237,14 @@ class _RuleCard extends StatelessWidget {
                             ),
                           )
                           .toList(),
-                      onChanged: (value) {},
-                      value: rule.operation,
+                      onChanged: (_) => setState(() => _modified = true),
+                      value: widget.rule.operation,
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.operation'.tr(),
                         filled: true,
                       ),
                       validator: _notEmptyValidator,
-                      onSaved: (value) => rule.operation = value!,
+                      onSaved: (value) => widget.rule.operation = value!,
                     ),
                   ),
                   SizedBox(
@@ -242,11 +257,12 @@ class _RuleCard extends StatelessWidget {
                         labelText: 'keywords.capitalized.value'.tr(),
                         filled: true,
                       ),
-                      initialValue: rule.threshold?.toString(),
+                      initialValue: widget.rule.threshold?.toString(),
                       keyboardType: TextInputType.number,
                       validator: _numberValidator,
+                      onChanged: (_) => setState(() => _modified = true),
                       onSaved: (value) =>
-                          rule.threshold = double.tryParse(value!),
+                          widget.rule.threshold = double.tryParse(value!),
                     ),
                   ),
                 ],
