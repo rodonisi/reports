@@ -164,7 +164,11 @@
             "gt": "Greater Than",
             "gte": "Greater or Equal Than",
             "lt": "Less Than",
-            "lte": "Less or Equal Than"
+            "lte": "Less or Equal Than",
+            "show_fields": "Show Fields Statistics",
+            "show_rules": "Show Custom Rules Statistics",
+            "show_statistics": "Show Statistics",
+            "show_types": "Show Types Statistics"
         }
     },
     "statistics": {

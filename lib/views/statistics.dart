@@ -444,16 +444,22 @@ class StatisticsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<PreferencesModel>();
     final filteredReports = _getReportsForDirectory();
-    final fieldStats = _getFieldStats(filteredReports);
-    final typeStats = _getTypeStats(filteredReports);
-    final rulesStats = _getRulesStats(context, filteredReports);
+    final Map<String, _FieldStats> fieldStats =
+        prefs.showFieldStatistics ? _getFieldStats(filteredReports) : {};
+    final Map<String, _FieldStats> typeStats =
+        prefs.showFieldTypeStatistics ? _getTypeStats(filteredReports) : {};
+    final Map<String, _FieldStats> rulesStats = prefs.showCustomRuleStatistitcs
+        ? _getRulesStats(context, filteredReports)
+        : {};
     final directories = _getDirectories(filteredReports);
     final pathElements = getPathElements(context);
 
     // Don't show the stats layout if there are no statistics to be generated
     // for the given layout.
-    final hasStats = fieldStats.isNotEmpty || typeStats.isNotEmpty;
+    final hasStats =
+        fieldStats.isNotEmpty || typeStats.isNotEmpty || rulesStats.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -478,24 +484,28 @@ class StatisticsDetail extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.all(DrawingConstants.smallPadding),
-                    child: Text(
-                      'keywords.capitalized.fields',
-                      style: DrawingConstants.boldTextStyle,
-                    ).tr(),
-                  ),
-                  _generateWrap(context, fieldStats, showType: true),
-                  Padding(
-                    padding:
-                        const EdgeInsets.all(DrawingConstants.smallPadding),
-                    child: Text(
-                      'keywords.capitalized.types',
-                      style: DrawingConstants.boldTextStyle,
-                    ).tr(),
-                  ),
-                  _generateWrap(context, typeStats),
+                  if (fieldStats.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Text(
+                        'keywords.capitalized.fields',
+                        style: DrawingConstants.boldTextStyle,
+                      ).tr(),
+                    ),
+                    _generateWrap(context, fieldStats, showType: true),
+                  ],
+                  if (typeStats.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Text(
+                        'keywords.capitalized.types',
+                        style: DrawingConstants.boldTextStyle,
+                      ).tr(),
+                    ),
+                    _generateWrap(context, typeStats),
+                  ],
                   if (rulesStats.isNotEmpty) ...[
                     Padding(
                       padding:
@@ -507,15 +517,17 @@ class StatisticsDetail extends StatelessWidget {
                     ),
                     _generateWrap(context, rulesStats)
                   ],
-                  Padding(
-                    padding:
-                        const EdgeInsets.all(DrawingConstants.smallPadding),
-                    child: Text(
-                      'keywords.capitalized.directories',
-                      style: DrawingConstants.boldTextStyle,
-                    ).tr(),
-                  ),
-                  ..._generateDirectoryTiles(context, directories),
+                  if (directories.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Text(
+                        'keywords.capitalized.directories',
+                        style: DrawingConstants.boldTextStyle,
+                      ).tr(),
+                    ),
+                    ..._generateDirectoryTiles(context, directories),
+                  ],
                 ],
               ),
             )

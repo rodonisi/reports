@@ -7,6 +7,7 @@ import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:reports/models/preferences_model.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports
@@ -21,7 +22,8 @@ class MenuRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prefs = context.watch<AppStateModel>();
+    final state = context.watch<AppStateModel>();
+
     return NavigationRail(
       extended: extended,
       destinations: [
@@ -33,6 +35,7 @@ class MenuRail extends StatelessWidget {
           icon: const Icon(ReportsIcons.layout),
           label: Text('keywords.capitalized.layouts').tr(),
         ),
+        // TODO: Find a way to hide when disabled.
         NavigationRailDestination(
           icon: const Icon(Icons.poll_outlined),
           label: Text('keywords.capitalized.statistics').tr(),
@@ -46,9 +49,9 @@ class MenuRail extends StatelessWidget {
           label: Text('settings.settings').tr(),
         ),
       ],
-      selectedIndex: prefs.getIndexFromPage(),
+      selectedIndex: state.getIndexFromPage(),
       onDestinationSelected: (index) {
-        prefs.setPageFromIndex(index);
+        state.setPageFromIndex(index);
       },
     );
   }
@@ -73,6 +76,8 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.read<AppStateModel>();
+    final prefs = context.read<PreferencesModel>();
+
     return Scaffold(
       body: SafeArea(
         top: true,
@@ -96,13 +101,14 @@ class MenuDrawer extends StatelessWidget {
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.layouts,
             ),
-            ContainerTile(
-              title: Text('keywords.capitalized.statistics').tr(),
-              leading: const Icon(Icons.poll_outlined),
-              selected: appState.currentPage == Pages.statistics,
-              onTap: () =>
-                  context.read<AppStateModel>().currentPage = Pages.statistics,
-            ),
+            if (prefs.showStatistics)
+              ContainerTile(
+                title: Text('keywords.capitalized.statistics').tr(),
+                leading: const Icon(Icons.poll_outlined),
+                selected: appState.currentPage == Pages.statistics,
+                onTap: () => context.read<AppStateModel>().currentPage =
+                    Pages.statistics,
+              ),
             _getSeparator(),
             ListTile(
               title: Text('import.import').tr(),

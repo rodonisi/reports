@@ -38,4 +38,9 @@ abstract class DrawingConstants {
   static const secondaryTextStyle = const TextStyle(color: Colors.grey);
   static const titleTextStyle =
       const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
+
+  // ---------------------------------------------------------------------------
+  // - Animation Constants
+  // ---------------------------------------------------------------------------
+  static const animationDuration = Duration(milliseconds: 200);
 }

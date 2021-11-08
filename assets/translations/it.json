@@ -164,7 +164,11 @@
             "gt": "Maggiore a",
             "gte": "Maggiore o Uguale a",
             "lt": "Minore a",
-            "lte": "Minore o Uguale a"
+            "lte": "Minore o Uguale a",
+            "show_fields": "Mostra Statistiche Campi",
+            "show_rules": "Mostra Statistiche Regole Personali",
+            "show_statistics": "Mostra Statistiche",
+            "show_types": "Mostra Statistiche Tipo"
         }
     },
     "statistics": {
