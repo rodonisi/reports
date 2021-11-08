@@ -179,7 +179,7 @@ class _RuleCardState extends State<_RuleCard> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete_forever),
+                          icon: Icon(Icons.cancel, color: Colors.red),
                           onPressed: () => _removeCallback(context),
                         ),
                       ],
