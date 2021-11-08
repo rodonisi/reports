@@ -280,7 +280,9 @@ class _RuleCard extends StatelessWidget {
               SizedBox(height: 8),
               Row(
                 children: [
-                  Expanded(
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 2,
                     child: DropdownButtonFormField<String>(
                       items: Rule.supportedFields
                           .map(
@@ -303,7 +305,8 @@ class _RuleCard extends StatelessWidget {
                   SizedBox(
                     width: DrawingConstants.smallPadding,
                   ),
-                  Expanded(
+                  Flexible(
+                    fit: FlexFit.tight,
                     child: DropdownButtonFormField<String>(
                       items: Rule.operations.entries
                           .map(
@@ -326,7 +329,8 @@ class _RuleCard extends StatelessWidget {
                   SizedBox(
                     width: DrawingConstants.smallPadding,
                   ),
-                  Expanded(
+                  Flexible(
+                    fit: FlexFit.tight,
                     child: TextFormField(
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.value'.tr(),

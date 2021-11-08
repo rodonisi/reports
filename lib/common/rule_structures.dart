@@ -14,10 +14,10 @@ class Rule {
 
   // The supported rule operations.
   static const Map<String, String> operations = {
-    'gt': 'settings.statistics.gt',
-    'gte': 'settings.statistics.gte',
-    'lt': 'settings.statistics.lt',
-    'lte': 'settings.statistics.lte',
+    'gt': '>',
+    'gte': '>=',
+    'lt': '<',
+    'lte': '<=',
   };
 
   // The supported rule fields.
