@@ -30,6 +30,10 @@
             "text": "Testo"
         }
     },
+    "form": {
+        "not_empty": "Questo campo non può essere vuoto.",
+        "not_number": "Il contenuto di questo campo deve essere un numero."
+    },
     "import": {
         "as_layout": "@:import.import come @.capitalize:keywords.layout",
         "destination": "Destinazione",
@@ -50,6 +54,7 @@
             "day": "@.capitalize:keywords.day",
             "days": "@.capitalize:keywords.days",
             "directories": "@.capitalize:keywords.directories",
+            "field": "@.capitalize:keywords.field",
             "fields": "@.capitalize:keywords.fields",
             "file": "@.capitalize:keywords.file",
             "files": "@.capitalize:keywords.files",
@@ -58,19 +63,18 @@
             "layouts": "@.capitalize:keywords.layouts",
             "loading": "@.capitalize:keywords.loading",
             "minute": "@.capitalize:keywords.minute",
+            "name": "@.capitalize:keywords.name",
+            "operation": "@.capitalize:keywords.operation",
             "option": "@.capitalize:keywords.option",
             "options": "@.capitalize:keywords.options",
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
+            "rule": "@.capitalize:keywords.rule",
+            "rules": "@.capitalize:keywords.rules",
             "save": "@.capitalize:keywords.save",
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
-            "rule": "@.capitalize:keywords.rule",
-            "rules": "@.capitalize:keywords.rules",
-            "name": "@.capitalize:keywords.name",
-            "field": "@.capitalize:keywords.field",
-            "operation": "@.capitalize:keywords.operation",
             "value": "@.capitalize:keywords.value"
         },
         "create": "crea",
@@ -81,6 +85,7 @@
         },
         "days": "giorni",
         "directories": "cartelle",
+        "field": "campo",
         "fields": "campi",
         "file": "file",
         "files": "file",
@@ -97,19 +102,18 @@
             "other": "{} minuti",
             "zero": "{} minuti"
         },
+        "name": "nome",
+        "operation": "operazione",
         "option": "opzione",
         "options": "opzioni",
         "report": "rapporto",
         "reports": "rapporti",
+        "rule": "regola",
+        "rules": "regole",
         "save": "salva",
         "statistics": "statistiche",
         "title": "titolo",
         "types": "tipi",
-        "rule": "regola",
-        "rules": "regole",
-        "name": "nome",
-        "field": "campo",
-        "operation": "operazione",
         "value": "valore"
     },
     "layout": "Layout",
@@ -162,10 +166,6 @@
             "lt": "Minore a",
             "lte": "Minore o Uguale a"
         }
-    },
-    "form": {
-        "not_empty": "Questo campo non può essere vuoto.",
-        "not_number": "Il contenuto di questo campo deve essere un numero."
     },
     "statistics": {
         "no_stats": "Impossibile generare statistiche da questo layout."

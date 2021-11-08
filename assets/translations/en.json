@@ -30,6 +30,10 @@
             "text": "Text"
         }
     },
+    "form": {
+        "not_empty": "This field cannot be empty.",
+        "not_number": "The entry must be a number."
+    },
     "import": {
         "as_layout": "@:import.import as @.capitalize:keywords.layout",
         "destination": "Destination",
@@ -50,6 +54,7 @@
             "day": "@.capitalize:keywords.day",
             "days": "@.capitalize:keywords.days",
             "directories": "@.capitalize:directories",
+            "field": "@.capitalize:keywords.field",
             "fields": "@.capitalize:fields",
             "file": "@.capitalize:keywords.file",
             "files": "@.capitalize:keywords.files",
@@ -58,19 +63,18 @@
             "layouts": "@.capitalize:keywords.layouts",
             "loading": "@.capitalize:keywords.loading",
             "minute": "@.capitalize:keywords.minute",
+            "name": "@.capitalize:keywords.name",
+            "operation": "@.capitalize:keywords.operation",
             "option": "@.capitalize:keywords.option",
             "options": "@.capitalize:keywords.options",
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
+            "rule": "@.capitalize:keywords.rule",
+            "rules": "@.capitalize:keywords.rules",
             "save": "@.capitalize:keywords.save",
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
-            "rule": "@.capitalize:keywords.rule",
-            "rules": "@.capitalize:keywords.rules",
-            "name": "@.capitalize:keywords.name",
-            "field": "@.capitalize:keywords.field",
-            "operation": "@.capitalize:keywords.operation",
             "value": "@.capitalize:keywords.value"
         },
         "create": "create",
@@ -81,6 +85,7 @@
         },
         "days": "days",
         "directories": "directories",
+        "field": "field",
         "fields": "fields",
         "file": "file",
         "files": "files",
@@ -97,19 +102,18 @@
             "other": "{} minutes",
             "zero": "{} minutes"
         },
+        "name": "name",
+        "operation": "operation",
         "option": "option",
         "options": "options",
         "report": "report",
         "reports": "reports",
+        "rule": "rule",
+        "rules": "rules",
         "save": "save",
         "statistics": "statistics",
         "title": "title",
         "types": "types",
-        "rule": "rule",
-        "rules": "rules",
-        "name": "name",
-        "field": "field",
-        "operation": "operation",
         "value": "value"
     },
     "layout": "Layout",
@@ -162,10 +166,6 @@
             "lt": "Less Than",
             "lte": "Less or Equal Than"
         }
-    },
-    "form": {
-        "not_empty": "This field cannot be empty.",
-        "not_number": "The entry must be a number."
     },
     "statistics": {
         "no_stats": "No statistics can be generated from this layout."
