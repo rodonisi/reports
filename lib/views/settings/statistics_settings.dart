@@ -12,8 +12,10 @@ import 'package:reports/utilities/print_utils.dart';
 import 'package:reports/widgets/list_card.dart';
 
 // -----------------------------------------------------------------------------
-// -
+// - StatisticsSettings Widget Implementation
 // -----------------------------------------------------------------------------
+
+/// Display the statistics settings card.
 class StatisticsSettings extends StatelessWidget {
   const StatisticsSettings({Key? key}) : super(key: key);
 
@@ -63,6 +65,9 @@ class StatisticsSettings extends StatelessWidget {
   }
 }
 
+// -----------------------------------------------------------------------------
+// - _CustomStatsRulesView Widget Implementation
+// -----------------------------------------------------------------------------
 class _CustomStatsRulesView extends StatefulWidget {
   const _CustomStatsRulesView({Key? key}) : super(key: key);
 
@@ -98,6 +103,9 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
   }
 }
 
+// -----------------------------------------------------------------------------
+// - _RuleCard Widget Implementation
+// -----------------------------------------------------------------------------
 class _RuleCard extends StatefulWidget {
   _RuleCard({Key? key, required this.rule, required this.setState})
       : super(key: key);
