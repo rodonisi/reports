@@ -101,7 +101,7 @@ class Rule {
       case 'ran':
         return (lhs, rhs) {
           final lower = lhs - rhs[0];
-          final upper = lhs > rhs[1] ? lhs - rhs[1] : Duration.zero;
+          final upper = lhs > rhs[1] ? lhs - rhs[1] : lhs - lhs;
           return lower - upper;
         };
       default:
