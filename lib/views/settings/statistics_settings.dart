@@ -150,6 +150,11 @@ class _RuleCardState extends State<_RuleCard> {
       return exists;
     }
 
+    final isNumber = _numberValidator(value);
+    if (isNumber != null) {
+      return isNumber;
+    }
+
     final otherExists = _notEmptyValidator(other);
 
     if (otherExists != null) {
@@ -237,6 +242,7 @@ class _RuleCardState extends State<_RuleCard> {
                 decoration: InputDecoration(
                   labelText: 'keywords.capitalized.name'.tr(),
                   filled: true,
+                  helperText: '',
                 ),
                 initialValue: widget.rule.name,
                 validator: _notEmptyValidator,
@@ -268,6 +274,7 @@ class _RuleCardState extends State<_RuleCard> {
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.field'.tr(),
                         filled: true,
+                        helperText: '',
                       ),
                       validator: _notEmptyValidator,
                     ),
@@ -299,6 +306,7 @@ class _RuleCardState extends State<_RuleCard> {
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.operation'.tr(),
                         filled: true,
+                        helperText: '',
                       ),
                       validator: _notEmptyValidator,
                     ),
@@ -319,11 +327,15 @@ class _RuleCardState extends State<_RuleCard> {
                                 : 'keywords.capitalized.value')
                             .tr(),
                         filled: true,
+                        helperText: '',
                       ),
                       initialValue: isRange
                           ? widget.rule.threshold[0]?.toString()
                           : widget.rule.threshold?.toString(),
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: true,
+                      ),
                       validator: _numberValidator,
                       onChanged: (value) => setState(() {
                         _setThresholdCallback(value, isRange: isRange);
@@ -340,23 +352,30 @@ class _RuleCardState extends State<_RuleCard> {
                         child: Text('-')),
                     Flexible(
                       fit: FlexFit.tight,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'keywords.capitalized.upper'.tr(),
-                          filled: true,
+                      child: Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'keywords.capitalized.upper'.tr(),
+                            filled: true,
+                            helperText: '',
+                          ),
+                          initialValue: widget.rule.threshold[1]?.toString(),
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                            signed: true,
+                          ),
+                          validator: (value) => _lessThanValidator(
+                            value,
+                            other: widget.rule.threshold[0]?.toString(),
+                          ),
+                          onChanged: (value) => setState(() {
+                            _setThresholdCallback(value,
+                                index: 1, isRange: true);
+                            _modified = true;
+                          }),
+                          onSaved: (value) => _setThresholdCallback(value!,
+                              index: 1, isRange: true),
                         ),
-                        initialValue: widget.rule.threshold[1]?.toString(),
-                        keyboardType: TextInputType.number,
-                        validator: (value) => _lessThanValidator(
-                          value,
-                          other: widget.rule.threshold[0]?.toString(),
-                        ),
-                        onChanged: (value) => setState(() {
-                          _setThresholdCallback(value, index: 1, isRange: true);
-                          _modified = true;
-                        }),
-                        onSaved: (value) => _setThresholdCallback(value!,
-                            index: 1, isRange: true),
                       ),
                     ),
                   ]
