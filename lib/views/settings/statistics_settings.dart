@@ -175,6 +175,7 @@ class _RuleCardState extends State<_RuleCard> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       widget.rule.write(context);
+      _unfocus();
       setState(() => _modified = false);
     }
   }
@@ -191,6 +192,8 @@ class _RuleCardState extends State<_RuleCard> {
       widget.rule.threshold = double.tryParse(value);
     }
   }
+
+  void _unfocus() => FocusManager.instance.primaryFocus!.unfocus();
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +258,6 @@ class _RuleCardState extends State<_RuleCard> {
               Row(
                 children: [
                   Flexible(
-                    fit: FlexFit.loose,
                     flex: 2,
                     child: DropdownButtonFormField<String>(
                       items: Rule.supportedFields
@@ -266,6 +268,7 @@ class _RuleCardState extends State<_RuleCard> {
                             ),
                           )
                           .toList(),
+                      onTap: _unfocus,
                       onChanged: (value) => setState(() {
                         widget.rule.fieldType = value;
                         _modified = true;
@@ -283,16 +286,20 @@ class _RuleCardState extends State<_RuleCard> {
                     width: DrawingConstants.smallPadding,
                   ),
                   Flexible(
-                    fit: FlexFit.tight,
                     child: DropdownButtonFormField<String>(
+                      isExpanded: true,
                       items: Rule.operations.entries
                           .map(
                             (e) => DropdownMenuItem(
-                              child: Text(e.value.tr()),
+                              child: Text(
+                                e.value.tr(),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               value: e.key,
                             ),
                           )
                           .toList(),
+                      onTap: _unfocus,
                       onChanged: (value) => setState(() {
                         widget.rule.operation = value;
                         if (value == 'ran') {
