@@ -31,6 +31,7 @@
         }
     },
     "form": {
+        "less_than": "The entry must be greater than the lower value.",
         "not_empty": "This field cannot be empty.",
         "not_number": "The entry must be a number."
     },
@@ -62,11 +63,13 @@
             "layout": "@.capitalize:keywords.layout",
             "layouts": "@.capitalize:keywords.layouts",
             "loading": "@.capitalize:keywords.loading",
+            "lower": "@.capitalize:keywords.lower",
             "minute": "@.capitalize:keywords.minute",
             "name": "@.capitalize:keywords.name",
             "operation": "@.capitalize:keywords.operation",
             "option": "@.capitalize:keywords.option",
             "options": "@.capitalize:keywords.options",
+            "range": "@.capitalize:keywords.range",
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
             "rule": "@.capitalize:keywords.rule",
@@ -75,6 +78,7 @@
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
+            "upper": "@.capitalize:keywords.upper",
             "value": "@.capitalize:keywords.value"
         },
         "create": "create",
@@ -97,6 +101,7 @@
         "layout": "layout",
         "layouts": "layouts",
         "loading": "loading",
+        "lower": "lower",
         "minute": {
             "one": "{} minute",
             "other": "{} minutes",
@@ -106,6 +111,7 @@
         "operation": "operation",
         "option": "option",
         "options": "options",
+        "range": "range",
         "report": "report",
         "reports": "reports",
         "rule": "rule",
@@ -114,6 +120,7 @@
         "statistics": "statistics",
         "title": "title",
         "types": "types",
+        "upper": "upper",
         "value": "value"
     },
     "layout": "Layout",

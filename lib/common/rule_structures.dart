@@ -14,10 +14,11 @@ class Rule {
 
   // The supported rule operations.
   static const Map<String, String> operations = {
-    'gt': '>',
-    'gte': '>=',
-    'lt': '<',
-    'lte': '<=',
+    'gt': 'settings.statistics.gt',
+    'gte': 'settings.statistics.gte',
+    'lt': 'settings.statistics.lt',
+    'lte': 'settings.statistics.lte',
+    'ran': 'keywords.capitalized.range',
   };
 
   // The supported rule fields.
@@ -30,7 +31,7 @@ class Rule {
   String name;
   String? fieldType;
   String? operation;
-  double? threshold;
+  dynamic threshold;
 
   Rule({
     this.name = '',
@@ -45,7 +46,7 @@ class Rule {
         name = json[kName] ?? '',
         fieldType = json[kFieldType],
         operation = json[kOperation],
-        threshold = json[kThreshold] as double?;
+        threshold = json[kThreshold];
 
   /// Convert a Rule object to json.
   Map<String, dynamic> toJson() {
@@ -84,6 +85,8 @@ class Rule {
         return (lhs, rhs) => lhs >= rhs;
       case 'lte':
         return (lhs, rhs) => lhs <= rhs;
+      case 'ran':
+        return (lhs, rhs) => lhs > rhs[0];
       default:
         return (lhs, rhs) => false;
     }
@@ -95,6 +98,12 @@ class Rule {
       case 'gt':
       case 'gte':
         return (lhs, rhs) => lhs - rhs;
+      case 'ran':
+        return (lhs, rhs) {
+          final lower = lhs - rhs[0];
+          final upper = lhs > rhs[1] ? lhs - rhs[1] : Duration.zero;
+          return lower - upper;
+        };
       default:
         return (lhs, rhs) => lhs;
     }

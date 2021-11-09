@@ -31,6 +31,7 @@
         }
     },
     "form": {
+        "less_than": "Il valore deve essere maggiore del valore di inizio.",
         "not_empty": "Questo campo non può essere vuoto.",
         "not_number": "Il contenuto di questo campo deve essere un numero."
     },
@@ -62,11 +63,13 @@
             "layout": "@.capitalize:keywords.layout",
             "layouts": "@.capitalize:keywords.layouts",
             "loading": "@.capitalize:keywords.loading",
+            "lower": "@.capitalize:keywords.lower",
             "minute": "@.capitalize:keywords.minute",
             "name": "@.capitalize:keywords.name",
             "operation": "@.capitalize:keywords.operation",
             "option": "@.capitalize:keywords.option",
             "options": "@.capitalize:keywords.options",
+            "range": "@.capitalize:keywords.range",
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
             "rule": "@.capitalize:keywords.rule",
@@ -75,6 +78,7 @@
             "statistics": "@.capitalize:keywords.statistics",
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
+            "upper": "@.capitalize:keywords.upper",
             "value": "@.capitalize:keywords.value"
         },
         "create": "crea",
@@ -97,6 +101,7 @@
         "layout": "layout",
         "layouts": "layout",
         "loading": "caricamento",
+        "lower": "inizio",
         "minute": {
             "one": "{} minuto",
             "other": "{} minuti",
@@ -106,6 +111,7 @@
         "operation": "operazione",
         "option": "opzione",
         "options": "opzioni",
+        "range": "intervallo",
         "report": "rapporto",
         "reports": "rapporti",
         "rule": "regola",
@@ -114,6 +120,7 @@
         "statistics": "statistiche",
         "title": "titolo",
         "types": "tipi",
+        "upper": "fine",
         "value": "valore"
     },
     "layout": "Layout",

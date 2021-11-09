@@ -143,6 +143,29 @@ class _RuleCardState extends State<_RuleCard> {
     return null;
   }
 
+  String? _lessThanValidator(String? value, {String? other}) {
+    final exists = _notEmptyValidator(value);
+
+    if (exists != null) {
+      return exists;
+    }
+
+    final otherExists = _notEmptyValidator(other);
+
+    if (otherExists != null) {
+      return otherExists;
+    }
+
+    final valueNum = double.tryParse(value!)!;
+    final otherNum = double.tryParse(other!)!;
+
+    if (valueNum < otherNum) {
+      return 'form.less_than'.tr();
+    }
+
+    return null;
+  }
+
   void _submitCallback(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -155,8 +178,18 @@ class _RuleCardState extends State<_RuleCard> {
     widget.setState(() => widget.rule.remove(context));
   }
 
+  void _setThresholdCallback(String value,
+      {int index = 0, bool isRange = false}) {
+    if (isRange) {
+      widget.rule.threshold[index] = double.tryParse(value);
+    } else {
+      widget.rule.threshold = double.tryParse(value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isRange = widget.rule.operation == 'ran';
     return Card(
       margin: const EdgeInsets.all(DrawingConstants.smallPadding),
       child: Padding(
@@ -179,12 +212,15 @@ class _RuleCardState extends State<_RuleCard> {
                         AnimatedOpacity(
                           duration: DrawingConstants.animationDuration,
                           opacity: _modified ? 1.0 : 0.0,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.green,
+                          child: IgnorePointer(
+                            ignoring: !_modified,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.check,
+                                color: Colors.green,
+                              ),
+                              onPressed: () => _submitCallback(context),
                             ),
-                            onPressed: () => _submitCallback(context),
                           ),
                         ),
                         IconButton(
@@ -204,8 +240,10 @@ class _RuleCardState extends State<_RuleCard> {
                 ),
                 initialValue: widget.rule.name,
                 validator: _notEmptyValidator,
-                onChanged: (_) => setState(() => _modified = true),
-                onSaved: (value) => widget.rule.name = value!,
+                onChanged: (value) => setState(() {
+                  widget.rule.name = value;
+                  _modified = true;
+                }),
               ),
               SizedBox(height: 8),
               Row(
@@ -222,14 +260,16 @@ class _RuleCardState extends State<_RuleCard> {
                             ),
                           )
                           .toList(),
-                      onChanged: (_) => setState(() => _modified = true),
+                      onChanged: (value) => setState(() {
+                        widget.rule.fieldType = value;
+                        _modified = true;
+                      }),
                       value: widget.rule.fieldType,
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.field'.tr(),
                         filled: true,
                       ),
                       validator: _notEmptyValidator,
-                      onSaved: (value) => widget.rule.fieldType = value!,
                     ),
                   ),
                   SizedBox(
@@ -241,41 +281,87 @@ class _RuleCardState extends State<_RuleCard> {
                       items: Rule.operations.entries
                           .map(
                             (e) => DropdownMenuItem(
-                              child: Text(e.value),
+                              child: Text(e.value.tr()),
                               value: e.key,
                             ),
                           )
                           .toList(),
-                      onChanged: (_) => setState(() => _modified = true),
+                      onChanged: (value) => setState(() {
+                        widget.rule.operation = value;
+                        if (value == 'ran') {
+                          widget.rule.threshold = <double?>[null, null];
+                        } else {
+                          widget.rule.threshold = null;
+                        }
+                        _modified = true;
+                      }),
                       value: widget.rule.operation,
                       decoration: InputDecoration(
                         labelText: 'keywords.capitalized.operation'.tr(),
                         filled: true,
                       ),
                       validator: _notEmptyValidator,
-                      onSaved: (value) => widget.rule.operation = value!,
                     ),
                   ),
-                  SizedBox(
-                    width: DrawingConstants.smallPadding,
-                  ),
+                ],
+              ),
+              SizedBox(
+                height: DrawingConstants.smallPadding,
+              ),
+              Row(
+                children: [
                   Flexible(
                     fit: FlexFit.tight,
                     child: TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'keywords.capitalized.value'.tr(),
+                        labelText: (isRange
+                                ? 'keywords.capitalized.lower'
+                                : 'keywords.capitalized.value')
+                            .tr(),
                         filled: true,
                       ),
-                      initialValue: widget.rule.threshold?.toString(),
+                      initialValue: isRange
+                          ? widget.rule.threshold[0]?.toString()
+                          : widget.rule.threshold?.toString(),
                       keyboardType: TextInputType.number,
                       validator: _numberValidator,
-                      onChanged: (_) => setState(() => _modified = true),
+                      onChanged: (value) => setState(() {
+                        _setThresholdCallback(value, isRange: isRange);
+                        _modified = true;
+                      }),
                       onSaved: (value) =>
-                          widget.rule.threshold = double.tryParse(value!),
+                          _setThresholdCallback(value!, isRange: isRange),
                     ),
                   ),
+                  if (isRange) ...[
+                    Padding(
+                        padding:
+                            const EdgeInsets.all(DrawingConstants.smallPadding),
+                        child: Text('-')),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'keywords.capitalized.upper'.tr(),
+                          filled: true,
+                        ),
+                        initialValue: widget.rule.threshold[1]?.toString(),
+                        keyboardType: TextInputType.number,
+                        validator: (value) => _lessThanValidator(
+                          value,
+                          other: widget.rule.threshold[0]?.toString(),
+                        ),
+                        onChanged: (value) => setState(() {
+                          _setThresholdCallback(value, index: 1, isRange: true);
+                          _modified = true;
+                        }),
+                        onSaved: (value) => _setThresholdCallback(value!,
+                            index: 1, isRange: true),
+                      ),
+                    ),
+                  ]
                 ],
-              )
+              ),
             ],
           ),
         ),

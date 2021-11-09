@@ -274,7 +274,15 @@ class StatisticsDetail extends StatelessWidget {
             // Handle a date range rule.
             final data = report.report.data[i] as DateRangeFieldData;
             var duration = data.end.difference(data.start);
-            final threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+            final dynamic threshold;
+            if (rule.threshold is double) {
+              threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+            } else {
+              threshold = [
+                Duration(minutes: (60 * rule.threshold[0]).toInt()),
+                Duration(minutes: (60 * rule.threshold[1]).toInt()),
+              ];
+            }
 
             var stat = _DateRangeStats(Duration.zero);
 
