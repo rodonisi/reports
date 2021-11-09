@@ -11,6 +11,7 @@ class Rule {
   static const String kFieldType = 'field_type';
   static const String kOperation = 'operation';
   static const String kThreshold = 'threshold';
+  static const String kPerField = 'per_field';
 
   // The supported rule operations.
   static const Map<String, String> operations = {
@@ -32,12 +33,14 @@ class Rule {
   String? fieldType;
   String? operation;
   dynamic threshold;
+  bool perField;
 
   Rule({
     this.name = '',
     this.fieldType,
     this.operation,
     this.threshold,
+    this.perField = false,
   }) : id = UniqueKey().toString();
 
   /// Iinitialize a rule from a json object.
@@ -46,7 +49,8 @@ class Rule {
         name = json[kName] ?? '',
         fieldType = json[kFieldType],
         operation = json[kOperation],
-        threshold = json[kThreshold];
+        threshold = json[kThreshold],
+        perField = json[kPerField] ?? false;
 
   /// Convert a Rule object to json.
   Map<String, dynamic> toJson() {
@@ -56,6 +60,7 @@ class Rule {
       kFieldType: fieldType,
       kOperation: operation,
       kThreshold: threshold,
+      kPerField: perField,
     };
   }
 

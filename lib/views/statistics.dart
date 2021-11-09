@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/common/constants.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/common/rule_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/utilities/io_utils.dart';
@@ -106,8 +107,9 @@ class StatisticsList extends StatelessWidget {
 // -----------------------------------------------------------------------------
 abstract class _FieldStats {
   final String type;
+  dynamic value;
 
-  _FieldStats(this.type);
+  _FieldStats(this.type, this.value);
 
   _FieldStats operator +(_FieldStats other);
   _FieldStats operator -(_FieldStats other);
@@ -115,13 +117,11 @@ abstract class _FieldStats {
 }
 
 class _DateRangeStats extends _FieldStats {
-  final Duration duration;
-
-  _DateRangeStats(this.duration) : super(FieldTypes.dateRange);
+  _DateRangeStats(Duration duration) : super(FieldTypes.dateRange, duration);
 
   _DateRangeStats operator +(_FieldStats other) {
     if (other is _DateRangeStats) {
-      return _DateRangeStats(duration + other.duration);
+      return _DateRangeStats(value + other.value);
     } else {
       throw ArgumentError('Cannot add ${other.runtimeType} to _DateRangeStats');
     }
@@ -129,24 +129,21 @@ class _DateRangeStats extends _FieldStats {
 
   _DateRangeStats operator -(_FieldStats other) {
     if (other is _DateRangeStats) {
-      return _DateRangeStats(duration - other.duration);
+      return _DateRangeStats(value - other.value);
     } else {
       throw ArgumentError(
           'Cannot subtract ${other.runtimeType} from _DateRangeStats');
     }
   }
 
-  String toString() => prettyDuration(duration);
+  String toString() => prettyDuration(value);
 }
 
 class _TextFieldStats extends _FieldStats {
-  final double value;
-
   _TextFieldStats(String value)
-      : value = double.tryParse(value) ?? 0.0,
-        super(FieldTypes.textField);
+      : super(FieldTypes.textField, double.tryParse(value) ?? 0.0);
 
-  _TextFieldStats.fromDouble(this.value) : super(FieldTypes.textField);
+  _TextFieldStats.fromDouble(double value) : super(FieldTypes.textField, value);
 
   _TextFieldStats operator +(_FieldStats other) {
     if (other is _TextFieldStats) {
@@ -187,7 +184,7 @@ class StatisticsDetail extends StatelessWidget {
     return reports.where((report) => report.path.contains(path)).toList();
   }
 
-  List<int> _getFilteredReportFieldsIndices(Report report) {
+  List<int> _getFilteredReportFieldsIndices(Report report, {Rule? rule}) {
     final fields = report.layout.fields;
     final filteredFields = <int>[];
 
@@ -196,7 +193,9 @@ class StatisticsDetail extends StatelessWidget {
       final field = fields[i];
       // Add the index if the field's include toggle is on.
       if (field is StatisticsFieldOptions && field.statisticsInclude) {
-        filteredFields.add(i);
+        if (rule == null || rule.fieldType == field.fieldType) {
+          filteredFields.add(i);
+        }
       }
     }
 
@@ -283,59 +282,92 @@ class StatisticsDetail extends StatelessWidget {
     for (final report in reports) {
       // Iterate over the rules.
       for (final rule in rules) {
-        final indices = _getFilteredReportFieldsIndices(report.report);
-        // Scan the fields for the given rule.
-        for (final i in indices) {
-          final field = report.report.layout.fields[i];
+        final indices =
+            _getFilteredReportFieldsIndices(report.report, rule: rule);
 
-          if (rule.fieldType == FieldTypes.dateRange &&
-              field.fieldType == rule.fieldType) {
-            // Handle a date range rule.
-            final data = report.report.data[i] as DateRangeFieldData;
-            var duration = data.end.difference(data.start);
-            final dynamic threshold;
-            if (rule.threshold is double) {
-              threshold = Duration(minutes: (60 * rule.threshold!).toInt());
-            } else {
-              threshold = [
-                Duration(minutes: (60 * rule.threshold[0]).toInt()),
-                Duration(minutes: (60 * rule.threshold[1]).toInt()),
-              ];
+        final dynamic threshold;
+        if (rule.fieldType == FieldTypes.textField) {
+          threshold = rule.threshold!;
+        } else {
+          if (rule.threshold is double) {
+            threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+          } else {
+            threshold = [
+              Duration(minutes: (60 * rule.threshold[0]).toInt()),
+              Duration(minutes: (60 * rule.threshold[1]).toInt()),
+            ];
+          }
+        }
+
+        if (!rule.perField) {
+          _FieldStats total = rule.fieldType == FieldTypes.textField
+              ? _TextFieldStats.fromDouble(0.0)
+              : _DateRangeStats(Duration.zero);
+          for (final i in indices) {
+            if (rule.fieldType == FieldTypes.textField) {
+              final data = report.report.data[i] as TextFieldData;
+              final value = _TextFieldStats(data.data);
+              total += value;
+            } else if (rule.fieldType == FieldTypes.dateRange) {
+              final data = report.report.data[i] as DateRangeFieldData;
+              final duration = _DateRangeStats(data.end.difference(data.start));
+              total += duration;
             }
+          }
 
-            var stat = _DateRangeStats(Duration.zero);
+          if (rule.operationFunction(total.value, threshold)) {
+            total.value = rule.adjustmentFunction(total.value, threshold);
+          }
 
-            if (rule.operationFunction(duration, threshold)) {
-              // Adjust the duration to the threshold.
-              duration = rule.adjustmentFunction(duration, threshold);
-              stat = _DateRangeStats(duration);
-            }
+          if (stats.containsKey(rule.name)) {
+            stats[rule.name] = stats[rule.name]! + total;
+          } else {
+            stats[rule.name] = total;
+          }
+        } else {
+          // Scan the fields for the given rule.
+          for (final i in indices) {
+            final field = report.report.layout.fields[i];
 
-            if (stats.containsKey(rule.name)) {
-              stats[rule.name] = stats[rule.name]! + stat;
-            } else {
-              stats[rule.name] = stat;
-            }
-          } else if (rule.fieldType == FieldTypes.textField &&
-              field.fieldType == rule.fieldType &&
-              (field as TextFieldOptions).numeric) {
-            // Handle a text field rule.
-            final data = report.report.data[i] as TextFieldData;
-            var value = double.tryParse(data.data) ?? 0.0;
-            final threshold = rule.threshold!;
+            if (rule.fieldType == FieldTypes.dateRange &&
+                field.fieldType == rule.fieldType) {
+              // Handle a date range rule.
+              final data = report.report.data[i] as DateRangeFieldData;
+              var duration = data.end.difference(data.start);
 
-            var stat = _TextFieldStats(0.0.toString());
+              var stat = _DateRangeStats(Duration.zero);
 
-            if (rule.operationFunction(value, threshold)) {
-              // Adjust the value to the threshold.
-              value = rule.adjustmentFunction(value, threshold);
-              stat = _TextFieldStats(value.toString());
-            }
+              if (rule.operationFunction(duration, threshold)) {
+                // Adjust the duration to the threshold.
+                duration = rule.adjustmentFunction(duration, threshold);
+                stat = _DateRangeStats(duration);
+              }
 
-            if (stats.containsKey(rule.name)) {
-              stats[rule.name] = stats[rule.name]! + stat;
-            } else {
-              stats[rule.name] = stat;
+              if (stats.containsKey(rule.name)) {
+                stats[rule.name] = stats[rule.name]! + stat;
+              } else {
+                stats[rule.name] = stat;
+              }
+            } else if (rule.fieldType == FieldTypes.textField &&
+                field.fieldType == rule.fieldType &&
+                (field as TextFieldOptions).numeric) {
+              // Handle a text field rule.
+              final data = report.report.data[i] as TextFieldData;
+              var value = double.tryParse(data.data) ?? 0.0;
+
+              var stat = _TextFieldStats(0.0.toString());
+
+              if (rule.operationFunction(value, threshold)) {
+                // Adjust the value to the threshold.
+                value = rule.adjustmentFunction(value, threshold);
+                stat = _TextFieldStats(value.toString());
+              }
+
+              if (stats.containsKey(rule.name)) {
+                stats[rule.name] = stats[rule.name]! + stat;
+              } else {
+                stats[rule.name] = stat;
+              }
             }
           }
         }

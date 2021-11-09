@@ -193,6 +193,9 @@ class _RuleCardState extends State<_RuleCard> {
     }
   }
 
+  void _setPerFieldCallback(bool value) =>
+      setState(() => widget.rule.perField = value);
+
   void _unfocus() => FocusManager.instance.primaryFocus!.unfocus();
 
   @override
@@ -387,6 +390,11 @@ class _RuleCardState extends State<_RuleCard> {
                     ),
                   ]
                 ],
+              ),
+              SwitchListTile.adaptive(
+                title: Text('settings.statistics.per_field').tr(),
+                value: widget.rule.perField,
+                onChanged: _setPerFieldCallback,
               ),
             ],
           ),
