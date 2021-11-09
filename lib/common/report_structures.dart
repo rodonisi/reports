@@ -63,7 +63,7 @@ abstract class StatisticsFieldOptions extends FieldOptions {
       : super(title: title, fieldType: fieldType);
 
   StatisticsFieldOptions.fromMap(Map<String, dynamic> map)
-      : statisticsInclude = map[statisticsIncludeID],
+      : statisticsInclude = map[statisticsIncludeID] ?? true,
         super.fromMap(map);
 
   Map<String, dynamic> asMap() {
