@@ -187,12 +187,29 @@ class StatisticsDetail extends StatelessWidget {
     return reports.where((report) => report.path.contains(path)).toList();
   }
 
+  List<int> _getFilteredReportFieldsIndices(Report report) {
+    final fields = report.layout.fields;
+    final filteredFields = <int>[];
+
+    // Iterate over all the fields contained in the report.
+    for (int i = 0; i < fields.length; i++) {
+      final field = fields[i];
+      // Add the index if the field's include toggle is on.
+      if (field is StatisticsFieldOptions && field.statisticsInclude) {
+        filteredFields.add(i);
+      }
+    }
+
+    return filteredFields;
+  }
+
   // Get the totals for each field of the given reports.
   Map<String, _FieldStats> _getFieldStats(List<_PathReport> reports) {
     final stats = <String, _FieldStats>{};
 
     for (final report in reports) {
-      for (int i = 0; i < report.report.layout.fields.length; i++) {
+      final indices = _getFilteredReportFieldsIndices(report.report);
+      for (final i in indices) {
         final field = report.report.layout.fields[i];
 
         if (field.fieldType == FieldTypes.dateRange) {
@@ -226,7 +243,8 @@ class StatisticsDetail extends StatelessWidget {
     final stats = <String, _FieldStats>{};
 
     for (final report in reports) {
-      for (int i = 0; i < report.report.layout.fields.length; i++) {
+      final indices = _getFilteredReportFieldsIndices(report.report);
+      for (final i in indices) {
         final field = report.report.layout.fields[i];
         final prettyType = prettyFieldType(field.fieldType);
 
@@ -265,8 +283,9 @@ class StatisticsDetail extends StatelessWidget {
     for (final report in reports) {
       // Iterate over the rules.
       for (final rule in rules) {
+        final indices = _getFilteredReportFieldsIndices(report.report);
         // Scan the fields for the given rule.
-        for (int i = 0; i < report.report.layout.fields.length; i++) {
+        for (final i in indices) {
           final field = report.report.layout.fields[i];
 
           if (rule.fieldType == FieldTypes.dateRange &&

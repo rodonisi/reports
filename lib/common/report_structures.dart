@@ -51,8 +51,36 @@ abstract class FieldOptions {
   }
 }
 
+abstract class StatisticsFieldOptions extends FieldOptions {
+  static const String statisticsIncludeID = 'statistics_include';
+
+  bool statisticsInclude;
+
+  StatisticsFieldOptions(
+      {required String title,
+      required String fieldType,
+      required this.statisticsInclude})
+      : super(title: title, fieldType: fieldType);
+
+  StatisticsFieldOptions.fromMap(Map<String, dynamic> map)
+      : statisticsInclude = map[statisticsIncludeID],
+        super.fromMap(map);
+
+  Map<String, dynamic> asMap() {
+    final Map<String, dynamic> map = super.asMap();
+    map[statisticsIncludeID] = statisticsInclude;
+    return map;
+  }
+
+  bool getStatisticsInclude() => statisticsInclude;
+
+  void setStatisticsInclude(bool value) {
+    statisticsInclude = value;
+  }
+}
+
 /// Representation of the options specific to a text field.
-class TextFieldOptions extends FieldOptions {
+class TextFieldOptions extends StatisticsFieldOptions {
   static const String linesID = 'lines';
   static const String numericID = 'numeric';
 
@@ -60,8 +88,14 @@ class TextFieldOptions extends FieldOptions {
   bool numeric;
 
   TextFieldOptions(
-      {required String title, this.lines = 1, this.numeric = false})
-      : super(title: title, fieldType: FieldTypes.textField);
+      {required String title,
+      this.lines = 1,
+      this.numeric = false,
+      statisticsInclude = false})
+      : super(
+            title: title,
+            fieldType: FieldTypes.textField,
+            statisticsInclude: statisticsInclude);
 
   bool getNumeric() {
     return numeric;
@@ -174,7 +208,7 @@ class DateFieldOptions extends FieldOptions {
 }
 
 /// Representation of the options specific to a date range field.
-class DateRangeFieldOptions extends FieldOptions {
+class DateRangeFieldOptions extends StatisticsFieldOptions {
   static const String modeID = 'mode';
   static const String showTotalID = 'show_total';
 
@@ -182,7 +216,12 @@ class DateRangeFieldOptions extends FieldOptions {
     required String title,
     this.mode = DateFieldFormats.timeModeID,
     this.showTotal = true,
-  }) : super(title: title, fieldType: FieldTypes.dateRange);
+    statisticsInclude = true,
+  }) : super(
+          title: title,
+          fieldType: FieldTypes.dateRange,
+          statisticsInclude: statisticsInclude,
+        );
 
   /// The date field mode. Must be one of the IDs defined in the
   /// DateFieldFormats class.

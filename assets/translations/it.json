@@ -2,7 +2,9 @@
     "builder": {
         "empty": "Il @:keywords.layout non può essere vuoto",
         "field_options": {
-            "common": {},
+            "common": {
+                "include_stats": "Includi nelle Statistiche"
+            },
             "date": {
                 "header": "@.capitalize:keywords.options @:builder.fields.date",
                 "mode": "Modalità",
