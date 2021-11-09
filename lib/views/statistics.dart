@@ -542,7 +542,7 @@ class StatisticsDetail extends StatelessWidget {
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
                     ),
-                    _generateWrap(context, rulesStats)
+                    _generateWrap(context, rulesStats, showType: true),
                   ],
                   if (directories.isNotEmpty) ...[
                     Padding(
