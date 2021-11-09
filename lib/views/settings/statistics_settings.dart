@@ -232,7 +232,7 @@ class _RuleCardState extends State<_RuleCard> {
                       items: Rule.operations.entries
                           .map(
                             (e) => DropdownMenuItem(
-                              child: Text(e.value).tr(),
+                              child: Text(e.value),
                               value: e.key,
                             ),
                           )
