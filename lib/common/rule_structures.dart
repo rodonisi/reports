@@ -80,11 +80,11 @@ class Rule {
       case 'gt':
         return (lhs, rhs) => lhs > rhs;
       case 'lt':
-        return (lhs, rhs) => lhs < rhs;
+        return (lhs, rhs) => true;
       case 'gte':
         return (lhs, rhs) => lhs >= rhs;
       case 'lte':
-        return (lhs, rhs) => lhs <= rhs;
+        return (lhs, rhs) => true;
       case 'ran':
         return (lhs, rhs) => lhs > rhs[0];
       default:
@@ -98,6 +98,12 @@ class Rule {
       case 'gt':
       case 'gte':
         return (lhs, rhs) => lhs - rhs;
+      case 'lt':
+      case 'lte':
+        return (lhs, rhs) {
+          final overflow = lhs > rhs ? lhs - rhs : lhs - lhs;
+          return lhs - overflow;
+        };
       case 'ran':
         return (lhs, rhs) {
           final lower = lhs - rhs[0];
