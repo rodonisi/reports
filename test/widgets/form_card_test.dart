@@ -723,12 +723,14 @@ void main() async {
 
         // There should be any date field anymore.
         expect(find.byType(DateTimeField), findsNothing);
-        // There are 7 text widgets: 4 titles and 3 for the mode picker.
-        expect(find.byType(Text), findsNWidgets(7));
+        // There are 8 text widgets: 3 titles, 3 for the mode picker and 2 for
+        // the toggle tiles.
+        expect(find.byType(Text), findsNWidgets(8));
         // There's one text field for the title.
         expect(find.byType(TextField), findsOneWidget);
-        // There's one switch for the display total option.
-        expect(find.byType(Switch), findsOneWidget);
+        // There are 2 switches for the display total option and statistics
+        // inclusion option.
+        expect(find.byType(Switch), findsNWidgets(2));
 
         // Tapping again outside any interactive widget should bring back to the
         // default state.
