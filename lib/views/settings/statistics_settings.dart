@@ -94,6 +94,7 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
       body: ListView(
         children: rules
             .map((rule) => _RuleCard(
+                  key: UniqueKey(),
                   rule: rule,
                   setState: setState,
                 ))
