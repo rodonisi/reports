@@ -105,72 +105,72 @@ class StatisticsList extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // - StatisticsDetail Widget Implementation
 // -----------------------------------------------------------------------------
-abstract class _FieldStats {
+abstract class _FieldStat {
   final String type;
   dynamic value;
 
-  _FieldStats(this.type, this.value);
+  _FieldStat(this.type, this.value);
 
-  _FieldStats operator +(_FieldStats other);
-  _FieldStats operator -(_FieldStats other);
+  _FieldStat operator +(_FieldStat other);
+  _FieldStat operator -(_FieldStat other);
   String toString();
 }
 
-class _DateRangeStats extends _FieldStats {
-  _DateRangeStats({required DateTime start, required DateTime end})
-      : super(FieldTypes.dateRange, end.difference(start));
-
-  _DateRangeStats.fromDuration(Duration duration)
-      : super(FieldTypes.dateRange, duration);
-
-  _DateRangeStats.zero() : super(FieldTypes.dateRange, Duration.zero);
-
-  _DateRangeStats operator +(_FieldStats other) {
-    if (other is _DateRangeStats) {
-      return _DateRangeStats.fromDuration(value + other.value);
-    } else {
-      throw ArgumentError('Cannot add ${other.runtimeType} to _DateRangeStats');
-    }
-  }
-
-  _DateRangeStats operator -(_FieldStats other) {
-    if (other is _DateRangeStats) {
-      return _DateRangeStats.fromDuration(value - other.value);
-    } else {
-      throw ArgumentError(
-          'Cannot subtract ${other.runtimeType} from _DateRangeStats');
-    }
-  }
-
-  String toString() => prettyDuration(value);
-}
-
-class _TextFieldStats extends _FieldStats {
-  _TextFieldStats(String value)
+class _TextFieldStat extends _FieldStat {
+  _TextFieldStat(String value)
       : super(FieldTypes.textField, double.tryParse(value) ?? 0.0);
 
-  _TextFieldStats.fromDouble(double value) : super(FieldTypes.textField, value);
+  _TextFieldStat.fromDouble(double value) : super(FieldTypes.textField, value);
 
-  _TextFieldStats.zero() : super(FieldTypes.textField, 0.0);
+  _TextFieldStat.zero() : super(FieldTypes.textField, 0.0);
 
-  _TextFieldStats operator +(_FieldStats other) {
-    if (other is _TextFieldStats) {
-      return _TextFieldStats.fromDouble(value + other.value);
+  _TextFieldStat operator +(_FieldStat other) {
+    if (other is _TextFieldStat) {
+      return _TextFieldStat.fromDouble(value + other.value);
     } else {
-      throw ArgumentError('Cannot add ${other.runtimeType} to _TextFieldStats');
+      throw ArgumentError('Cannot add ${other.runtimeType} to _TextFieldStat');
     }
   }
 
-  _TextFieldStats operator -(_FieldStats other) {
-    if (other is _TextFieldStats) {
-      return _TextFieldStats.fromDouble(value - other.value);
+  _TextFieldStat operator -(_FieldStat other) {
+    if (other is _TextFieldStat) {
+      return _TextFieldStat.fromDouble(value - other.value);
     } else {
       throw ArgumentError(
-          'Cannot subtract ${other.runtimeType} from _TextFieldStats');
+          'Cannot subtract ${other.runtimeType} from _TextFieldStat');
     }
   }
 
   String toString() => value.toStringAsFixed(2);
+}
+
+class _DateRangeStat extends _FieldStat {
+  _DateRangeStat({required DateTime start, required DateTime end})
+      : super(FieldTypes.dateRange, end.difference(start));
+
+  _DateRangeStat.fromDuration(Duration duration)
+      : super(FieldTypes.dateRange, duration);
+
+  _DateRangeStat.zero() : super(FieldTypes.dateRange, Duration.zero);
+
+  _DateRangeStat operator +(_FieldStat other) {
+    if (other is _DateRangeStat) {
+      return _DateRangeStat.fromDuration(value + other.value);
+    } else {
+      throw ArgumentError('Cannot add ${other.runtimeType} to _DateRangeStat');
+    }
+  }
+
+  _DateRangeStat operator -(_FieldStat other) {
+    if (other is _DateRangeStat) {
+      return _DateRangeStat.fromDuration(value - other.value);
+    } else {
+      throw ArgumentError(
+          'Cannot subtract ${other.runtimeType} from _DateRangeStat');
+    }
+  }
+
+  String toString() => prettyDuration(value);
 }
 
 /// Displays the statistics for the given layout, based on all local reports
@@ -211,8 +211,8 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Get the totals for each field of the given reports.
-  Map<String, _FieldStats> _getFieldStats(List<_PathReport> reports) {
-    final stats = <String, _FieldStats>{};
+  Map<String, _FieldStat> _getFieldStats(List<_PathReport> reports) {
+    final stats = <String, _FieldStat>{};
 
     for (final report in reports) {
       final indices = _getFilteredReportFieldsIndices(report.report);
@@ -221,7 +221,7 @@ class StatisticsDetail extends StatelessWidget {
 
         if (field.fieldType == FieldTypes.dateRange) {
           final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStats(start: data.start, end: data.end);
+          final duration = _DateRangeStat(start: data.start, end: data.end);
 
           if (stats.containsKey(field.title)) {
             stats[field.title] = stats[field.title]! + duration;
@@ -231,7 +231,7 @@ class StatisticsDetail extends StatelessWidget {
         } else if (field.fieldType == FieldTypes.textField &&
             (field as TextFieldOptions).numeric) {
           final data = report.report.data[i] as TextFieldData;
-          final value = _TextFieldStats(data.data);
+          final value = _TextFieldStat(data.data);
 
           if (stats.containsKey(field.title)) {
             stats[field.title] = stats[field.title]! + value;
@@ -246,8 +246,8 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Get the totals for each field  type of the given reports
-  Map<String, _FieldStats> _getTypeStats(List<_PathReport> reports) {
-    final stats = <String, _FieldStats>{};
+  Map<String, _FieldStat> _getTypeStats(List<_PathReport> reports) {
+    final stats = <String, _FieldStat>{};
 
     for (final report in reports) {
       final indices = _getFilteredReportFieldsIndices(report.report);
@@ -257,7 +257,7 @@ class StatisticsDetail extends StatelessWidget {
 
         if (field.fieldType == FieldTypes.dateRange) {
           final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStats(start: data.start, end: data.end);
+          final duration = _DateRangeStat(start: data.start, end: data.end);
 
           if (stats.containsKey(prettyType)) {
             stats[prettyType] = stats[prettyType]! + duration;
@@ -267,7 +267,7 @@ class StatisticsDetail extends StatelessWidget {
         } else if (field.fieldType == FieldTypes.textField &&
             (field as TextFieldOptions).numeric) {
           final data = report.report.data[i] as TextFieldData;
-          final value = _TextFieldStats(data.data);
+          final value = _TextFieldStat(data.data);
 
           if (stats.containsKey(prettyType)) {
             stats[prettyType] = stats[prettyType]! + value;
@@ -282,9 +282,9 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Get the totals for each custom rule for the given reports.
-  Map<String, _FieldStats> _getRulesStats(
+  Map<String, _FieldStat> _getRulesStats(
       BuildContext context, List<_PathReport> reports) {
-    final stats = <String, _FieldStats>{};
+    final stats = <String, _FieldStat>{};
     final rules = getStatsRules(context);
 
     for (final report in reports) {
@@ -308,7 +308,7 @@ class StatisticsDetail extends StatelessWidget {
         }
 
         if (!rule.perField) {
-          _FieldStats total = _getZeroStat(rule);
+          _FieldStat total = _getZeroStat(rule);
           for (final i in indices) {
             total += _getFieldStat(report.report.data[i]);
           }
@@ -319,7 +319,7 @@ class StatisticsDetail extends StatelessWidget {
         } else {
           // Scan the fields for the given rule.
           for (final i in indices) {
-            _FieldStats stat = _getFieldStat(report.report.data[i]);
+            _FieldStat stat = _getFieldStat(report.report.data[i]);
 
             stat = _adjustStat(rule, stat, threshold);
 
@@ -332,18 +332,18 @@ class StatisticsDetail extends StatelessWidget {
     return stats;
   }
 
-  _FieldStats _getFieldStat(FieldData data) {
-    _FieldStats stat;
+  _FieldStat _getFieldStat(FieldData data) {
+    _FieldStat stat;
     if (data is TextFieldData) {
-      stat = _TextFieldStats(data.data);
+      stat = _TextFieldStat(data.data);
     } else {
       data as DateRangeFieldData;
-      stat = _DateRangeStats(start: data.start, end: data.end);
+      stat = _DateRangeStat(start: data.start, end: data.end);
     }
     return stat;
   }
 
-  void _storeStat(Map<String, _FieldStats> stats, Rule rule, _FieldStats stat) {
+  void _storeStat(Map<String, _FieldStat> stats, Rule rule, _FieldStat stat) {
     if (stats.containsKey(rule.name)) {
       stats[rule.name] = stats[rule.name]! + stat;
     } else {
@@ -351,7 +351,7 @@ class StatisticsDetail extends StatelessWidget {
     }
   }
 
-  _FieldStats _adjustStat(Rule rule, _FieldStats stat, threshold) {
+  _FieldStat _adjustStat(Rule rule, _FieldStat stat, threshold) {
     if (rule.operationFunction(stat.value, threshold)) {
       stat.value = rule.adjustmentFunction(stat.value, threshold);
     } else {
@@ -360,9 +360,9 @@ class StatisticsDetail extends StatelessWidget {
     return stat;
   }
 
-  _FieldStats _getZeroStat(Rule rule) => rule.fieldType == FieldTypes.textField
-      ? _TextFieldStats.zero()
-      : _DateRangeStats.zero();
+  _FieldStat _getZeroStat(Rule rule) => rule.fieldType == FieldTypes.textField
+      ? _TextFieldStat.zero()
+      : _DateRangeStat.zero();
 
   // Get the directories in which the given reports are stored.
   Set<String> _getDirectories(List<_PathReport> reports) {
@@ -379,7 +379,7 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Generate cards in a wrap for each duration in the given map
-  Widget _generateWrap(BuildContext context, Map<String, _FieldStats> stats,
+  Widget _generateWrap(BuildContext context, Map<String, _FieldStat> stats,
       {bool showType = false}) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Row(
@@ -492,11 +492,11 @@ class StatisticsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
     final filteredReports = _getReportsForDirectory();
-    final Map<String, _FieldStats> fieldStats =
+    final Map<String, _FieldStat> fieldStats =
         prefs.showFieldStatistics ? _getFieldStats(filteredReports) : {};
-    final Map<String, _FieldStats> typeStats =
+    final Map<String, _FieldStat> typeStats =
         prefs.showFieldTypeStatistics ? _getTypeStats(filteredReports) : {};
-    final Map<String, _FieldStats> rulesStats = prefs.showCustomRuleStatistitcs
+    final Map<String, _FieldStat> rulesStats = prefs.showCustomRuleStatistitcs
         ? _getRulesStats(context, filteredReports)
         : {};
     final directories = _getDirectories(filteredReports);
