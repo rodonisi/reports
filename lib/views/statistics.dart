@@ -582,7 +582,7 @@ class StatisticsDetail extends StatelessWidget {
                     ),
                     ..._generateDirectoryTiles(context, directories),
                   ],
-                  if (directoryReports.isNotEmpty)
+                  if (directoryReports.isNotEmpty) ...[
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
@@ -591,8 +591,9 @@ class StatisticsDetail extends StatelessWidget {
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
                     ),
-                  ..._generateDirectoryTiles(context, directoryReports,
-                      icon: ReportsIcons.report),
+                    ..._generateDirectoryTiles(context, directoryReports,
+                        icon: ReportsIcons.report),
+                  ]
                 ],
               ),
             )
