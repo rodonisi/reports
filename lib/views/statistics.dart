@@ -265,7 +265,7 @@ class StatisticsDetail extends StatelessWidget {
             total += _getFieldStat(report.report.data[i]);
           }
           total = _adjustStat(rule, total, threshold);
-          _storeStat(stats, rule.id, total);
+          _storeStat(stats, rule.name, total);
         } else {
           // Scan the fields for the given rule.
           for (final i in indices) {
