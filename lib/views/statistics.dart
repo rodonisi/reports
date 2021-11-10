@@ -1,10 +1,13 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // ----------------------------------------------------------------------------
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/common/constants.dart';
 import 'package:reports/common/report_structures.dart';
+import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/common/rule_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +23,15 @@ import 'package:reports/widgets/wrap_navigator.dart';
 
 class _PathReport {
   final String path;
+  final String fileName;
   final Report report;
 
   _PathReport({required String path, required this.report})
-      : this.path = getDirectoryName(path);
+      : this.path = getDirectoryName(path),
+        this.fileName = getFileName(path);
+
+  String get fullPath =>
+      joinAndSetExtension(path, fileName, extension: ReportsExtensions.report);
 }
 
 /// Displays the list of all the layouts used in the currently stored reports
@@ -189,6 +197,12 @@ class StatisticsDetail extends StatelessWidget {
 
   // Filter the list of reports for the current directory, recursive.
   List<_PathReport> _getReportsForDirectory() {
+    if (getFileExtension(path).isNotEmpty) {
+      return [
+        _PathReport(
+            path: path, report: Report.fromJSON(File(path).readAsStringSync()))
+      ];
+    }
     return reports.where((report) => report.path.contains(path)).toList();
   }
 
@@ -348,12 +362,25 @@ class StatisticsDetail extends StatelessWidget {
 
     for (final report in reports) {
       final directory = getRelativePath(report.path, from: path);
-      if (directory.isNotEmpty && directory != '.') {
+      if (directory.isNotEmpty && !directory.startsWith('.')) {
         directories.add(directory);
       }
     }
 
     return directories;
+  }
+
+  Set<String> _getDirectoryReports(List<_PathReport> reports) {
+    final set = <String>{};
+
+    for (final report in reports) {
+      final reportPath = getRelativePath(report.fullPath, from: path);
+      if (reportPath.isNotEmpty && reportPath != '.') {
+        set.add(reportPath);
+      }
+    }
+
+    return set;
   }
 
   // Generate cards in a wrap for each duration in the given map
@@ -405,14 +432,15 @@ class StatisticsDetail extends StatelessWidget {
 
   // Generate a ListTile for each directory in which a report is stored.
   List<Widget> _generateDirectoryTiles(
-      BuildContext context, Set<String> directories) {
+      BuildContext context, Set<String> directories,
+      {IconData icon = Icons.folder}) {
     final tiles = <Widget>[];
     tiles.addAll(
       directories
           .map(
             (e) => ListTile(
               title: Text(e),
-              leading: Icon(Icons.folder),
+              leading: Icon(icon),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
@@ -421,7 +449,8 @@ class StatisticsDetail extends StatelessWidget {
                     builder: (context) {
                       return StatisticsDetail(
                         title: title,
-                        path: joinAndSetExtension(path, e, extension: ''),
+                        path: joinAndSetExtension(path, e,
+                            extension: getFileExtension(e)),
                         reports: reports,
                       );
                     },
@@ -479,6 +508,7 @@ class StatisticsDetail extends StatelessWidget {
         : {};
     final directories = _getDirectories(filteredReports);
     final pathElements = getPathElements(context);
+    final directoryReports = _getDirectoryReports(filteredReports);
 
     // Don't show the stats layout if there are no statistics to be generated
     // for the given layout.
@@ -552,6 +582,17 @@ class StatisticsDetail extends StatelessWidget {
                     ),
                     ..._generateDirectoryTiles(context, directories),
                   ],
+                  if (directoryReports.isNotEmpty)
+                    Padding(
+                      padding:
+                          const EdgeInsets.all(DrawingConstants.smallPadding),
+                      child: Text(
+                        'keywords.capitalized.reports',
+                        style: DrawingConstants.boldTextStyle,
+                      ).tr(),
+                    ),
+                  ..._generateDirectoryTiles(context, directoryReports,
+                      icon: ReportsIcons.report),
                 ],
               ),
             )
