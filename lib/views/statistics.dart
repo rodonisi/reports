@@ -217,28 +217,11 @@ class StatisticsDetail extends StatelessWidget {
     for (final report in reports) {
       final indices = _getFilteredReportFieldsIndices(report.report);
       for (final i in indices) {
-        final field = report.report.layout.fields[i];
-
-        if (field.fieldType == FieldTypes.dateRange) {
-          final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStat(start: data.start, end: data.end);
-
-          if (stats.containsKey(field.title)) {
-            stats[field.title] = stats[field.title]! + duration;
-          } else {
-            stats[field.title] = duration;
-          }
-        } else if (field.fieldType == FieldTypes.textField &&
-            (field as TextFieldOptions).numeric) {
-          final data = report.report.data[i] as TextFieldData;
-          final value = _TextFieldStat(data.data);
-
-          if (stats.containsKey(field.title)) {
-            stats[field.title] = stats[field.title]! + value;
-          } else {
-            stats[field.title] = value;
-          }
-        }
+        _computeAndStoreStat(
+          stats,
+          report.report.layout.fields[i].title,
+          report.report.data[i],
+        );
       }
     }
 
@@ -255,26 +238,7 @@ class StatisticsDetail extends StatelessWidget {
         final field = report.report.layout.fields[i];
         final prettyType = prettyFieldType(field.fieldType);
 
-        if (field.fieldType == FieldTypes.dateRange) {
-          final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStat(start: data.start, end: data.end);
-
-          if (stats.containsKey(prettyType)) {
-            stats[prettyType] = stats[prettyType]! + duration;
-          } else {
-            stats[prettyType] = duration;
-          }
-        } else if (field.fieldType == FieldTypes.textField &&
-            (field as TextFieldOptions).numeric) {
-          final data = report.report.data[i] as TextFieldData;
-          final value = _TextFieldStat(data.data);
-
-          if (stats.containsKey(prettyType)) {
-            stats[prettyType] = stats[prettyType]! + value;
-          } else {
-            stats[prettyType] = value;
-          }
-        }
+        _computeAndStoreStat(stats, prettyType, report.report.data[i]);
       }
     }
 
@@ -293,43 +257,57 @@ class StatisticsDetail extends StatelessWidget {
         final indices =
             _getFilteredReportFieldsIndices(report.report, rule: rule);
 
-        final dynamic threshold;
-        if (rule.fieldType == FieldTypes.textField) {
-          threshold = rule.threshold!;
-        } else {
-          if (rule.threshold is double) {
-            threshold = Duration(minutes: (60 * rule.threshold!).toInt());
-          } else {
-            threshold = [
-              Duration(minutes: (60 * rule.threshold[0]).toInt()),
-              Duration(minutes: (60 * rule.threshold[1]).toInt()),
-            ];
-          }
-        }
+        final dynamic threshold = _computeThreshold(rule);
 
         if (!rule.perField) {
           _FieldStat total = _getZeroStat(rule);
           for (final i in indices) {
             total += _getFieldStat(report.report.data[i]);
           }
-
           total = _adjustStat(rule, total, threshold);
-
-          _storeStat(stats, rule, total);
+          _storeStat(stats, rule.id, total);
         } else {
           // Scan the fields for the given rule.
           for (final i in indices) {
-            _FieldStat stat = _getFieldStat(report.report.data[i]);
-
-            stat = _adjustStat(rule, stat, threshold);
-
-            _storeStat(stats, rule, stat);
+            _computeAndStoreStat(
+              stats,
+              rule.name,
+              report.report.data[i],
+              rule: rule,
+            );
           }
         }
       }
     }
 
     return stats;
+  }
+
+  void _computeAndStoreStat(
+      Map<String, _FieldStat> stats, String key, FieldData data,
+      {Rule? rule}) {
+    var stat = _getFieldStat(data);
+    if (rule != null) {
+      stat = _adjustStat(rule, stat, _computeThreshold(rule));
+    }
+    _storeStat(stats, key, stat);
+  }
+
+  dynamic _computeThreshold(Rule rule) {
+    final threshold;
+    if (rule.fieldType == FieldTypes.textField) {
+      threshold = rule.threshold!;
+    } else {
+      if (rule.threshold is double) {
+        threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+      } else {
+        threshold = [
+          Duration(minutes: (60 * rule.threshold[0]).toInt()),
+          Duration(minutes: (60 * rule.threshold[1]).toInt()),
+        ];
+      }
+    }
+    return threshold;
   }
 
   _FieldStat _getFieldStat(FieldData data) {
@@ -343,11 +321,11 @@ class StatisticsDetail extends StatelessWidget {
     return stat;
   }
 
-  void _storeStat(Map<String, _FieldStat> stats, Rule rule, _FieldStat stat) {
-    if (stats.containsKey(rule.name)) {
-      stats[rule.name] = stats[rule.name]! + stat;
+  void _storeStat(Map<String, _FieldStat> stats, String key, _FieldStat stat) {
+    if (stats.containsKey(key)) {
+      stats[key] = stats[key]! + stat;
     } else {
-      stats[rule.name] = stat;
+      stats[key] = stat;
     }
   }
 
