@@ -117,11 +117,17 @@ abstract class _FieldStats {
 }
 
 class _DateRangeStats extends _FieldStats {
-  _DateRangeStats(Duration duration) : super(FieldTypes.dateRange, duration);
+  _DateRangeStats({required DateTime start, required DateTime end})
+      : super(FieldTypes.dateRange, end.difference(start));
+
+  _DateRangeStats.fromDuration(Duration duration)
+      : super(FieldTypes.dateRange, duration);
+
+  _DateRangeStats.zero() : super(FieldTypes.dateRange, Duration.zero);
 
   _DateRangeStats operator +(_FieldStats other) {
     if (other is _DateRangeStats) {
-      return _DateRangeStats(value + other.value);
+      return _DateRangeStats.fromDuration(value + other.value);
     } else {
       throw ArgumentError('Cannot add ${other.runtimeType} to _DateRangeStats');
     }
@@ -129,7 +135,7 @@ class _DateRangeStats extends _FieldStats {
 
   _DateRangeStats operator -(_FieldStats other) {
     if (other is _DateRangeStats) {
-      return _DateRangeStats(value - other.value);
+      return _DateRangeStats.fromDuration(value - other.value);
     } else {
       throw ArgumentError(
           'Cannot subtract ${other.runtimeType} from _DateRangeStats');
@@ -144,6 +150,8 @@ class _TextFieldStats extends _FieldStats {
       : super(FieldTypes.textField, double.tryParse(value) ?? 0.0);
 
   _TextFieldStats.fromDouble(double value) : super(FieldTypes.textField, value);
+
+  _TextFieldStats.zero() : super(FieldTypes.textField, 0.0);
 
   _TextFieldStats operator +(_FieldStats other) {
     if (other is _TextFieldStats) {
@@ -213,7 +221,7 @@ class StatisticsDetail extends StatelessWidget {
 
         if (field.fieldType == FieldTypes.dateRange) {
           final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStats(data.end.difference(data.start));
+          final duration = _DateRangeStats(start: data.start, end: data.end);
 
           if (stats.containsKey(field.title)) {
             stats[field.title] = stats[field.title]! + duration;
@@ -249,7 +257,7 @@ class StatisticsDetail extends StatelessWidget {
 
         if (field.fieldType == FieldTypes.dateRange) {
           final data = report.report.data[i] as DateRangeFieldData;
-          final duration = _DateRangeStats(data.end.difference(data.start));
+          final duration = _DateRangeStats(start: data.start, end: data.end);
 
           if (stats.containsKey(prettyType)) {
             stats[prettyType] = stats[prettyType]! + duration;
@@ -300,75 +308,22 @@ class StatisticsDetail extends StatelessWidget {
         }
 
         if (!rule.perField) {
-          _FieldStats total = rule.fieldType == FieldTypes.textField
-              ? _TextFieldStats.fromDouble(0.0)
-              : _DateRangeStats(Duration.zero);
+          _FieldStats total = _getZeroStat(rule);
           for (final i in indices) {
-            if (rule.fieldType == FieldTypes.textField) {
-              final data = report.report.data[i] as TextFieldData;
-              final value = _TextFieldStats(data.data);
-              total += value;
-            } else if (rule.fieldType == FieldTypes.dateRange) {
-              final data = report.report.data[i] as DateRangeFieldData;
-              final duration = _DateRangeStats(data.end.difference(data.start));
-              total += duration;
-            }
+            total += _getFieldStat(report.report.data[i]);
           }
 
-          if (rule.operationFunction(total.value, threshold)) {
-            total.value = rule.adjustmentFunction(total.value, threshold);
-          }
+          total = _adjustStat(rule, total, threshold);
 
-          if (stats.containsKey(rule.name)) {
-            stats[rule.name] = stats[rule.name]! + total;
-          } else {
-            stats[rule.name] = total;
-          }
+          _storeStat(stats, rule, total);
         } else {
           // Scan the fields for the given rule.
           for (final i in indices) {
-            final field = report.report.layout.fields[i];
+            _FieldStats stat = _getFieldStat(report.report.data[i]);
 
-            if (rule.fieldType == FieldTypes.dateRange &&
-                field.fieldType == rule.fieldType) {
-              // Handle a date range rule.
-              final data = report.report.data[i] as DateRangeFieldData;
-              var duration = data.end.difference(data.start);
+            stat = _adjustStat(rule, stat, threshold);
 
-              var stat = _DateRangeStats(Duration.zero);
-
-              if (rule.operationFunction(duration, threshold)) {
-                // Adjust the duration to the threshold.
-                duration = rule.adjustmentFunction(duration, threshold);
-                stat = _DateRangeStats(duration);
-              }
-
-              if (stats.containsKey(rule.name)) {
-                stats[rule.name] = stats[rule.name]! + stat;
-              } else {
-                stats[rule.name] = stat;
-              }
-            } else if (rule.fieldType == FieldTypes.textField &&
-                field.fieldType == rule.fieldType &&
-                (field as TextFieldOptions).numeric) {
-              // Handle a text field rule.
-              final data = report.report.data[i] as TextFieldData;
-              var value = double.tryParse(data.data) ?? 0.0;
-
-              var stat = _TextFieldStats(0.0.toString());
-
-              if (rule.operationFunction(value, threshold)) {
-                // Adjust the value to the threshold.
-                value = rule.adjustmentFunction(value, threshold);
-                stat = _TextFieldStats(value.toString());
-              }
-
-              if (stats.containsKey(rule.name)) {
-                stats[rule.name] = stats[rule.name]! + stat;
-              } else {
-                stats[rule.name] = stat;
-              }
-            }
+            _storeStat(stats, rule, stat);
           }
         }
       }
@@ -376,6 +331,38 @@ class StatisticsDetail extends StatelessWidget {
 
     return stats;
   }
+
+  _FieldStats _getFieldStat(FieldData data) {
+    _FieldStats stat;
+    if (data is TextFieldData) {
+      stat = _TextFieldStats(data.data);
+    } else {
+      data as DateRangeFieldData;
+      stat = _DateRangeStats(start: data.start, end: data.end);
+    }
+    return stat;
+  }
+
+  void _storeStat(Map<String, _FieldStats> stats, Rule rule, _FieldStats stat) {
+    if (stats.containsKey(rule.name)) {
+      stats[rule.name] = stats[rule.name]! + stat;
+    } else {
+      stats[rule.name] = stat;
+    }
+  }
+
+  _FieldStats _adjustStat(Rule rule, _FieldStats stat, threshold) {
+    if (rule.operationFunction(stat.value, threshold)) {
+      stat.value = rule.adjustmentFunction(stat.value, threshold);
+    } else {
+      stat = _getZeroStat(rule);
+    }
+    return stat;
+  }
+
+  _FieldStats _getZeroStat(Rule rule) => rule.fieldType == FieldTypes.textField
+      ? _TextFieldStats.zero()
+      : _DateRangeStats.zero();
 
   // Get the directories in which the given reports are stored.
   Set<String> _getDirectories(List<_PathReport> reports) {
