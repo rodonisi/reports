@@ -153,8 +153,11 @@ class _TextFieldStat extends _FieldStat {
 }
 
 class _DateRangeStat extends _FieldStat {
-  _DateRangeStat({required DateTime start, required DateTime end})
-      : super(FieldTypes.dateRange, end.difference(start));
+  DateTime? start;
+  DateTime? end;
+
+  _DateRangeStat({required this.start, required this.end})
+      : super(FieldTypes.dateRange, end!.difference(start!));
 
   _DateRangeStat.fromDuration(Duration duration)
       : super(FieldTypes.dateRange, duration);
@@ -312,13 +315,17 @@ class StatisticsDetail extends StatelessWidget {
     if (rule.fieldType == FieldTypes.textField) {
       threshold = rule.threshold!;
     } else {
-      if (rule.threshold is double) {
-        threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+      if (rule.operation == 'day') {
+        threshold = rule.threshold as int;
       } else {
-        threshold = [
-          Duration(minutes: (60 * rule.threshold[0]).toInt()),
-          Duration(minutes: (60 * rule.threshold[1]).toInt()),
-        ];
+        if (rule.threshold is List<dynamic>) {
+          threshold = [
+            Duration(minutes: (60 * rule.threshold[0]).toInt()),
+            Duration(minutes: (60 * rule.threshold[1]).toInt()),
+          ];
+        } else {
+          threshold = Duration(minutes: (60 * rule.threshold!).toInt());
+        }
       }
     }
     return threshold;
@@ -344,10 +351,19 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   _FieldStat _adjustStat(Rule rule, _FieldStat stat, threshold) {
-    if (rule.operationFunction(stat.value, threshold)) {
-      stat.value = rule.adjustmentFunction(stat.value, threshold);
+    if (rule.operation == 'day') {
+      stat as _DateRangeStat;
+      if (rule.operationFunction(stat.start, stat.end)) {
+        stat.value = rule.adjustmentFunction(stat.start, stat.end);
+      } else {
+        stat = _getZeroStat(rule);
+      }
     } else {
-      stat = _getZeroStat(rule);
+      if (rule.operationFunction(stat.value, threshold)) {
+        stat.value = rule.adjustmentFunction(stat.value, threshold);
+      } else {
+        stat = _getZeroStat(rule);
+      }
     }
     return stat;
   }

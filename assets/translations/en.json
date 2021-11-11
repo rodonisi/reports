@@ -81,7 +81,16 @@
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
             "upper": "@.capitalize:keywords.upper",
-            "value": "@.capitalize:keywords.value"
+            "value": "@.capitalize:keywords.value",
+            "weekdays": {
+                "friday": "@.capitalize:keywords.weekdays.friday",
+                "monday": "@.capitalize:keywords.weekdays.monday",
+                "saturday": "@.capitalize:keywords.weekdays.saturday",
+                "sunday": "@.capitalize:keywords.weekdays.sunday",
+                "thursday": "@.capitalize:keywords.weekdays.thursday",
+                "tuesday": "@.capitalize:keywords.weekdays.tuesday",
+                "wednesday": "@.capitalize:keywords.weekdays.wednesday"
+            }
         },
         "create": "create",
         "day": {
@@ -123,7 +132,16 @@
         "title": "title",
         "types": "types",
         "upper": "upper",
-        "value": "value"
+        "value": "value",
+        "weekdays": {
+            "friday": "friday",
+            "monday": "monday",
+            "saturday": "saturday",
+            "sunday": "sunday",
+            "thursday": "thursday",
+            "tuesday": "tuesday",
+            "wednesday": "wednesday"
+        }
     },
     "layout": "Layout",
     "report": "Report",
@@ -170,6 +188,7 @@
         "settings": "Settings",
         "statistics": {
             "custom_rules": "Custom Rules",
+            "day": "Day",
             "gt": ">",
             "gte": "≥",
             "lt": "<",

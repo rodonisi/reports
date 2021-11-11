@@ -81,7 +81,16 @@
             "title": "@.capitalize:keywords.title",
             "types": "@.capitalize:keywords.types",
             "upper": "@.capitalize:keywords.upper",
-            "value": "@.capitalize:keywords.value"
+            "value": "@.capitalize:keywords.value",
+            "weekdays": {
+                "friday": "@.capitalize:keywords.weekdays.friday",
+                "monday": "@.capitalize:keywords.weekdays.monday",
+                "saturday": "@.capitalize:keywords.weekdays.saturday",
+                "sunday": "@.capitalize:keywords.weekdays.sunday",
+                "thursday": "@.capitalize:keywords.weekdays.thursday",
+                "tuesday": "@.capitalize:keywords.weekdays.tuesday",
+                "wednesday": "@.capitalize:keywords.weekdays.wednesday"
+            }
         },
         "create": "crea",
         "day": {
@@ -123,7 +132,16 @@
         "title": "titolo",
         "types": "tipi",
         "upper": "fine",
-        "value": "valore"
+        "value": "valore",
+        "weekdays": {
+            "friday": "venerdì",
+            "monday": "lunedì",
+            "saturday": "sabato",
+            "sunday": "domenica",
+            "thursday": "giovedì",
+            "tuesday": "martedì",
+            "wednesday": "mercoledì"
+        }
     },
     "layout": "Layout",
     "report": "Rapporto",
@@ -170,6 +188,7 @@
         "settings": "Impostazioni",
         "statistics": {
             "custom_rules": "Regole Personali",
+            "day": "Giorno",
             "gt": ">",
             "gte": "≥",
             "lt": "<",

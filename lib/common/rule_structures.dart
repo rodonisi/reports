@@ -22,6 +22,20 @@ class Rule {
     'ran': 'keywords.capitalized.range',
   };
 
+  static const Map<String, String> dateRangeOperations = {
+    'day': 'settings.statistics.day',
+  };
+
+  static const Map<int, String> weekdays = {
+    DateTime.monday: 'keywords.capitalized.weekdays.monday',
+    DateTime.tuesday: 'keywords.capitalized.weekdays.tuesday',
+    DateTime.wednesday: 'keywords.capitalized.weekdays.wednesday',
+    DateTime.thursday: 'keywords.capitalized.weekdays.thursday',
+    DateTime.friday: 'keywords.capitalized.weekdays.friday',
+    DateTime.saturday: 'keywords.capitalized.weekdays.saturday',
+    DateTime.sunday: 'keywords.capitalized.weekdays.sunday',
+  };
+
   // The supported rule fields.
   static const List<String> supportedFields = [
     FieldTypes.textField,
@@ -51,6 +65,16 @@ class Rule {
         operation = json[kOperation],
         threshold = json[kThreshold],
         perField = json[kPerField] ?? false;
+
+  Map<String, String> get supportedOperations {
+    var supported = <String, String>{};
+    supported.addAll(operations);
+    if (fieldType == FieldTypes.dateRange) {
+      supported.addAll(dateRangeOperations);
+      return supported;
+    }
+    return supported;
+  }
 
   /// Convert a Rule object to json.
   Map<String, dynamic> toJson() {
@@ -92,6 +116,9 @@ class Rule {
         return (lhs, rhs) => true;
       case 'ran':
         return (lhs, rhs) => lhs > rhs[0];
+      case 'day':
+        return (start, end) =>
+            start.weekday == threshold || end.weekday == threshold;
       default:
         return (lhs, rhs) => false;
     }
@@ -114,6 +141,24 @@ class Rule {
           final lower = lhs - rhs[0];
           final upper = lhs > rhs[1] ? lhs - rhs[1] : lhs - lhs;
           return lower - upper;
+        };
+      case 'day':
+        return (start, end) {
+          start as DateTime;
+          end as DateTime;
+          final duration = end.difference(start);
+          if (start.weekday == threshold && end.weekday == threshold) {
+            return duration;
+          } else if (start.weekday == threshold) {
+            var nextMidnight = DateTime(start.year, start.month, start.day)
+                .add(Duration(days: 1));
+            return nextMidnight.difference(start);
+          } else if (end.weekday == threshold) {
+            var midnight = DateTime(end.year, end.month, end.day);
+            return end.difference(midnight);
+          }
+
+          return Duration.zero;
         };
       default:
         return (lhs, rhs) => lhs;

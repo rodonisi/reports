@@ -291,7 +291,7 @@ class _RuleCardState extends State<_RuleCard> {
                   Flexible(
                     child: DropdownButtonFormField<String>(
                       isExpanded: true,
-                      items: Rule.operations.entries
+                      items: widget.rule.supportedOperations.entries
                           .map(
                             (e) => DropdownMenuItem(
                               child: Text(
@@ -309,6 +309,9 @@ class _RuleCardState extends State<_RuleCard> {
                           widget.rule.threshold = <double?>[null, null];
                         } else {
                           widget.rule.threshold = null;
+                        }
+                        if (widget.rule.operation == 'day') {
+                          widget.rule.perField = true;
                         }
                         _modified = true;
                       }),
@@ -328,74 +331,105 @@ class _RuleCardState extends State<_RuleCard> {
               ),
               Row(
                 children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: (isRange
-                                ? 'keywords.capitalized.lower'
-                                : 'keywords.capitalized.value')
-                            .tr(),
-                        filled: true,
-                        helperText: '',
-                      ),
-                      initialValue: isRange
-                          ? widget.rule.threshold[0]?.toString()
-                          : widget.rule.threshold?.toString(),
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: true,
-                        signed: true,
-                      ),
-                      validator: _numberValidator,
-                      onChanged: (value) => setState(() {
-                        _setThresholdCallback(value, isRange: isRange);
-                        _modified = true;
-                      }),
-                      onSaved: (value) =>
-                          _setThresholdCallback(value!, isRange: isRange),
-                    ),
-                  ),
-                  if (isRange) ...[
-                    Padding(
-                        padding:
-                            const EdgeInsets.all(DrawingConstants.smallPadding),
-                        child: Text('-')),
+                  if (widget.rule.operation != 'day') ...[
                     Flexible(
                       fit: FlexFit.tight,
-                      child: Container(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'keywords.capitalized.upper'.tr(),
-                            filled: true,
-                            helperText: '',
-                          ),
-                          initialValue: widget.rule.threshold[1]?.toString(),
-                          keyboardType: TextInputType.numberWithOptions(
-                            decimal: true,
-                            signed: true,
-                          ),
-                          validator: (value) => _lessThanValidator(
-                            value,
-                            other: widget.rule.threshold[0]?.toString(),
-                          ),
-                          onChanged: (value) => setState(() {
-                            _setThresholdCallback(value,
-                                index: 1, isRange: true);
-                            _modified = true;
-                          }),
-                          onSaved: (value) => _setThresholdCallback(value!,
-                              index: 1, isRange: true),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: (isRange
+                                  ? 'keywords.capitalized.lower'
+                                  : 'keywords.capitalized.value')
+                              .tr(),
+                          filled: true,
+                          helperText: '',
                         ),
+                        initialValue: isRange
+                            ? widget.rule.threshold[0]?.toString()
+                            : widget.rule.threshold?.toString(),
+                        keyboardType: TextInputType.numberWithOptions(
+                          decimal: true,
+                          signed: true,
+                        ),
+                        validator: _numberValidator,
+                        onChanged: (value) => setState(() {
+                          _setThresholdCallback(value, isRange: isRange);
+                          _modified = true;
+                        }),
+                        onSaved: (value) =>
+                            _setThresholdCallback(value!, isRange: isRange),
                       ),
                     ),
-                  ]
+                    if (isRange) ...[
+                      Padding(
+                          padding: const EdgeInsets.all(
+                              DrawingConstants.smallPadding),
+                          child: Text('-')),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: Container(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'keywords.capitalized.upper'.tr(),
+                              filled: true,
+                              helperText: '',
+                            ),
+                            initialValue: widget.rule.threshold[1]?.toString(),
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                              signed: true,
+                            ),
+                            validator: (value) => _lessThanValidator(
+                              value,
+                              other: widget.rule.threshold[0]?.toString(),
+                            ),
+                            onChanged: (value) => setState(() {
+                              _setThresholdCallback(value,
+                                  index: 1, isRange: true);
+                              _modified = true;
+                            }),
+                            onSaved: (value) => _setThresholdCallback(value!,
+                                index: 1, isRange: true),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                  if (widget.rule.operation == 'day') ...[
+                    Flexible(
+                      child: DropdownButtonFormField(
+                        items: Rule.weekdays.entries
+                            .map(
+                              (e) => DropdownMenuItem(
+                                child: Text(e.value).tr(),
+                                value: e.key,
+                              ),
+                            )
+                            .toList(),
+                        value: widget.rule.threshold,
+                        decoration: InputDecoration(
+                          labelText: 'keywords.capitalized.operation'.tr(),
+                          filled: true,
+                          helperText: '',
+                        ),
+                        onTap: _unfocus,
+                        onChanged: (value) {
+                          setState(() {
+                            widget.rule.threshold = value;
+                            _modified = true;
+                          });
+                        },
+                        // validator: _notEmptyValidator,
+                      ),
+                    )
+                  ],
                 ],
               ),
-              SwitchListTile.adaptive(
-                title: Text('settings.statistics.per_field').tr(),
-                value: widget.rule.perField,
-                onChanged: _setPerFieldCallback,
-              ),
+              if (widget.rule.operation != 'day')
+                SwitchListTile.adaptive(
+                  title: Text('settings.statistics.per_field').tr(),
+                  value: widget.rule.perField,
+                  onChanged: _setPerFieldCallback,
+                ),
             ],
           ),
         ),
