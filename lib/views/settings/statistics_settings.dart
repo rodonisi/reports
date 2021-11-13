@@ -102,6 +102,7 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
       ),
       body: ListView(
         controller: _scrollController,
+        padding: DrawingConstants.listViewPadding,
         children: rules
             .map((rule) => _RuleCard(
                   key: UniqueKey(),

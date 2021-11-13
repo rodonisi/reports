@@ -8,6 +8,7 @@ abstract class DrawingConstants {
   static const smallPadding = 8.0;
   static const mediumPadding = 16.0;
   static const largePadding = 32.0;
+  static const listViewPadding = const EdgeInsets.only(bottom: 75);
 
   // ---------------------------------------------------------------------------
   // - AppBar constants
