@@ -122,8 +122,8 @@ class _RuleCardState extends State<_RuleCard> {
   final _formKey = GlobalKey<FormState>();
   bool _modified = false;
 
-  String? _notEmptyValidator(String? value) {
-    if (value == null || value.isEmpty) {
+  String? _notEmptyValidator<T>(T? value) {
+    if (value == null || (value is String && value.isEmpty)) {
       return 'form.not_empty'.tr();
     }
     return null;
@@ -418,7 +418,7 @@ class _RuleCardState extends State<_RuleCard> {
                             _modified = true;
                           });
                         },
-                        // validator: _notEmptyValidator,
+                        validator: _notEmptyValidator,
                       ),
                     )
                   ],
