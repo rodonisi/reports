@@ -78,6 +78,12 @@ List<Rule> getStatsRules(BuildContext context) {
       .toList();
 }
 
+void _writeStatsRules(BuildContext context, List<Rule> rules) {
+  final rulesFile = getStatsRulesFile(context);
+  rulesFile.writeAsStringSync(jsonEncode(rules));
+  logger.d('Wrote rules to file: ${rulesFile.path}');
+}
+
 /// Write the given rule to the statistics rules file.
 void writeStatsRule(BuildContext context, Rule rule) {
   final rules = getStatsRules(context);
@@ -85,12 +91,13 @@ void writeStatsRule(BuildContext context, Rule rule) {
   final ruleIndex = rules.indexWhere((element) => element.id == rule.id);
   if (ruleIndex != -1) {
     rules[ruleIndex] = rule;
+    logger.d('Updated rule: ${rule.id}');
   } else {
     rules.add(rule);
+    logger.d('Added rule: ${rule.id}');
   }
 
-  final rulesFile = getStatsRulesFile(context);
-  rulesFile.writeAsStringSync(jsonEncode(rules));
+  _writeStatsRules(context, rules);
 }
 
 /// Remove the given rule from the statistics rules file.
@@ -100,10 +107,9 @@ void removeStatsRule(BuildContext context, Rule rule) {
   final ruleIndex = rules.indexWhere((element) => element.id == rule.id);
   if (ruleIndex != -1) {
     rules.removeAt(ruleIndex);
+    logger.d('Removed rule: ${rule.id}');
+    _writeStatsRules(context, rules);
   }
-
-  final rulesFile = getStatsRulesFile(context);
-  rulesFile.writeAsStringSync(jsonEncode(rules));
 }
 
 /// Write the given string to the destination path. Optionally check if a file
