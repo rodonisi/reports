@@ -76,8 +76,17 @@ class _CustomStatsRulesView extends StatefulWidget {
 }
 
 class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
+  final _scrollController = ScrollController();
+
   void _addRuleCallback(BuildContext context) {
     setState(() => Rule().write(context));
+    Future.delayed(
+        Duration(milliseconds: 100),
+        () => _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: DrawingConstants.animationDuration,
+              curve: Curves.easeInOut,
+            ));
   }
 
   @override
@@ -92,6 +101,7 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
         onPressed: () => _addRuleCallback(context),
       ),
       body: ListView(
+        controller: _scrollController,
         children: rules
             .map((rule) => _RuleCard(
                   key: UniqueKey(),
