@@ -44,7 +44,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          architecture: x64
       - run: flutter pub get
       - run: flutter build ios --no-codesign
   ios-release:
@@ -55,7 +54,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          architecture: x64
       - run: flutter pub get
       - run: flutter build ios --no-codesign --release
   macos-debug:
