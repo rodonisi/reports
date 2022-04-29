@@ -56,21 +56,38 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
 
     return Slidable(
       key: ObjectKey(item),
-      actionPane: const SlidableDrawerActionPane(),
-      secondaryActions: [
-        IconSlideAction(
-          icon: Icons.adaptive.share,
-          color: Colors.blue,
-          onTap: () => Share.shareFiles([item.path]),
-        ),
-        IconSlideAction(
-          icon: Icons.delete,
-          color: Colors.red,
-          onTap: () {
-            setState(() => item.deleteSync(recursive: true));
-          },
-        )
-      ],
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            icon: Icons.adaptive.share,
+            backgroundColor: Colors.blue,
+            onPressed: (_) => Share.shareFiles([item.path]),
+          ),
+          SlidableAction(
+            icon: Icons.delete,
+            backgroundColor: Colors.red,
+            onPressed: (_) {
+              setState(() => item.deleteSync(recursive: true));
+            },
+          ),
+        ],
+      ),
+      // actionPane: const SlidableDrawerActionPane(),
+      // secondaryActions: [
+      //   IconSlideAction(
+      //     icon: Icons.adaptive.share,
+      //     color: Colors.blue,
+      //     onTap: () => Share.shareFiles([item.path]),
+      //   ),
+      //   IconSlideAction(
+      //     icon: Icons.delete,
+      //     color: Colors.red,
+      //     onTap: () {
+      //       setState(() => item.deleteSync(recursive: true));
+      //     },
+      //   )
+      // ],
       child: ContainerTile(
         title: Text(getFileNameWithoutExtension(item.path)),
         leading: Icon(tileIcon),
