@@ -1,9 +1,6 @@
 // -----------------------------------------------------------------------------
 // - Packages
 // -----------------------------------------------------------------------------
-import 'dart:io';
-
-import 'package:dropbox_client/dropbox_client.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await EasyLocalization.ensureInitialized();
-
-  // Initialize Dropbox.
-  if (!Platform.isMacOS)
-    await Dropbox.init('Reports_test', 'upxehk1wmyf3a71', 'vo0cqtao0zl56oh');
 
   // Declare and initialize providers.
   final prefs = PreferencesModel();

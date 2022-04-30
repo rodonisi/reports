@@ -78,13 +78,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  dropbox_client:
-    dependency: "direct main"
-    description:
-      name: dropbox_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.0"
   easy_localization:
     dependency: "direct main"
     description:
