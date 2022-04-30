@@ -1,4 +1,4 @@
-package com.example.reports
+package com.rodoni.reports
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -7,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/settings/appearance_settings.dart';
-import 'package:reports/views/settings/dropbox_settings.dart';
 import 'package:reports/views/settings/general_settings.dart';
 import 'package:reports/views/settings/info.dart';
 import 'package:reports/views/settings/macos_settings.dart';
@@ -61,7 +60,6 @@ class _SettingsBody extends StatelessWidget {
           const AppearanceSettings(),
           if (Platform.isMacOS) const MacosSettings(),
           GeneralSettings(),
-          if (!Platform.isMacOS) const DropboxSettings(),
           const Info(),
         ],
       ),

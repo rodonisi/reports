@@ -7,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
-import 'package:reports/utilities/dropbox_utils.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -60,7 +59,8 @@ class _FormBuilderState extends State<FormBuilder> {
     // Get the encoded layout.
     final layoutString = await _layout.toJSON();
     var destPath = joinAndSetExtension(
-        context.read<PreferencesModel>().layoutsPath, _layout.name, extension: ReportsExtensions.layout);
+        context.read<PreferencesModel>().layoutsPath, _layout.name,
+        extension: ReportsExtensions.layout);
 
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,
@@ -73,12 +73,6 @@ class _FormBuilderState extends State<FormBuilder> {
         ),
       );
       return;
-    }
-
-    // Backup the newly created file to dropbox if option is enabled.
-    if (context.read<PreferencesModel>().dropboxEnabled) {
-      // Backup to dropbox.
-      dbBackupFile(context, destPath);
     }
 
     Navigator.pop(context);
