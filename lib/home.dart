@@ -4,13 +4,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/constants.dart';
+import 'package:reports/extensions/app_state_extensions.dart';
 import 'package:reports/models/app_state.dart';
-import 'package:reports/views/import_reports.dart';
 import 'package:reports/views/layouts_list.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/views/report_list.dart';
 import 'package:reports/views/settings.dart';
-import 'package:reports/views/statistics.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 
 // -----------------------------------------------------------------------------
@@ -40,30 +39,13 @@ class _WideLayout extends StatelessWidget {
   const _WideLayout({Key? key, this.extend = false}) : super(key: key);
   final bool extend;
 
-  Widget _getChildFromPage(Pages? page) {
-    switch (page) {
-      case Pages.reports:
-        return ReportsList();
-      case Pages.layouts:
-        return LayoutsList();
-      case Pages.import:
-        return ImportView();
-      case Pages.settings:
-        return Settings();
-      case Pages.statistics:
-        return StatisticsList();
-      case null:
-        return Container();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppStateModel>();
     return Scaffold(
       body: SideBarLayout(
         sidebar: MenuRail(extended: extend),
-        body: _getChildFromPage(appState.currentPage),
+        body: appState.currentPageView,
       ),
     );
   }
@@ -76,26 +58,13 @@ class _NarrowLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppStateModel>();
     return Navigator(
-      pages: [
-        if (appState.currentPage == null)
-          MaterialPage(key: MenuDrawer.valueKey, child: MenuDrawer())
-        else if (appState.currentPage == Pages.reports)
-          MaterialPage(key: ReportsList.valueKey, child: ReportsList())
-        else if (appState.currentPage == Pages.layouts)
-          MaterialPage(key: LayoutsList.valueKey, child: LayoutsList())
-        else if (appState.currentPage == Pages.import)
-          MaterialPage(key: ImportView.valueKey, child: ImportView())
-        else if (appState.currentPage == Pages.settings)
-          MaterialPage(key: Settings.valueKey, child: Settings())
-        else if (appState.currentPage == Pages.statistics)
-          MaterialPage(key: StatisticsList.valueKey, child: StatisticsList())
-      ],
+      pages: [appState.currentMaterialPage],
       onPopPage: (route, result) {
         final page = route.settings as MaterialPage;
 
         if (page.key == ReportsList.valueKey ||
             page.key == LayoutsList.valueKey ||
-            page.key == Settings.valueKey) appState.currentPage = null;
+            page.key == Settings.valueKey) appState.currentPage = Pages.drawer;
 
         return route.didPop(result);
       },

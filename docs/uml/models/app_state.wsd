@@ -1,0 +1,30 @@
+@startuml App State Class Diagram
+package "Flutter" {
+    class ChangeNotifier
+}
+
+enum Pages{
+    reports
+    layouts
+    import
+    settings
+    statistics
+}
+class AppState extends ChangeNotifier {
+    -Pages currentPage
+    -String reportsListPath
+
+    +Pages getCurrentPage()
+    +void setCurrentPage(Pages page)
+
+    +getReportsListPath()
+    +setReportsListPath(String path)
+}
+
+class Home
+class ReportsList
+
+Pages <-- AppState
+AppState <-- Home
+AppState <-- ReportsList
+@enduml

@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
+import 'package:reports/extensions/app_state_extensions.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
@@ -49,9 +50,9 @@ class MenuRail extends StatelessWidget {
           label: Text('settings.settings').tr(),
         ),
       ],
-      selectedIndex: state.getIndexFromPage(),
+      selectedIndex: state.currentPageIndex,
       onDestinationSelected: (index) {
-        state.setPageFromIndex(index);
+        state.currentPageIndex = index;
       },
     );
   }
