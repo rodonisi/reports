@@ -565,10 +565,29 @@ List<Widget> _getCommonOptions(
   return opts;
 }
 
-class _TextFieldOptions extends StatelessWidget {
+List<Widget> _getStatisticsFieldsOptions(
+    BuildContext context, StatisticsFieldOptions options,
+    {required dynamic setState}) {
+  return [
+    _SwitchOption(
+      title: 'builder.field_options.common.include_stats'.tr(),
+      getter: options.getStatisticsInclude,
+      setter: options.setStatisticsInclude,
+      setState: setState,
+    ),
+  ];
+}
+
+class _TextFieldOptions extends StatefulWidget {
   _TextFieldOptions({Key? key, required this.options}) : super(key: key);
 
   final TextFieldOptions options;
+
+  @override
+  State<_TextFieldOptions> createState() => _TextFieldOptionsState();
+}
+
+class _TextFieldOptionsState extends State<_TextFieldOptions> {
   final focusNode = FocusNode();
 
   @override
@@ -577,21 +596,28 @@ class _TextFieldOptions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ..._getCommonOptions(
-            context, options, 'builder.field_options.text.header'.tr()),
+            context, widget.options, 'builder.field_options.text.header'.tr()),
         Text(
           'builder.field_options.text.lines',
           style: TextStyle(fontWeight: FontWeight.bold),
         ).tr(),
         ControlledTextField(
-          initialValue: options.lines.toString(),
-          onChanged: (value) => options.lines = int.parse(value),
+          initialValue: widget.options.lines.toString(),
+          onChanged: (value) => widget.options.lines = int.parse(value),
           keyboardType: TextInputType.number,
         ),
         _SwitchOption(
           title: 'builder.field_options.text.numeric'.tr(),
-          getter: options.getNumeric,
-          setter: options.setNumeric,
+          getter: widget.options.getNumeric,
+          setter: widget.options.setNumeric,
+          setState: setState,
         ),
+        if (widget.options.numeric)
+          ..._getStatisticsFieldsOptions(
+            context,
+            widget.options,
+            setState: setState,
+          ),
       ],
     );
   }
@@ -636,18 +662,23 @@ class _DateFieldOptions extends StatelessWidget {
   }
 }
 
-class _DateRangeFieldOptions extends StatelessWidget {
+class _DateRangeFieldOptions extends StatefulWidget {
   _DateRangeFieldOptions({Key? key, required this.options}) : super(key: key);
 
   final DateRangeFieldOptions options;
 
   @override
+  State<_DateRangeFieldOptions> createState() => _DateRangeFieldOptionsState();
+}
+
+class _DateRangeFieldOptionsState extends State<_DateRangeFieldOptions> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._getCommonOptions(
-            context, options, 'builder.field_options.date_range.header'.tr()),
+        ..._getCommonOptions(context, widget.options,
+            'builder.field_options.date_range.header'.tr()),
         Text(
           'builder.field_options.date.mode',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -667,13 +698,19 @@ class _DateRangeFieldOptions extends StatelessWidget {
               value: DateFieldFormats.dateTimeModeID,
             )
           ],
-          getter: () => options.mode,
-          setter: (String value) => options.mode = value,
+          getter: () => widget.options.mode,
+          setter: (String value) => widget.options.mode = value,
         ),
         _SwitchOption(
           title: 'builder.field_options.date_range.summary'.tr(),
-          getter: () => options.showTotal,
-          setter: (value) => options.showTotal = value,
+          getter: () => widget.options.showTotal,
+          setter: (value) => widget.options.showTotal = value,
+          setState: setState,
+        ),
+        ..._getStatisticsFieldsOptions(
+          context,
+          widget.options,
+          setState: setState,
         ),
       ],
     );
@@ -716,39 +753,36 @@ class __DropdownOptionState<T> extends State<_DropdownOption<T>> {
   }
 }
 
-class _SwitchOption extends StatefulWidget {
+class _SwitchOption extends StatelessWidget {
   _SwitchOption({
     Key? key,
     required this.title,
     required this.getter,
     required this.setter,
+    required this.setState,
   }) : super(key: key);
 
   final String title;
   final getter;
   final setter;
+  final setState;
 
-  @override
-  __SwitchOptionState createState() => __SwitchOptionState();
-}
-
-class __SwitchOptionState extends State<_SwitchOption> {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(
-          widget.title,
+          title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         Spacer(),
         Switch.adaptive(
-            value: widget.getter(),
+            value: getter(),
             onChanged: (val) {
               setState(() {
-                widget.setter(val);
+                setter(val);
               });
             })
       ],

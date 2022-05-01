@@ -10,6 +10,7 @@ import 'package:reports/views/settings/appearance_settings.dart';
 import 'package:reports/views/settings/general_settings.dart';
 import 'package:reports/views/settings/info.dart';
 import 'package:reports/views/settings/macos_settings.dart';
+import 'package:reports/views/settings/statistics_settings.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
@@ -60,6 +61,7 @@ class _SettingsBody extends StatelessWidget {
           const AppearanceSettings(),
           if (Platform.isMacOS) const MacosSettings(),
           GeneralSettings(),
+          const StatisticsSettings(),
           const Info(),
         ],
       ),

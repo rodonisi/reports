@@ -65,6 +65,18 @@ class PreferenceKeys {
 
   /// Int. the accent color for the client.
   static const String accentColor = 'accentColor';
+
+  /// Bool. Whether to show the statistics tab.
+  static const String showStatistics = 'showStatistics';
+
+  /// Bool. Whether to show statistics for each supported field.
+  static const String showFieldStatistics = 'showFieldStatistics';
+
+  /// Bool. Whether to show statistics for each supported field type.
+  static const String showFieldTypeStatistics = 'showFieldTypeStatistics';
+
+  /// Bool. Whether to show statistics for the custom rules.
+  static const String showCustomRuleStatistitcs = 'showCustomRuleStatistitcs';
 }
 
 class PreferencesModel extends ChangeNotifier {
@@ -246,6 +258,23 @@ class PreferencesModel extends ChangeNotifier {
     }
   }
 
+  bool get showStatistics {
+    return getBool(PreferenceKeys.showStatistics, defaultValue: true);
+  }
+
+  bool get showFieldStatistics {
+    return getBool(PreferenceKeys.showFieldStatistics, defaultValue: true);
+  }
+
+  bool get showFieldTypeStatistics {
+    return getBool(PreferenceKeys.showFieldTypeStatistics, defaultValue: true);
+  }
+
+  bool get showCustomRuleStatistitcs {
+    return getBool(PreferenceKeys.showCustomRuleStatistitcs,
+        defaultValue: true);
+  }
+
   Future<void> initializeString(String key, String value) async {
     if (_prefs.getString(key) == null) setString(key, value);
   }
@@ -351,6 +380,22 @@ class PreferencesModel extends ChangeNotifier {
 
   set accentColor(MaterialColor color) {
     accentColorValue = colors.indexOf(color);
+  }
+
+  set showStatistics(bool value) {
+    setBool(PreferenceKeys.showStatistics, value);
+  }
+
+  set showFieldStatistics(bool value) {
+    setBool(PreferenceKeys.showFieldStatistics, value);
+  }
+
+  set showFieldTypeStatistics(bool value) {
+    setBool(PreferenceKeys.showFieldTypeStatistics, value);
+  }
+
+  set showCustomRuleStatistitcs(bool value) {
+    setBool(PreferenceKeys.showCustomRuleStatistitcs, value);
   }
 
   /// Get the default name for a new report or layout synchronously based on the

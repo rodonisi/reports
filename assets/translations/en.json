@@ -2,7 +2,9 @@
     "builder": {
         "empty": "@.capitalize:keywords.layout cannot be empty",
         "field_options": {
-            "common": {},
+            "common": {
+                "include_stats": "Include in Statistics"
+            },
             "date": {
                 "header": "@:builder.fields.date @.capitalize:keywords.options",
                 "mode": "Mode",
@@ -30,6 +32,11 @@
             "text": "Text"
         }
     },
+    "form": {
+        "less_than": "The entry must be greater than the lower value.",
+        "not_empty": "This field cannot be empty.",
+        "not_number": "The entry must be a number."
+    },
     "import": {
         "as_layout": "@:import.import as @.capitalize:keywords.layout",
         "destination": "Destination",
@@ -49,19 +56,41 @@
             "create": "@.capitalize:keywords.create",
             "day": "@.capitalize:keywords.day",
             "days": "@.capitalize:keywords.days",
+            "directories": "@.capitalize:directories",
+            "field": "@.capitalize:keywords.field",
+            "fields": "@.capitalize:fields",
             "file": "@.capitalize:keywords.file",
             "files": "@.capitalize:keywords.files",
             "hour": "@.capitalize:keywords.hour",
             "layout": "@.capitalize:keywords.layout",
             "layouts": "@.capitalize:keywords.layouts",
             "loading": "@.capitalize:keywords.loading",
+            "lower": "@.capitalize:keywords.lower",
             "minute": "@.capitalize:keywords.minute",
+            "name": "@.capitalize:keywords.name",
+            "operation": "@.capitalize:keywords.operation",
             "option": "@.capitalize:keywords.option",
             "options": "@.capitalize:keywords.options",
+            "range": "@.capitalize:keywords.range",
             "report": "@.capitalize:keywords.report",
             "reports": "@.capitalize:keywords.reports",
+            "rule": "@.capitalize:keywords.rule",
+            "rules": "@.capitalize:keywords.rules",
             "save": "@.capitalize:keywords.save",
-            "title": "@.capitalize:keywords.title"
+            "statistics": "@.capitalize:keywords.statistics",
+            "title": "@.capitalize:keywords.title",
+            "types": "@.capitalize:keywords.types",
+            "upper": "@.capitalize:keywords.upper",
+            "value": "@.capitalize:keywords.value",
+            "weekdays": {
+                "friday": "@.capitalize:keywords.weekdays.friday",
+                "monday": "@.capitalize:keywords.weekdays.monday",
+                "saturday": "@.capitalize:keywords.weekdays.saturday",
+                "sunday": "@.capitalize:keywords.weekdays.sunday",
+                "thursday": "@.capitalize:keywords.weekdays.thursday",
+                "tuesday": "@.capitalize:keywords.weekdays.tuesday",
+                "wednesday": "@.capitalize:keywords.weekdays.wednesday"
+            }
         },
         "create": "create",
         "day": {
@@ -70,6 +99,9 @@
             "zero": "{} days"
         },
         "days": "days",
+        "directories": "directories",
+        "field": "field",
+        "fields": "fields",
         "file": "file",
         "files": "files",
         "hour": {
@@ -80,17 +112,36 @@
         "layout": "layout",
         "layouts": "layouts",
         "loading": "loading",
+        "lower": "lower",
         "minute": {
             "one": "{} minute",
             "other": "{} minutes",
             "zero": "{} minutes"
         },
+        "name": "name",
+        "operation": "operation",
         "option": "option",
         "options": "options",
+        "range": "range",
         "report": "report",
         "reports": "reports",
+        "rule": "rule",
+        "rules": "rules",
         "save": "save",
-        "title": "title"
+        "statistics": "statistics",
+        "title": "title",
+        "types": "types",
+        "upper": "upper",
+        "value": "value",
+        "weekdays": {
+            "friday": "friday",
+            "monday": "monday",
+            "saturday": "saturday",
+            "sunday": "sunday",
+            "thursday": "thursday",
+            "tuesday": "tuesday",
+            "wednesday": "wednesday"
+        }
     },
     "layout": "Layout",
     "report": "Report",
@@ -134,7 +185,23 @@
             "path": "Default Path",
             "reader_mode": "Reader Mode"
         },
-        "settings": "Settings"
+        "settings": "Settings",
+        "statistics": {
+            "custom_rules": "Custom Rules",
+            "day": "Day",
+            "gt": ">",
+            "gte": "≥",
+            "lt": "<",
+            "lte": "≤",
+            "per_field": "Per Field",
+            "show_fields": "Show Fields Statistics",
+            "show_rules": "Show Custom Rules Statistics",
+            "show_statistics": "Show Statistics",
+            "show_types": "Show Types Statistics"
+        }
+    },
+    "statistics": {
+        "no_stats": "No statistics can be generated from this layout."
     },
     "utility": {
         "file_exists": "A @:keywords.file named {} already exists."
