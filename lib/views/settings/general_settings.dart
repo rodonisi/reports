@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/constants.dart';
-import 'package:reports/common/rule_structures.dart';
 import 'package:reports/models/preferences_model.dart';
-import 'package:reports/utilities/io_utils.dart';
-import 'package:reports/utilities/print_utils.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/list_card.dart';
 
