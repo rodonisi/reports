@@ -6,7 +6,7 @@ void main() {
   setUpAll(() {
     target = AppStateModel();
   });
-  test('enitialization', () {
+  test('initialization', () {
     var expectedPage = Pages.reports;
     var expectedPath = '';
 
