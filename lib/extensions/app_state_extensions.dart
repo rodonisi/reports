@@ -26,7 +26,7 @@ extension ConvenienceAccessors on AppStateModel {
   }
 
   /// Convenience accessor for the current navigator [ValueKey].
-  get currentValueKey {
+  ValueKey? get currentValueKey {
     switch (currentPage) {
       case Pages.reports:
         return ReportsList.valueKey;
