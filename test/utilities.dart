@@ -1,36 +1,39 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Wrap a widget with providers for the reports models.
-class WrapProviders extends StatelessWidget {
-  WrapProviders({Key? key, required this.widget, this.preferencesModel})
-      : super(key: key);
+// class WrapProviders extends StatelessWidget {
+//   WrapProviders({Key? key, required this.widget, this.preferencesModel})
+//       : super(key: key);
 
-  final Widget widget;
-  final PreferencesModel? preferencesModel;
+//   final Widget widget;
+//   final PreferencesModel? preferencesModel;
 
-  @override
-  Widget build(BuildContext context) {
-    var model = preferencesModel ?? PreferencesModel();
+//   @GenerateMocks([SharedPreferences])
+//   @override
+//   Widget build(BuildContext context) {
+//     var model = preferencesModel ?? PreferencesModel(MockSharedPreferences());
 
-    return WrapLocalized(
-      widget: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<PreferencesModel>.value(
-            value: model,
-          ),
-          ChangeNotifierProvider<AppStateModel>(
-            create: (context) => AppStateModel(),
-          ),
-        ],
-        child: widget,
-      ),
-    );
-  }
-}
+//     return WrapLocalized(
+//       widget: MultiProvider(
+//         providers: [
+//           ChangeNotifierProvider<PreferencesModel>.value(
+//             value: model,
+//           ),
+//           ChangeNotifierProvider<AppStateModel>(
+//             create: (context) => AppStateModel(),
+//           ),
+//         ],
+//         child: widget,
+//       ),
+//     );
+//   }
+// }
 
 /// Wrap a widget with an EasyLocalization to enable testing localized widgets.
 class WrapLocalized extends StatelessWidget {

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:reports/home.dart';
 import 'package:reports/models/app_state.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // -----------------------------------------------------------------------------
 // - App Entry Point
@@ -18,7 +19,8 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   // Declare and initialize providers.
-  final prefs = PreferencesModel();
+  final sharedPreferences = await SharedPreferences.getInstance();
+  final prefs = PreferencesModel(sharedPreferences);
   await prefs.initialize();
   final appState = AppStateModel();
 

@@ -81,7 +81,7 @@ class PreferenceKeys {
 
 class PreferencesModel extends ChangeNotifier {
   late SharedPreferences _prefs;
-  late String localDocsPath;
+  String localDocsPath = '';
 
   /// The list of valid accent colors.
   final colors = const <MaterialColor>[
@@ -103,9 +103,16 @@ class PreferencesModel extends ChangeNotifier {
     'settings.appearance.colors.yellow',
   ];
 
+  PreferencesModel(SharedPreferences sharedPreferences) {
+    _prefs = sharedPreferences;
+  }
+
   Future<void> initialize() async {
-    _prefs = await SharedPreferences.getInstance();
-    localDocsPath = (await getApplicationDocumentsDirectory()).path;
+    try {
+      localDocsPath = (await getApplicationDocumentsDirectory()).path;
+    } catch (e) {
+      logger.e('Failed to get local docs path', e);
+    }
 
     notifyListeners();
   }
@@ -235,10 +242,6 @@ class PreferencesModel extends ChangeNotifier {
     return getBool(PreferenceKeys.readerMode, defaultValue: false);
   }
 
-  int get themeModeValue {
-    return getInt(PreferenceKeys.themeMode, defaultValue: 2);
-  }
-
   int get accentColorValue {
     return getInt(PreferenceKeys.accentColor);
   }
@@ -247,15 +250,15 @@ class PreferencesModel extends ChangeNotifier {
     return colors[accentColorValue];
   }
 
+  int get themeModeValue {
+    return getInt(
+      PreferenceKeys.themeMode,
+      defaultValue: ThemeMode.system.index,
+    );
+  }
+
   ThemeMode get themeMode {
-    switch (themeModeValue) {
-      case 0:
-        return ThemeMode.light;
-      case 1:
-        return ThemeMode.dark;
-      default:
-        return ThemeMode.system;
-    }
+    return ThemeMode.values[themeModeValue];
   }
 
   bool get showStatistics {
@@ -353,25 +356,14 @@ class PreferencesModel extends ChangeNotifier {
   }
 
   set themeModeValue(int value) {
-    if (value < 0 || value > 2)
+    if (value > 0 || value >= ThemeMode.values.length)
       throw ArgumentError.value(value, 'illegal theme mode');
+
     setInt(PreferenceKeys.themeMode, value);
   }
 
   set themeMode(ThemeMode mode) {
-    int value;
-    switch (mode) {
-      case ThemeMode.light:
-        value = 0;
-        break;
-      case ThemeMode.dark:
-        value = 1;
-        break;
-      default:
-        value = 2;
-    }
-
-    themeModeValue = value;
+    themeModeValue = mode.index;
   }
 
   set accentColorValue(int value) {
