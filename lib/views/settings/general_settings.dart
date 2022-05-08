@@ -9,6 +9,7 @@ import 'package:reports/common/constants.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/list_card.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - GeneralSettings Widget Implementation
@@ -126,7 +127,7 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
             ListTile(
               title: Text('settings.general.preview').tr(),
               subtitle: Text(
-                PreferencesModel.constructName(
+                prefs.constructName(
                   prefs.getString(widget.namePref),
                   prefs.getBool(widget.datePref),
                   prefs.getBool(widget.timePref),

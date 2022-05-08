@@ -18,6 +18,7 @@ import 'package:reports/widgets/directory_viewer.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - ImportView Widget Implementation

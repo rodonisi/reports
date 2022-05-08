@@ -16,6 +16,7 @@ import 'package:reports/utilities/print_utils.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - StatisticsList Widget Implementation

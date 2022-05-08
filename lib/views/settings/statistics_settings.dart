@@ -10,6 +10,7 @@ import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/utilities/print_utils.dart';
 import 'package:reports/widgets/list_card.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - StatisticsSettings Widget Implementation

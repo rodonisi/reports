@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:reports/common/rule_structures.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - Constants

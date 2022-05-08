@@ -11,6 +11,7 @@ import 'package:reports/common/constants.dart';
 import 'package:reports/common/report_structures.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - FormCard Constants

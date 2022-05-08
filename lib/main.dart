@@ -8,6 +8,7 @@ import 'package:reports/home.dart';
 import 'package:reports/models/app_state_model.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - App Entry Point

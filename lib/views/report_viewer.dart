@@ -15,6 +15,7 @@ import 'package:reports/utilities/io_utils.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/form_card.dart';
 import 'package:reports/widgets/save_button.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportViewer Widget Implementation

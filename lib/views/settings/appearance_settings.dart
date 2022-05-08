@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/widgets/list_card.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - AppearanceSettings Widget Implementation
@@ -85,13 +86,13 @@ class _ColorSelectionView extends StatelessWidget {
 
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: prefs.colors.length,
+      itemCount: ReportsColors.colors.length,
       itemBuilder: (context, index) {
         return RadioListTile<int>(
           value: index,
           groupValue: prefs.accentColorValue,
           onChanged: (value) => prefs.accentColorValue = value!,
-          title: Text(prefs.colorNames[index]).tr(),
+          title: Text(ReportsColors.colorNames[index]).tr(),
           activeColor: prefs.accentColor,
         );
       },

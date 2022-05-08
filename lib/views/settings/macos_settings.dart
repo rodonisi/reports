@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/utilities/logger.dart';
 import 'package:reports/widgets/list_card.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - MacosSettings Widget Implementation

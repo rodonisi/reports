@@ -19,6 +19,7 @@ import 'package:reports/views/report_viewer.dart';
 import 'package:reports/widgets/controlled_text_field.dart';
 import 'package:reports/widgets/sidebar_layout.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - ReportsList Widget Implementation

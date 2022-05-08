@@ -9,6 +9,7 @@ import 'package:reports/extensions/app_state_extensions.dart';
 import 'package:reports/models/app_state_model.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - Local Imports

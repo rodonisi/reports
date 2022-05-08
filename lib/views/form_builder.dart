@@ -15,6 +15,7 @@ import 'package:reports/widgets/form_card.dart';
 import 'package:reports/widgets/loading_indicator.dart';
 import 'package:reports/widgets/save_button.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:reports/extensions/preferences_model_extensions.dart';
 
 // -----------------------------------------------------------------------------
 // - FormBuilder Widget Implementation
