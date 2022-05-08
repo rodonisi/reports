@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reports/models/app_state.dart';
+import 'package:reports/models/app_state_model.dart';
 
 void main() {
   late AppStateModel target;

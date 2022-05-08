@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
-import 'package:reports/models/app_state.dart';
+import 'package:reports/models/app_state_model.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

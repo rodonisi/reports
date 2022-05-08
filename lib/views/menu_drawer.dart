@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:reports/common/constants.dart';
 import 'package:reports/common/reports_icons_icons.dart';
 import 'package:reports/extensions/app_state_extensions.dart';
-import 'package:reports/models/app_state.dart';
+import 'package:reports/models/app_state_model.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/models/preferences_model.dart';
 

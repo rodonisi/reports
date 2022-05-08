@@ -10,7 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:reports/common/constants.dart';
 import 'package:reports/utilities/logger.dart';
-import 'package:reports/models/app_state.dart';
+import 'package:reports/models/app_state_model.dart';
 import 'package:reports/models/preferences_model.dart';
 import 'package:reports/views/menu_drawer.dart';
 import 'package:reports/widgets/directory_viewer.dart';
