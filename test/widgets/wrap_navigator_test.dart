@@ -59,4 +59,41 @@ void main() {
     // The first container should be visible.
     expect(find.byKey(key), findsOneWidget);
   });
+
+  testWidgets('custom onPopPage', (WidgetTester tester) async {
+    var counter = 0;
+    var onPopPage = (Route<dynamic> route, result) {
+      counter++;
+      return route.didPop(result);
+    };
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: WrapNavigator(
+          child: MaterialPage(
+            child: Container(
+              key: key,
+            ),
+          ),
+          additionalPages: [
+            MaterialPage(
+              child: Scaffold(
+                appBar: AppBar(),
+                body: Container(
+                  key: key2,
+                ),
+              ),
+            ),
+          ],
+          onPopPage: onPopPage,
+        ),
+      ),
+    );
+
+    // Pop the page.
+    await tester.pageBack();
+    await tester.pump();
+
+    expect(counter, 1);
+  });
 }
