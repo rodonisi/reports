@@ -3,7 +3,7 @@
 # Reports
 
 [![Build](https://github.com/rodonisi/reports/actions/workflows/build.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/build.yml)
-[![Test](https://github.com/rodonisi/reports/actions/workflows/tests.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/test.yml)
+[![Test](https://github.com/rodonisi/reports/actions/workflows/test.yml/badge.svg)](https://github.com/rodonisi/reports/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/rodonisi/reports/branch/main/graph/badge.svg?token=NOIR4SQLXH)](https://codecov.io/gh/rodonisi/reports)
 
 A free and open-source work report filing app featuring a dynamic layout builder and report editor.
