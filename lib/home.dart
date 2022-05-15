@@ -25,11 +25,12 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > DrawingConstants.mediumScreen)
+        if (constraints.maxWidth > DrawingConstants.mediumScreen) {
           return _WideLayout(
               extend: constraints.maxWidth > DrawingConstants.largeScreen);
+        }
 
-        return _NarrowLayout();
+        return const _NarrowLayout();
       },
     );
   }

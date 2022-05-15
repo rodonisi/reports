@@ -25,8 +25,8 @@ enum Pages {
 /// The model of the main app state.
 class AppStateModel extends ChangeNotifier {
   AppStateModel()
-      : this._currentPage = Pages.reports,
-        this._reportsListPath = '';
+      : _currentPage = Pages.reports,
+        _reportsListPath = '';
 
   Pages _currentPage;
 

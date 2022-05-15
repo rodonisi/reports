@@ -28,7 +28,7 @@ class LayoutsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WrapNavigator(
+    return const WrapNavigator(
       child: MaterialPage(
         key: _Body.valueKey,
         child: _Body(),
@@ -45,7 +45,7 @@ class LayoutsList extends StatelessWidget {
 class _Body extends StatefulWidget {
   static const ValueKey valueKey = ValueKey('LayoutsListBody');
 
-  _Body({Key? key}) : super(key: key);
+  const _Body({Key? key}) : super(key: key);
 
   @override
   _LayoutsListState createState() => _LayoutsListState();
@@ -71,7 +71,7 @@ class _LayoutsListState extends State<_Body> {
       bounce: true,
       closeProgressThreshold: DrawingConstants.safeSheetCloseTreshold,
       builder: (context) {
-        return FormBuilder();
+        return const FormBuilder();
       },
     ).then((value) => setState(() {}));
   }
@@ -89,15 +89,15 @@ class _LayoutsListState extends State<_Body> {
     final prefs = context.read<PreferencesModel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('keywords.capitalized.layouts').tr(),
+        title: const Text('keywords.capitalized.layouts').tr(),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: prefs.accentColor,
         foregroundColor: Theme.of(context).primaryIconTheme.color,
-        child: const Icon(Icons.add),
         onPressed: _fabCallback,
+        child: const Icon(Icons.add),
       ),
-      drawer: _showDrawer ? const Drawer(child: const MenuDrawer()) : null,
+      drawer: _showDrawer ? const Drawer(child: MenuDrawer()) : null,
       body: DirectoryViewer(
         fileAction: _fileActionCallback,
         directoryAction: (directory) {},

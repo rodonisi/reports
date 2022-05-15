@@ -66,6 +66,7 @@ abstract class StatisticsFieldOptions extends FieldOptions {
       : statisticsInclude = map[statisticsIncludeID] ?? true,
         super.fromMap(map);
 
+  @override
   Map<String, dynamic> asMap() {
     final Map<String, dynamic> map = super.asMap();
     map[statisticsIncludeID] = statisticsInclude;
@@ -128,7 +129,7 @@ class SectionFieldOptions extends FieldOptions {
 
   SectionFieldOptions({required String title, this.fontSize = sectionSize})
       : super(title: title, fieldType: FieldTypes.section);
-  final fontSize;
+  double fontSize;
 
   SectionFieldOptions.fromMap(Map<String, dynamic> map)
       : fontSize = map[fontSizeID],
@@ -288,7 +289,7 @@ class DateFieldData extends FieldData {
   DateFieldData({required this.data});
 
   @override
-  DateFieldData.fromData(String data) : this.data = DateTime.parse(data);
+  DateFieldData.fromData(String data) : data = DateTime.parse(data);
 
   @override
   serialize() {
@@ -301,9 +302,7 @@ class DateRangeFieldData extends FieldData {
   static const String startID = 'start';
   static const String endID = 'end';
 
-  DateRangeFieldData({required DateTime start, required DateTime end})
-      : start = start,
-        end = end;
+  DateRangeFieldData({required this.start, required this.end});
 
   @override
   DateRangeFieldData.fromData(Map<String, dynamic> data)
@@ -350,17 +349,17 @@ class ReportLayout {
 
   /// Initialize a layout from a JSON string.
   ReportLayout.fromJSON(String jsonString)
-      : this.name = '',
-        this.fields = [] {
+      : name = '',
+        fields = [] {
     // Decode the JSON string.
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
     // Iterate over the decoded JSON map.
     jsonMap.forEach((key, value) {
       // Get the layout name.
-      if (key == nameID)
+      if (key == nameID) {
         name = value as String;
-      else {
+      } else {
         // Get a layout field.
         final index = int.tryParse(key);
         if (index != null) {
@@ -390,11 +389,10 @@ class ReportLayout {
   }
 
   /// Convert the layout to a JSON string.
-  Future<String> toJSON() async {
-    final packageInfo = await PackageInfo.fromPlatform();
+  String toJSON() {
     Map<String, dynamic> jsonMap = {};
     jsonMap[nameID] = name;
-    jsonMap[FileHeader.versionID] = packageInfo.version;
+    // jsonMap[FileHeader.versionID] = packageInfo.version;
     jsonMap[FileHeader.typeID] = FileHeader.layoutID;
     jsonMap.addAll(_serialize(layout: this));
     return jsonEncode(jsonMap);
@@ -417,21 +415,21 @@ class Report {
 
   /// Initialize a report from a JSON string.
   Report.fromJSON(String jsonString)
-      : this.title = '',
-        this.layout = ReportLayout.fromJSON(jsonString),
+      : title = '',
+        layout = ReportLayout.fromJSON(jsonString),
         data = [] {
     // Decode the json string.
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
     // Set the layout name
-    this.layout.name = jsonMap[FileHeader.layoutID];
+    layout.name = jsonMap[FileHeader.layoutID];
 
     // Iterate over the decoded json map.
     jsonMap.forEach((key, value) {
       // Get the report title.
-      if (key == titleID)
-        this.title = value as String;
-      else {
+      if (key == titleID) {
+        title = value as String;
+      } else {
         // Get a field.
         final index = int.tryParse(key);
         if (index != null) {
@@ -480,9 +478,10 @@ Map<String, dynamic> _serialize(
     serialized[i.toString()] = layout.fields[i].asMap();
 
     // Add the data to the nested map if present.
-    if (data != null)
+    if (data != null) {
       (serialized[i.toString()]! as Map<String, dynamic>)[FieldData.dataID] =
           data[i].serialize();
+    }
   }
 
   return serialized;

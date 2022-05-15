@@ -33,13 +33,14 @@ class Info extends StatelessWidget {
                       height: 64.0,
                       width: 64.0,
                     ),
-                    applicationVersion: 'v' + snapshot.data!.version,
+                    applicationVersion: 'v${snapshot.data!.version}',
                     applicationLegalese: '© 2021 Simon Rodoni',
                   );
-                } else if (snapshot.hasError)
+                } else if (snapshot.hasError) {
                   return Center(
                     child: Text(snapshot.error!.toString()),
                   );
+                }
 
                 return const LoadingIndicator();
               },

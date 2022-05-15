@@ -28,21 +28,24 @@ void main() async {
   // Run app
   runApp(
     EasyLocalization(
-      supportedLocales: [Locale('en'), Locale('it')],
+      supportedLocales: const [Locale('en'), Locale('it')],
       path: 'assets/translations',
-      fallbackLocale: Locale('en'),
+      fallbackLocale: const Locale('en'),
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<PreferencesModel>.value(value: prefs),
           ChangeNotifierProvider<AppStateModel>.value(value: appState)
         ],
-        child: ReportsApp(),
+        child: const ReportsApp(),
       ),
     ),
   );
 }
 
 class ReportsApp extends StatelessWidget {
+
+  const ReportsApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     final prefs = context.watch<PreferencesModel>();
@@ -70,7 +73,7 @@ class ReportsApp extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        home: Home(),
+        home: const Home(),
       ),
     );
   }

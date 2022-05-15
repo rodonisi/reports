@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 /// A textfield with embedded editing controller which accepts an initial value.
 class ControlledTextField extends StatefulWidget {
-  ControlledTextField(
+  const ControlledTextField(
       {Key? key,
       this.initialValue,
       this.onChanged,
@@ -33,11 +33,11 @@ class ControlledTextField extends StatefulWidget {
   final FocusNode? focusNode;
 
   @override
-  _ControlledTextFieldState createState() => _ControlledTextFieldState();
+  State<ControlledTextField> createState() => _ControlledTextFieldState();
 }
 
 class _ControlledTextFieldState extends State<ControlledTextField> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   bool _isEditing = false;
 
   @override

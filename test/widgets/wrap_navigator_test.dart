@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reports/widgets/wrap_navigator.dart';
 
-import '../utilities.dart';
-
 void main() {
-  late Widget target;
-  final key = ValueKey('container');
-  final key2 = ValueKey('container2');
+  // late Widget target;
+  const key = ValueKey('container');
+  const key2 = ValueKey('container2');
   setUpAll(() {});
 
   testWidgets('one child', (WidgetTester tester) async {
@@ -62,10 +60,10 @@ void main() {
 
   testWidgets('custom onPopPage', (WidgetTester tester) async {
     var counter = 0;
-    var onPopPage = (Route<dynamic> route, result) {
+    bool onPopPage(Route<dynamic> route, result) {
       counter++;
       return route.didPop(result);
-    };
+    }
 
     await tester.pumpWidget(
       MaterialApp(

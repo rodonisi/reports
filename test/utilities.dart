@@ -1,10 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:mockito/annotations.dart';
-import 'package:provider/provider.dart';
-import 'package:reports/models/app_state_model.dart';
-import 'package:reports/models/preferences_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Wrap a widget with providers for the reports models.
 // class WrapProviders extends StatelessWidget {
@@ -46,9 +41,9 @@ class WrapLocalized extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EasyLocalization(
-        supportedLocales: [Locale('en')],
+        supportedLocales: const [Locale('en')],
         path: 'assets/translations',
-        fallbackLocale: Locale('en'),
+        fallbackLocale: const Locale('en'),
         child: WrapApp(
           widget: widget,
         ));

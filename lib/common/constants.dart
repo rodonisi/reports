@@ -8,7 +8,7 @@ abstract class DrawingConstants {
   static const smallPadding = 8.0;
   static const mediumPadding = 16.0;
   static const largePadding = 32.0;
-  static const listViewPadding = const EdgeInsets.only(bottom: 75);
+  static const listViewPadding = EdgeInsets.only(bottom: 75);
 
   // ---------------------------------------------------------------------------
   // - AppBar constants
@@ -35,10 +35,10 @@ abstract class DrawingConstants {
   // ---------------------------------------------------------------------------
   // - Text Constants
   // ---------------------------------------------------------------------------
-  static const boldTextStyle = const TextStyle(fontWeight: FontWeight.bold);
-  static const secondaryTextStyle = const TextStyle(color: Colors.grey);
+  static const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
+  static const secondaryTextStyle = TextStyle(color: Colors.grey);
   static const titleTextStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
 
   // ---------------------------------------------------------------------------
   // - Animation Constants

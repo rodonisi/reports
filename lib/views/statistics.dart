@@ -22,14 +22,14 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 // - StatisticsList Widget Implementation
 // -----------------------------------------------------------------------------
 
-class _PathReport {
+class PathReport {
   final String path;
   final String fileName;
   final Report report;
 
-  _PathReport({required String path, required this.report})
-      : this.path = getDirectoryName(path),
-        this.fileName = getFileName(path);
+  PathReport({required String path, required this.report})
+      : path = getDirectoryName(path),
+        fileName = getFileName(path);
 
   String get fullPath =>
       joinAndSetExtension(path, fileName, extension: ReportsExtensions.report);
@@ -44,13 +44,13 @@ class StatisticsList extends StatelessWidget {
   const StatisticsList({Key? key}) : super(key: key);
 
   // Read and groups reports per layout.
-  Map<String, List<_PathReport>> getReportsPerLayout(BuildContext context) {
-    final reportsPerLayout = <String, List<_PathReport>>{};
+  Map<String, List<PathReport>> getReportsPerLayout(BuildContext context) {
+    final reportsPerLayout = <String, List<PathReport>>{};
     final reportsFiles = getReportsList(context);
 
     for (final reportFile in reportsFiles) {
       final report = Report.fromJSON(reportFile.readAsStringSync());
-      final pathReport = _PathReport(path: reportFile.path, report: report);
+      final pathReport = PathReport(path: reportFile.path, report: report);
       final layout = report.layout.name;
 
       if (reportsPerLayout.containsKey(layout)) {
@@ -74,9 +74,9 @@ class StatisticsList extends StatelessWidget {
         key: valueKey,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('keywords.capitalized.statistics').tr(),
+            title: const Text('keywords.capitalized.statistics').tr(),
           ),
-          drawer: showDrawer ? const Drawer(child: const MenuDrawer()) : null,
+          drawer: showDrawer ? const Drawer(child: MenuDrawer()) : null,
           body: ListView.separated(
             itemBuilder: (context, index) {
               final layoutName = reportsPerLayout.keys.elementAt(index);
@@ -100,7 +100,7 @@ class StatisticsList extends StatelessWidget {
                 },
               );
             },
-            separatorBuilder: (context, index) => Divider(
+            separatorBuilder: (context, index) => const Divider(
               height: DrawingConstants.dividerHeight,
             ),
             itemCount: reportsPerLayout.length,
@@ -122,6 +122,7 @@ abstract class _FieldStat {
 
   _FieldStat operator +(_FieldStat other);
   _FieldStat operator -(_FieldStat other);
+  @override
   String toString();
 }
 
@@ -133,6 +134,7 @@ class _TextFieldStat extends _FieldStat {
 
   _TextFieldStat.zero() : super(FieldTypes.textField, 0.0);
 
+  @override
   _TextFieldStat operator +(_FieldStat other) {
     if (other is _TextFieldStat) {
       return _TextFieldStat.fromDouble(value + other.value);
@@ -141,6 +143,7 @@ class _TextFieldStat extends _FieldStat {
     }
   }
 
+  @override
   _TextFieldStat operator -(_FieldStat other) {
     if (other is _TextFieldStat) {
       return _TextFieldStat.fromDouble(value - other.value);
@@ -150,6 +153,7 @@ class _TextFieldStat extends _FieldStat {
     }
   }
 
+  @override
   String toString() => value.toStringAsFixed(2);
 }
 
@@ -165,6 +169,7 @@ class _DateRangeStat extends _FieldStat {
 
   _DateRangeStat.zero() : super(FieldTypes.dateRange, Duration.zero);
 
+  @override
   _DateRangeStat operator +(_FieldStat other) {
     if (other is _DateRangeStat) {
       return _DateRangeStat.fromDuration(value + other.value);
@@ -173,6 +178,7 @@ class _DateRangeStat extends _FieldStat {
     }
   }
 
+  @override
   _DateRangeStat operator -(_FieldStat other) {
     if (other is _DateRangeStat) {
       return _DateRangeStat.fromDuration(value - other.value);
@@ -182,6 +188,7 @@ class _DateRangeStat extends _FieldStat {
     }
   }
 
+  @override
   String toString() => prettyDuration(value);
 }
 
@@ -197,13 +204,13 @@ class StatisticsDetail extends StatelessWidget {
 
   final String title;
   final String path;
-  final List<_PathReport> reports;
+  final List<PathReport> reports;
 
   // Filter the list of reports for the current directory, recursive.
-  List<_PathReport> _getReportsForDirectory() {
+  List<PathReport> _getReportsForDirectory() {
     if (getFileExtension(path).isNotEmpty) {
       return [
-        _PathReport(
+        PathReport(
             path: path, report: Report.fromJSON(File(path).readAsStringSync()))
       ];
     }
@@ -229,7 +236,7 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Get the totals for each field of the given reports.
-  Map<String, _FieldStat> _getFieldStats(List<_PathReport> reports) {
+  Map<String, _FieldStat> _getFieldStats(List<PathReport> reports) {
     final stats = <String, _FieldStat>{};
 
     for (final report in reports) {
@@ -247,7 +254,7 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   // Get the totals for each field  type of the given reports
-  Map<String, _FieldStat> _getTypeStats(List<_PathReport> reports) {
+  Map<String, _FieldStat> _getTypeStats(List<PathReport> reports) {
     final stats = <String, _FieldStat>{};
 
     for (final report in reports) {
@@ -265,7 +272,7 @@ class StatisticsDetail extends StatelessWidget {
 
   // Get the totals for each custom rule for the given reports.
   Map<String, _FieldStat> _getRulesStats(
-      BuildContext context, List<_PathReport> reports) {
+      BuildContext context, List<PathReport> reports) {
     final stats = <String, _FieldStat>{};
     final rules = getStatsRules(context);
 
@@ -312,7 +319,7 @@ class StatisticsDetail extends StatelessWidget {
   }
 
   dynamic _computeThreshold(Rule rule) {
-    final threshold;
+    final dynamic threshold;
     if (rule.fieldType == FieldTypes.textField) {
       threshold = rule.threshold!;
     } else {
@@ -374,7 +381,7 @@ class StatisticsDetail extends StatelessWidget {
       : _DateRangeStat.zero();
 
   // Get the directories in which the given reports are stored.
-  Set<String> _getDirectories(List<_PathReport> reports) {
+  Set<String> _getDirectories(List<PathReport> reports) {
     final directories = <String>{};
 
     for (final report in reports) {
@@ -387,7 +394,7 @@ class StatisticsDetail extends StatelessWidget {
     return directories;
   }
 
-  Set<String> _getDirectoryReports(List<_PathReport> reports) {
+  Set<String> _getDirectoryReports(List<PathReport> reports) {
     final set = <String>{};
 
     for (final report in reports) {
@@ -430,7 +437,7 @@ class StatisticsDetail extends StatelessWidget {
                               prettyFieldType(element.value.type),
                               style: DrawingConstants.secondaryTextStyle,
                             ),
-                          SizedBox(
+                          const SizedBox(
                             height: DrawingConstants.mediumPadding,
                           ),
                           Text(element.value.toString()),
@@ -458,7 +465,7 @@ class StatisticsDetail extends StatelessWidget {
             (e) => ListTile(
               title: Text(e),
               leading: Icon(icon),
-              trailing: Icon(Icons.chevron_right),
+              trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
                   context,
@@ -481,7 +488,7 @@ class StatisticsDetail extends StatelessWidget {
 
     // Insert dividers.
     for (int i = tiles.length; i >= 0; i--) {
-      tiles.insert(i, Divider(height: DrawingConstants.dividerHeight));
+      tiles.insert(i, const Divider(height: DrawingConstants.dividerHeight));
     }
 
     return tiles;
@@ -502,7 +509,7 @@ class StatisticsDetail extends StatelessWidget {
       for (int i = elements.length - 1; i > 0; i--) {
         elements.insert(
             i,
-            Icon(
+            const Icon(
               Icons.arrow_right,
               color: Colors.grey,
             ));
@@ -538,7 +545,8 @@ class StatisticsDetail extends StatelessWidget {
         bottom: pathElements.isEmpty
             ? null
             : PreferredSize(
-                preferredSize: Size.fromHeight(DrawingConstants.mediumPadding),
+                preferredSize:
+                    const Size.fromHeight(DrawingConstants.mediumPadding),
                 child: Padding(
                   padding: const EdgeInsets.only(
                       bottom: DrawingConstants.smallPadding),
@@ -559,7 +567,7 @@ class StatisticsDetail extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
-                      child: Text(
+                      child: const Text(
                         'keywords.capitalized.fields',
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
@@ -570,7 +578,7 @@ class StatisticsDetail extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
-                      child: Text(
+                      child: const Text(
                         'keywords.capitalized.types',
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
@@ -581,7 +589,7 @@ class StatisticsDetail extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
-                      child: Text(
+                      child: const Text(
                         'settings.statistics.custom_rules',
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
@@ -592,7 +600,7 @@ class StatisticsDetail extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
-                      child: Text(
+                      child: const Text(
                         'keywords.capitalized.directories',
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
@@ -603,7 +611,7 @@ class StatisticsDetail extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.all(DrawingConstants.smallPadding),
-                      child: Text(
+                      child: const Text(
                         'keywords.capitalized.reports',
                         style: DrawingConstants.boldTextStyle,
                       ).tr(),
@@ -615,7 +623,7 @@ class StatisticsDetail extends StatelessWidget {
               ),
             )
           : Center(
-              child: Text('statistics.no_stats').tr(),
+              child: const Text('statistics.no_stats').tr(),
             ),
     );
   }

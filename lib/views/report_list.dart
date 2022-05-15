@@ -43,7 +43,7 @@ class ReportsList extends StatelessWidget {
     if (appState.reportsListPath.isNotEmpty) {
       final paths = getSubPaths(
           p.relative(appState.reportsListPath, from: prefs.reportsPath));
-      paths.forEach((element) {
+      for (var element in paths) {
         pagesList.add(
           MaterialPage(
             key: ValueKey(p.join(_Body.valueKey.value, element)),
@@ -53,10 +53,10 @@ class ReportsList extends StatelessWidget {
             ),
           ),
         );
-      });
+      }
     }
     return WrapNavigator(
-      child: MaterialPage(
+      child: const MaterialPage(
         key: _Body.valueKey,
         child: _Body(
           path: '',
@@ -176,7 +176,7 @@ class _ReportsListState extends State<_Body> {
           ),
         ],
       ),
-      drawer: _showDrawer ? const Drawer(child: const MenuDrawer()) : null,
+      drawer: _showDrawer ? const Drawer(child: MenuDrawer()) : null,
       floatingActionButton: prefs.readerMode
           ? null
           : FloatingActionButton(
@@ -185,7 +185,7 @@ class _ReportsListState extends State<_Body> {
               child: const Icon(Icons.add),
               onPressed: () async {
                 final layouts = getLayoutsList(context);
-                if (layouts.isNotEmpty)
+                if (layouts.isNotEmpty) {
                   showCupertinoModalBottomSheet(
                     context: context,
                     bounce: true,
@@ -193,12 +193,13 @@ class _ReportsListState extends State<_Body> {
                         DrawingConstants.safeSheetCloseTreshold,
                     builder: (context) => ReportViewer(path: _dir.path),
                   ).then((value) => setState(() {}));
-                else
+                } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('reports_list.requires_layouts').tr(),
+                      content: const Text('reports_list.requires_layouts').tr(),
                     ),
                   );
+                }
               },
             ),
       body: _getList(),

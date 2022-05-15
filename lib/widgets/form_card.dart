@@ -17,9 +17,9 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 // - FormCard Constants
 // -----------------------------------------------------------------------------
 abstract class _FormCardConstants {
-  static const deleteIcon = const Icon(Icons.cancel, color: Colors.red);
+  static const deleteIcon = Icon(Icons.cancel, color: Colors.red);
   static const builderSectionPadding = 25.0;
-  static const dragHandleIcon = const Icon(Icons.drag_handle);
+  static const dragHandleIcon = Icon(Icons.drag_handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ class FormCard extends StatefulWidget {
   final void Function()? onDelete;
 
   @override
-  _FormCardState createState() => _FormCardState();
+  State<FormCard> createState() => _FormCardState();
 }
 
 class _FormCardState extends State<FormCard> {
@@ -73,8 +73,8 @@ class _FormCardState extends State<FormCard> {
             child: GestureDetector(
               onTap: () => _showOptions.value = !_showOptions.value,
               child: _DeleteButtonStack(
-                child: _getCard(),
                 onDelete: widget.onDelete!,
+                child: _getCard(),
               ),
             ),
           );
@@ -84,16 +84,17 @@ class _FormCardState extends State<FormCard> {
   @override
   Widget build(BuildContext context) {
     if (widget.options is SectionFieldOptions) {
-      if (widget.data == null)
+      if (widget.data == null) {
         return _SectionDeleteButton(
-          child: _FormCardContent(options: widget.options),
           onDelete: widget.onDelete!,
+          child: _FormCardContent(options: widget.options),
         );
-      else
+      } else {
         return _FormCardContent(
           options: widget.options,
           enabled: false,
         );
+      }
     }
 
     return widget.data == null ? _getFormCard() : _getCard();
@@ -171,8 +172,8 @@ class _SectionDeleteButton extends StatelessWidget {
     // avoid this.
     if (Platform.isMacOS) {
       return Padding(
-        padding:
-            EdgeInsets.only(right: _FormCardConstants.builderSectionPadding),
+        padding: const EdgeInsets.only(
+            right: _FormCardConstants.builderSectionPadding),
         child: _getRow(),
       );
     }
@@ -235,26 +236,26 @@ class _FormCardContent extends StatelessWidget {
   final bool enabled;
 
   Widget _getField(BuildContext context) {
-    final bool _enabled =
+    final bool enabled =
         data != null && !context.read<PreferencesModel>().readerMode;
     switch (options.fieldType) {
       case FieldTypes.textField:
         return _TextFieldContent(
           options: options as TextFieldOptions,
           data: data as TextFieldData? ?? TextFieldData(data: ''),
-          enabled: _enabled,
+          enabled: enabled,
         );
       case FieldTypes.date:
         return _DateFieldContent(
           options: options as DateFieldOptions,
           data: data as DateFieldData? ?? DateFieldData(data: DateTime.now()),
-          enabled: _enabled,
+          enabled: enabled,
         );
       case FieldTypes.dateRange:
         return _DateRangeFieldContent(
             options: options as DateRangeFieldOptions,
             data: data as DateRangeFieldData? ?? DateRangeFieldData.empty(),
-            enabled: _enabled);
+            enabled: enabled);
       default:
         throw ArgumentError.value(options.fieldType, 'unsupported field type');
     }
@@ -262,18 +263,19 @@ class _FormCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (options is SectionFieldOptions)
+    if (options is SectionFieldOptions) {
       return _SectionFieldContent(
         options: options as SectionFieldOptions,
         enabled: enabled,
       );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           options.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         _getField(context),
       ],
@@ -356,10 +358,11 @@ class __DateFieldContentState extends State<_DateFieldContent> {
     final DateTime adjustedValue;
 
     // Ensure date is on midnight if in date mode.
-    if (widget.options.mode == DateFieldFormats.dateModeID)
+    if (widget.options.mode == DateFieldFormats.dateModeID) {
       adjustedValue = _setMidnight(value);
-    else
+    } else {
       adjustedValue = value;
+    }
 
     setState(() => widget.data.data = adjustedValue);
   }
@@ -395,7 +398,7 @@ class _DateRangeFieldContent extends StatefulWidget {
 
 class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
   DateTime _adjustDate(DateTime start, DateTime end) {
-    final day = const Duration(days: 1);
+    const day = Duration(days: 1);
     // Remove a day to end if the duration difference surpasses one day.
     if (end.difference(start).compareTo(day) > 0) return end.subtract(day);
     // Add a day to end if the duration difference would be negative.
@@ -408,10 +411,11 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
   void _onStartSelectedCallback(DateTime value) {
     final DateTime adjustedValue;
     // Ensure date is on midnight if in date mode.
-    if (widget.options.mode == DateFieldFormats.dateModeID)
+    if (widget.options.mode == DateFieldFormats.dateModeID) {
       adjustedValue = _setMidnight(value);
-    else
+    } else {
       adjustedValue = value;
+    }
     setState(() {
       widget.data.start = adjustedValue;
 
@@ -425,14 +429,13 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
   void _onEndSelectedCallback(DateTime value) {
     final DateTime adjustedValue;
 
-    if (widget.options.mode == DateFieldFormats.timeModeID)
-      // Adjust the end date if in time mode.
+    if (widget.options.mode == DateFieldFormats.timeModeID) {
       adjustedValue = _adjustDate(widget.data.start, value);
-    else if (widget.options.mode == DateFieldFormats.dateModeID)
-      // Ensure date is on midnight if in date mode.
+    } else if (widget.options.mode == DateFieldFormats.dateModeID) {
       adjustedValue = _setMidnight(value);
-    else
+    } else {
       adjustedValue = value;
+    }
     setState(() {
       widget.data.end = adjustedValue;
     });
@@ -442,11 +445,11 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
     final duration = widget.data.end.difference(widget.data.start);
     var total = '';
     if (duration.inDays > 0) {
-      total = 'keywords.day'.plural(duration.inDays) + ', ';
+      total = '${'keywords.day'.plural(duration.inDays)}, ';
     }
 
     if (duration.inHours > 0) {
-      total += 'keywords.hour'.plural(duration.inHours.remainder(24)) + ', ';
+      total += '${'keywords.hour'.plural(duration.inHours.remainder(24))}, ';
     }
 
     total += 'keywords.minute'.plural(duration.inMinutes.remainder(60));
@@ -472,7 +475,7 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
                     widget.options.mode),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: DrawingConstants.smallPadding),
               child: Text('-'),
@@ -490,13 +493,13 @@ class __DateRangeFieldContentState extends State<_DateRangeFieldContent> {
           ],
         ),
         if (widget.options.showTotal)
-          SizedBox(
+          const SizedBox(
             height: 8.0,
           ),
         if (widget.options.showTotal)
           Row(
             children: [
-              Text(
+              const Text(
                 'Summary: ',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -544,13 +547,13 @@ List<Widget> _getCommonOptions(
   final opts = [
     Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16.0,
       ),
     ),
-    Divider(),
-    Text(
+    const Divider(),
+    const Text(
       'keywords.capitalized.title',
       style: TextStyle(fontWeight: FontWeight.bold),
     ).tr(),
@@ -558,7 +561,7 @@ List<Widget> _getCommonOptions(
       initialValue: options.title,
       onChanged: (value) => options.title = value,
     ),
-    SizedBox(
+    const SizedBox(
       height: 20.0,
     ),
   ];
@@ -580,7 +583,7 @@ List<Widget> _getStatisticsFieldsOptions(
 }
 
 class _TextFieldOptions extends StatefulWidget {
-  _TextFieldOptions({Key? key, required this.options}) : super(key: key);
+  const _TextFieldOptions({Key? key, required this.options}) : super(key: key);
 
   final TextFieldOptions options;
 
@@ -598,7 +601,7 @@ class _TextFieldOptionsState extends State<_TextFieldOptions> {
       children: [
         ..._getCommonOptions(
             context, widget.options, 'builder.field_options.text.header'.tr()),
-        Text(
+        const Text(
           'builder.field_options.text.lines',
           style: TextStyle(fontWeight: FontWeight.bold),
         ).tr(),
@@ -625,7 +628,7 @@ class _TextFieldOptionsState extends State<_TextFieldOptions> {
 }
 
 class _DateFieldOptions extends StatelessWidget {
-  _DateFieldOptions({Key? key, required this.options}) : super(key: key);
+  const _DateFieldOptions({Key? key, required this.options}) : super(key: key);
 
   final DateFieldOptions options;
 
@@ -636,7 +639,7 @@ class _DateFieldOptions extends StatelessWidget {
       children: [
         ..._getCommonOptions(
             context, options, 'builder.field_options.date.header'.tr()),
-        Text(
+        const Text(
           'builder.field_options.date.mode',
           style: TextStyle(fontWeight: FontWeight.bold),
         ).tr(),
@@ -645,16 +648,17 @@ class _DateFieldOptions extends StatelessWidget {
           setter: (String value) => options.mode = value,
           items: [
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.date').tr(),
               value: DateFieldFormats.dateModeID,
+              child: const Text('builder.field_options.date.modes.date').tr(),
             ),
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.time').tr(),
               value: DateFieldFormats.timeModeID,
+              child: const Text('builder.field_options.date.modes.time').tr(),
             ),
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.date_time').tr(),
               value: DateFieldFormats.dateTimeModeID,
+              child:
+                  const Text('builder.field_options.date.modes.date_time').tr(),
             )
           ],
         ),
@@ -664,7 +668,8 @@ class _DateFieldOptions extends StatelessWidget {
 }
 
 class _DateRangeFieldOptions extends StatefulWidget {
-  _DateRangeFieldOptions({Key? key, required this.options}) : super(key: key);
+  const _DateRangeFieldOptions({Key? key, required this.options})
+      : super(key: key);
 
   final DateRangeFieldOptions options;
 
@@ -680,23 +685,24 @@ class _DateRangeFieldOptionsState extends State<_DateRangeFieldOptions> {
       children: [
         ..._getCommonOptions(context, widget.options,
             'builder.field_options.date_range.header'.tr()),
-        Text(
+        const Text(
           'builder.field_options.date.mode',
           style: TextStyle(fontWeight: FontWeight.bold),
         ).tr(),
         _DropdownOption<String>(
           items: [
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.date').tr(),
               value: DateFieldFormats.dateModeID,
+              child: const Text('builder.field_options.date.modes.date').tr(),
             ),
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.time').tr(),
               value: DateFieldFormats.timeModeID,
+              child: const Text('builder.field_options.date.modes.time').tr(),
             ),
             DropdownMenuItem(
-              child: Text('builder.field_options.date.modes.date_time').tr(),
               value: DateFieldFormats.dateTimeModeID,
+              child:
+                  const Text('builder.field_options.date.modes.date_time').tr(),
             )
           ],
           getter: () => widget.options.mode,
@@ -723,7 +729,7 @@ class _DateRangeFieldOptionsState extends State<_DateRangeFieldOptions> {
 // -----------------------------------------------------------------------------
 
 class _DropdownOption<T> extends StatefulWidget {
-  _DropdownOption(
+  const _DropdownOption(
       {Key? key,
       required this.getter,
       required this.setter,
@@ -749,13 +755,13 @@ class __DropdownOptionState<T> extends State<_DropdownOption<T>> {
         height: DrawingConstants.dividerThickness,
       ),
       items: widget.items,
-      onChanged: (value) => setState(() => widget.setter(value!)),
+      onChanged: (value) => setState(() => widget.setter(value as T)),
     );
   }
 }
 
 class _SwitchOption extends StatelessWidget {
-  _SwitchOption({
+  const _SwitchOption({
     Key? key,
     required this.title,
     required this.getter,
@@ -764,9 +770,9 @@ class _SwitchOption extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
-  final getter;
-  final setter;
-  final setState;
+  final bool Function() getter;
+  final Function(bool value) setter;
+  final Function(Function()) setState;
 
   @override
   Widget build(BuildContext context) {
@@ -774,11 +780,11 @@ class _SwitchOption extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Switch.adaptive(
             value: getter(),
             onChanged: (val) {

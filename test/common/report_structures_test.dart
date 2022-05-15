@@ -6,21 +6,21 @@ import 'package:reports/common/report_structures.dart';
 // -----------------------------------------------------------------------------
 // - Sample Layouts
 // -----------------------------------------------------------------------------
-final String simpleLayoutJSON =
+const String simpleLayoutJSON =
     '{"layout_name":"layout","version":"1.0.0","type":"layout","0":{"field_name":"field","field_type":"text_field","statistics_include":false,"lines":1,"numeric":false}}';
 final simpleLayout = ReportLayout(
   name: 'layout',
   fields: [TextFieldOptions(title: 'field', lines: 1, numeric: false)],
 );
 
-final String sectionLayoutJSON =
+const String sectionLayoutJSON =
     '{"layout_name":"layout","version":"1.0.0","type":"layout","0":{"field_name":"section","field_type":"section","font_size":32.0}}';
 final sectionLayout = ReportLayout(
   name: 'layout',
   fields: [SectionFieldOptions(title: 'section')],
 );
 
-final String subsectionLayoutJSON =
+const String subsectionLayoutJSON =
     '{"layout_name":"layout","version":"1.0.0","type":"layout","0":{"field_name":"section","field_type":"section","font_size":20.0}}';
 final subsectionLayout = ReportLayout(
   name: 'layout',
@@ -32,7 +32,7 @@ final subsectionLayout = ReportLayout(
   ],
 );
 
-final String dateLayoutJSON =
+const String dateLayoutJSON =
     '{"layout_name":"layout","version":"1.0.0","type":"layout","0":{"field_name":"date","field_type":"date_field","mode":"date"}}';
 final dateLayout = ReportLayout(
   name: 'layout',
@@ -44,7 +44,7 @@ final dateLayout = ReportLayout(
   ],
 );
 
-final String dateRangeLayoutJSON =
+const String dateRangeLayoutJSON =
     '{"layout_name":"layout","version":"1.0.0","type":"layout","0":{"field_name":"daterange","field_type":"date_range_field","statistics_include":true,"mode":"date_and_time","show_total":true}}';
 final dateRangeLayout = ReportLayout(
   name: 'layout',
@@ -59,21 +59,21 @@ final dateRangeLayout = ReportLayout(
 // -----------------------------------------------------------------------------
 // - Sample Reports
 // -----------------------------------------------------------------------------
-final String simpleReportJSON =
+const String simpleReportJSON =
     '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"field","field_type":"text_field","statistics_include":false,"lines":1,"numeric":false,"data":"value"}}';
 final simpleReport = Report(
     title: 'report',
     layout: simpleLayout,
     data: [TextFieldData(data: 'value')]);
 
-final String dateReportJSON =
+const String dateReportJSON =
     '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"date","field_type":"date_field","mode":"date","data":"2021-07-20 00:28:23.288288"}}';
 final dateReport = Report(
     title: 'report',
     layout: dateLayout,
     data: [DateFieldData(data: DateTime.parse('2021-07-20 00:28:23.288288'))]);
 
-final String dateRangeReportJSON =
+const String dateRangeReportJSON =
     '{"report_title":"report","version":"1.0.0","type":"report","layout":"layout","0":{"field_name":"daterange","field_type":"date_range_field","statistics_include":true,"mode":"date_and_time","show_total":true,"data":{"start":"2021-07-25 19:21:27.038217","end":"2021-07-25 19:21:27.038219"}}}';
 final dateRangeReport = Report(title: 'report', layout: dateRangeLayout, data: [
   DateRangeFieldData(

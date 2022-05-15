@@ -27,7 +27,7 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WrapNavigator(
+    return const WrapNavigator(
       child: MaterialPage(
         key: _SettingsBody.valueKey,
         name: routeName,
@@ -44,7 +44,7 @@ class Settings extends StatelessWidget {
 class _SettingsBody extends StatelessWidget {
   static const ValueKey valueKey = ValueKey('SettingsBody');
 
-  _SettingsBody({Key? key}) : super(key: key);
+  const _SettingsBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +53,14 @@ class _SettingsBody extends StatelessWidget {
         context.findAncestorWidgetOfExactType<SideBarLayout>() == null;
     return Scaffold(
       appBar: AppBar(
-        title: Text('settings.settings').tr(),
+        title: const Text('settings.settings').tr(),
       ),
-      drawer: showDrawer ? const Drawer(child: const MenuDrawer()) : null,
+      drawer: showDrawer ? const Drawer(child: MenuDrawer()) : null,
       body: ListView(
         children: [
           const AppearanceSettings(),
           if (Platform.isMacOS) const MacosSettings(),
-          GeneralSettings(),
+          const GeneralSettings(),
           const StatisticsSettings(),
           const Info(),
         ],

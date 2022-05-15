@@ -43,8 +43,9 @@ List<File> getDirectoryList(Directory dir,
   final List<File> selected = list.whereType<File>().toList();
 
   // Filter out system files
-  if (ignoreSystemDirectories)
+  if (ignoreSystemDirectories) {
     selected.removeWhere((File file) => p.basename(file.path).startsWith('.'));
+  }
 
   selected.sort(fileSystemEntityComparator);
 

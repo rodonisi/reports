@@ -151,7 +151,7 @@ class Rule {
             return duration;
           } else if (start.weekday == threshold) {
             var nextMidnight = DateTime(start.year, start.month, start.day)
-                .add(Duration(days: 1));
+                .add(const Duration(days: 1));
             return nextMidnight.difference(start);
           } else if (end.weekday == threshold) {
             var midnight = DateTime(end.year, end.month, end.day);

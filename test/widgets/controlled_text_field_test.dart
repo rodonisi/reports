@@ -9,7 +9,7 @@ void main() {
     'test default layout',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        WrapApp(
+        const WrapApp(
           widget: ControlledTextField(
             initialValue: 'test',
           ),

@@ -31,24 +31,24 @@ class MenuRail extends StatelessWidget {
       destinations: [
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.report),
-          label: Text('keywords.capitalized.reports').tr(),
+          label: const Text('keywords.capitalized.reports').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(ReportsIcons.layout),
-          label: Text('keywords.capitalized.layouts').tr(),
+          label: const Text('keywords.capitalized.layouts').tr(),
         ),
         // TODO: Find a way to hide when disabled.
         NavigationRailDestination(
           icon: const Icon(Icons.poll_outlined),
-          label: Text('keywords.capitalized.statistics').tr(),
+          label: const Text('keywords.capitalized.statistics').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.save_alt),
-          label: Text('import.import').tr(),
+          label: const Text('import.import').tr(),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.settings),
-          label: Text('settings.settings').tr(),
+          label: const Text('settings.settings').tr(),
         ),
       ],
       selectedIndex: state.currentPageIndex,
@@ -90,14 +90,14 @@ class MenuDrawer extends StatelessWidget {
           ),
           children: [
             ContainerTile(
-              title: Text('keywords.capitalized.reports').tr(),
+              title: const Text('keywords.capitalized.reports').tr(),
               leading: const Icon(ReportsIcons.report),
               selected: appState.currentPage == Pages.reports,
               onTap: () =>
                   context.read<AppStateModel>().currentPage = Pages.reports,
             ),
             ContainerTile(
-              title: Text('keywords.capitalized.layouts').tr(),
+              title: const Text('keywords.capitalized.layouts').tr(),
               leading: const Icon(ReportsIcons.layout),
               selected: appState.currentPage == Pages.layouts,
               onTap: () =>
@@ -105,7 +105,7 @@ class MenuDrawer extends StatelessWidget {
             ),
             if (prefs.showStatistics)
               ContainerTile(
-                title: Text('keywords.capitalized.statistics').tr(),
+                title: const Text('keywords.capitalized.statistics').tr(),
                 leading: const Icon(Icons.poll_outlined),
                 selected: appState.currentPage == Pages.statistics,
                 onTap: () => context.read<AppStateModel>().currentPage =
@@ -113,14 +113,14 @@ class MenuDrawer extends StatelessWidget {
               ),
             _getSeparator(),
             ListTile(
-              title: Text('import.import').tr(),
+              title: const Text('import.import').tr(),
               leading: const Icon(Icons.save_alt),
               selected: appState.currentPage == Pages.import,
               onTap: () => appState.currentPage = Pages.import,
             ),
             _getSeparator(),
             ContainerTile(
-              title: Text('settings.settings').tr(),
+              title: const Text('settings.settings').tr(),
               leading: const Icon(Icons.settings),
               selected: appState.currentPage == Pages.settings,
               onTap: () =>

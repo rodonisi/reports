@@ -25,6 +25,6 @@ class ReportsIcons {
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData layout =
       IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData layout_detailed =
+  static const IconData layoutDetailed =
       IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

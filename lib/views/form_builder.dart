@@ -24,10 +24,10 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 /// Displays a form builder.
 class FormBuilder extends StatefulWidget {
   final String path;
-  FormBuilder({Key? key, this.path = ''}) : super(key: key);
+  const FormBuilder({Key? key, this.path = ''}) : super(key: key);
 
   @override
-  _FormBuilderState createState() => _FormBuilderState();
+  State<FormBuilder> createState() => _FormBuilderState();
 }
 
 class _FormBuilderState extends State<FormBuilder> {
@@ -47,10 +47,10 @@ class _FormBuilderState extends State<FormBuilder> {
 
   void _saveCallback() async {
     // Don't save if the layout is empty.
-    if (_layout.fields.length == 0) {
+    if (_layout.fields.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('builder.empty').tr(),
+          content: const Text('builder.empty').tr(),
           backgroundColor: Colors.red,
         ),
       );
@@ -58,7 +58,7 @@ class _FormBuilderState extends State<FormBuilder> {
     }
 
     // Get the encoded layout.
-    final layoutString = await _layout.toJSON();
+    final layoutString = _layout.toJSON();
     var destPath = joinAndSetExtension(
         context.read<PreferencesModel>().layoutsPath, _layout.name,
         extension: ReportsExtensions.layout);
@@ -66,10 +66,13 @@ class _FormBuilderState extends State<FormBuilder> {
     // Write the layout to file.
     final didWrite = await writeToFile(layoutString, destPath,
         checkExisting: destPath != widget.path, renameFrom: widget.path);
+
+    if (!mounted) return;
+
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('utility.file_exists').tr(args: [_layout.name]),
+          content: const Text('utility.file_exists').tr(args: [_layout.name]),
           backgroundColor: Colors.red,
         ),
       );
@@ -113,7 +116,7 @@ class _FormBuilderState extends State<FormBuilder> {
 
     // Add the share action only if we're viewing an existing report.
     final List<Widget> shareAction = [];
-    if (!_isNew)
+    if (!_isNew) {
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
@@ -126,12 +129,13 @@ class _FormBuilderState extends State<FormBuilder> {
           },
         ),
       );
+    }
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: ControlledTextField(
-          decoration: InputDecoration(border: InputBorder.none),
+          decoration: const InputDecoration(border: InputBorder.none),
           style: Theme.of(context).primaryTextTheme.headline6,
           hasClearButton: true,
           maxLines: 1,
@@ -161,10 +165,11 @@ class _FormBuilderState extends State<FormBuilder> {
           // We need to decrease the new index if it was previosuly in a lower
           // earlier position, because we already deleted the entry.
           if (newPos > oldPos) newPos--;
-          if (newPos < _layout.fields.length)
+          if (newPos < _layout.fields.length) {
             _layout.fields.insert(newPos, item);
-          else
+          } else {
             _layout.fields.add(item);
+          }
         },
       ),
       floatingActionButton: _Dial(addFieldFunc: _addField),

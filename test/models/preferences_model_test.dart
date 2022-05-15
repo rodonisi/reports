@@ -37,7 +37,7 @@ void main() {
   group('getters', () {
     group('getBol', () {
       test('returns value', () {
-        final expectedValue = true;
+        const expectedValue = true;
         when(mockSharedPreferences.getBool(any)).thenReturn(expectedValue);
 
         final value = target.getBool('test');
@@ -46,7 +46,7 @@ void main() {
         expect(value, expectedValue);
       });
       test('returns default', () {
-        final expectedValue = true;
+        const expectedValue = true;
         when(mockSharedPreferences.getBool(any)).thenReturn(null);
         when(mockSharedPreferences.setBool(any, any))
             .thenAnswer((_) async => true);
@@ -59,7 +59,7 @@ void main() {
       });
 
       test('ensure initialized', () {
-        final expectedValue = true;
+        const expectedValue = true;
         when(mockSharedPreferences.getBool(any)).thenReturn(null);
         when(mockSharedPreferences.setBool(any, any))
             .thenAnswer((_) async => true);
@@ -75,7 +75,7 @@ void main() {
 
     group('getInt', () {
       test('returns value', () {
-        final expectedValue = 1;
+        const expectedValue = 1;
         when(mockSharedPreferences.getInt(any)).thenReturn(expectedValue);
 
         final value = target.getInt('test');
@@ -84,7 +84,7 @@ void main() {
         expect(value, expectedValue);
       });
       test('returns default', () {
-        final expectedValue = 1;
+        const expectedValue = 1;
         when(mockSharedPreferences.getInt(any)).thenReturn(null);
         when(mockSharedPreferences.setInt(any, any))
             .thenAnswer((_) async => true);
@@ -96,7 +96,7 @@ void main() {
         expect(value, expectedValue);
       });
       test('returns default', () {
-        final expectedValue = 1;
+        const expectedValue = 1;
         when(mockSharedPreferences.getInt(any)).thenReturn(null);
         when(mockSharedPreferences.setInt(any, any))
             .thenAnswer((_) async => true);
@@ -115,7 +115,7 @@ void main() {
 
     group('getString', () {
       test('returns value', () {
-        final expectedValue = 'test';
+        const expectedValue = 'test';
         when(mockSharedPreferences.getString(any)).thenReturn(expectedValue);
 
         final value = target.getString('test');
@@ -124,7 +124,7 @@ void main() {
         expect(value, expectedValue);
       });
       test('returns default', () {
-        final expectedValue = 'test';
+        const expectedValue = 'test';
         when(mockSharedPreferences.getString(any)).thenReturn(null);
         when(mockSharedPreferences.setString(any, any))
             .thenAnswer((_) async => true);
@@ -136,7 +136,7 @@ void main() {
         expect(value, expectedValue);
       });
       test('ensure initialized', () {
-        final expectedValue = 'test';
+        const expectedValue = 'test';
         when(mockSharedPreferences.getString(any)).thenReturn(null);
         when(mockSharedPreferences.setString(any, any))
             .thenAnswer((_) async => true);
@@ -157,7 +157,7 @@ void main() {
   group('setters', () {
     group('setBol', () {
       test('successful', () async {
-        final expectedValue = true;
+        const expectedValue = true;
         when(mockSharedPreferences.setBool(any, any))
             .thenAnswer((_) async => true);
 
@@ -167,7 +167,7 @@ void main() {
         verify(mockNotifyCallback.call());
       });
       test('throws', () {
-        final expectedValue = true;
+        const expectedValue = true;
         when(mockSharedPreferences.setBool(any, any))
             .thenAnswer((_) async => false);
 
@@ -179,7 +179,7 @@ void main() {
 
     group('setInt', () {
       test('successful', () async {
-        final expectedValue = 1;
+        const expectedValue = 1;
         when(mockSharedPreferences.setInt(any, any))
             .thenAnswer((_) async => true);
 
@@ -189,7 +189,7 @@ void main() {
         verify(mockNotifyCallback.call());
       });
       test('throws', () {
-        final expectedValue = 1;
+        const expectedValue = 1;
         when(mockSharedPreferences.setInt(any, any))
             .thenAnswer((_) async => false);
 
@@ -201,7 +201,7 @@ void main() {
 
     group('setString', () {
       test('successful', () async {
-        final expectedValue = 'test';
+        const expectedValue = 'test';
         when(mockSharedPreferences.setString(any, any))
             .thenAnswer((_) async => true);
 
@@ -211,7 +211,7 @@ void main() {
         verify(mockNotifyCallback.call());
       });
       test('throws', () {
-        final expectedValue = 'test';
+        const expectedValue = 'test';
         when(mockSharedPreferences.setString(any, any))
             .thenAnswer((_) async => false);
 

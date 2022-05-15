@@ -26,7 +26,7 @@ class AppearanceSettings extends StatelessWidget {
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           onTap: () => showBarModalBottomSheet(
             context: context,
-            builder: (context) => _AppearanceSelectionView(),
+            builder: (context) => const _AppearanceSelectionView(),
           ),
         ),
         ListTile(
@@ -34,7 +34,7 @@ class AppearanceSettings extends StatelessWidget {
             trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             onTap: () => showBarModalBottomSheet(
                   context: context,
-                  builder: (context) => _ColorSelectionView(),
+                  builder: (context) => const _ColorSelectionView(),
                 )),
       ],
     );
@@ -54,19 +54,19 @@ class _AppearanceSelectionView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           RadioListTile<ThemeMode>(
-            title: Text('settings.appearance.light').tr(),
+            title: const Text('settings.appearance.light').tr(),
             value: ThemeMode.light,
             groupValue: prefs.themeMode,
             onChanged: (value) => prefs.themeMode = value!,
           ),
           RadioListTile<ThemeMode>(
-            title: Text('settings.appearance.dark').tr(),
+            title: const Text('settings.appearance.dark').tr(),
             value: ThemeMode.dark,
             groupValue: prefs.themeMode,
             onChanged: (value) => prefs.themeMode = value!,
           ),
           RadioListTile<ThemeMode>(
-            title: Text('settings.appearance.system').tr(),
+            title: const Text('settings.appearance.system').tr(),
             value: ThemeMode.system,
             groupValue: prefs.themeMode,
             onChanged: (value) => prefs.themeMode = value!,

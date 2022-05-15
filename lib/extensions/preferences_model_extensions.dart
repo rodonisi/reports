@@ -73,7 +73,7 @@ class PreferenceKeys {
 
 class ReportsColors {
   /// The list of valid accent colors.
-  static final colors = const <MaterialColor>[
+  static const colors = <MaterialColor>[
     Colors.blue,
     Colors.green,
     Colors.purple,
@@ -307,15 +307,17 @@ extension ConvenienceMethods on PreferencesModel {
               .format(DateTime.now());
     }
 
-    if (hasDate)
+    if (hasDate) {
       return name +
           DateFieldFormats.getFormat(DateFieldFormats.dateModeID)
               .format(DateTime.now());
+    }
 
-    if (hasTime)
+    if (hasTime) {
       return name +
           DateFieldFormats.getFormat(DateFieldFormats.timeModeID)
               .format(DateTime.now());
+    }
 
     return name;
   }

@@ -31,7 +31,7 @@ class DirectoryViewer extends StatefulWidget {
   final Directory directory;
 
   @override
-  _DirectoryViewerState createState() => _DirectoryViewerState();
+  State<DirectoryViewer> createState() => _DirectoryViewerState();
 }
 
 class _DirectoryViewerState extends State<DirectoryViewer> {
@@ -108,14 +108,15 @@ class _DirectoryViewerState extends State<DirectoryViewer> {
         return _getTile(item);
       },
       separatorBuilder: (context, i) =>
-          Divider(height: DrawingConstants.dividerHeight),
+          const Divider(height: DrawingConstants.dividerHeight),
     );
   }
 
   List<FileSystemEntity> _getProcessList() {
     final list = widget.directory.listSync();
-    if (widget.ignoreDirectories)
+    if (widget.ignoreDirectories) {
       list.removeWhere((element) => element is Directory);
+    }
 
     // Hide system files.
     list.removeWhere((element) => getFileName(element.path).startsWith('.'));

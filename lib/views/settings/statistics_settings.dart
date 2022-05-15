@@ -29,33 +29,33 @@ class StatisticsSettings extends StatelessWidget {
       child: ListCard(
         children: [
           SwitchListTile.adaptive(
-            title: Text('settings.statistics.show_statistics').tr(),
+            title: const Text('settings.statistics.show_statistics').tr(),
             value: prefs.showStatistics,
             onChanged: (value) => prefs.showStatistics = value,
           ),
           if (prefs.showStatistics) ...[
             SwitchListTile.adaptive(
-              title: Text('settings.statistics.show_fields').tr(),
+              title: const Text('settings.statistics.show_fields').tr(),
               value: prefs.showFieldStatistics,
               onChanged: (value) => prefs.showFieldStatistics = value,
             ),
             SwitchListTile.adaptive(
-              title: Text('settings.statistics.show_types').tr(),
+              title: const Text('settings.statistics.show_types').tr(),
               value: prefs.showFieldTypeStatistics,
               onChanged: (value) => prefs.showFieldTypeStatistics = value,
             ),
             SwitchListTile.adaptive(
-              title: Text('settings.statistics.show_rules').tr(),
+              title: const Text('settings.statistics.show_rules').tr(),
               value: prefs.showCustomRuleStatistitcs,
               onChanged: (value) => prefs.showCustomRuleStatistitcs = value,
             ),
             ListTile(
-              title: Text('settings.statistics.custom_rules').tr(),
+              title: const Text('settings.statistics.custom_rules').tr(),
               trailing: const Icon(Icons.keyboard_arrow_right_rounded),
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => _CustomStatsRulesView(),
+                  builder: (context) => const _CustomStatsRulesView(),
                 ),
               ),
             ),
@@ -82,7 +82,7 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
   void _addRuleCallback(BuildContext context) {
     setState(() => Rule().write(context));
     Future.delayed(
-        Duration(milliseconds: 100),
+        const Duration(milliseconds: 100),
         () => _scrollController.animateTo(
               _scrollController.position.maxScrollExtent,
               duration: DrawingConstants.animationDuration,
@@ -95,7 +95,7 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
     final rules = getStatsRules(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('settings.statistics.custom_rules').tr(),
+        title: const Text('settings.statistics.custom_rules').tr(),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -120,11 +120,10 @@ class _CustomStatsRulesViewState extends State<_CustomStatsRulesView> {
 // - _RuleCard Widget Implementation
 // -----------------------------------------------------------------------------
 class _RuleCard extends StatefulWidget {
-  _RuleCard({Key? key, required this.rule, required this.setState})
-      : super(key: key);
+  const _RuleCard({super.key, required this.rule, required this.setState});
 
   final Rule rule;
-  final setState;
+  final Function(Function()) setState;
 
   @override
   State<_RuleCard> createState() => _RuleCardState();
@@ -224,7 +223,7 @@ class _RuleCardState extends State<_RuleCard> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: const Text(
                       'keywords.capitalized.rule',
                       style: DrawingConstants.boldTextStyle,
                     ).tr(),
@@ -238,7 +237,7 @@ class _RuleCardState extends State<_RuleCard> {
                           child: IgnorePointer(
                             ignoring: !_modified,
                             child: IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.check,
                                 color: Colors.green,
                               ),
@@ -247,7 +246,7 @@ class _RuleCardState extends State<_RuleCard> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.cancel, color: Colors.red),
+                          icon: const Icon(Icons.cancel, color: Colors.red),
                           onPressed: () => _removeCallback(context),
                         ),
                       ],
@@ -255,7 +254,7 @@ class _RuleCardState extends State<_RuleCard> {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'keywords.capitalized.name'.tr(),
@@ -269,7 +268,7 @@ class _RuleCardState extends State<_RuleCard> {
                   _modified = true;
                 }),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Flexible(
@@ -278,8 +277,8 @@ class _RuleCardState extends State<_RuleCard> {
                       items: Rule.supportedFields
                           .map(
                             (e) => DropdownMenuItem(
-                              child: Text(prettyFieldType(e)),
                               value: e,
+                              child: Text(prettyFieldType(e)),
                             ),
                           )
                           .toList(),
@@ -297,7 +296,7 @@ class _RuleCardState extends State<_RuleCard> {
                       validator: _notEmptyValidator,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: DrawingConstants.smallPadding,
                   ),
                   Flexible(
@@ -306,11 +305,11 @@ class _RuleCardState extends State<_RuleCard> {
                       items: widget.rule.supportedOperations.entries
                           .map(
                             (e) => DropdownMenuItem(
+                              value: e.key,
                               child: Text(
                                 e.value.tr(),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              value: e.key,
                             ),
                           )
                           .toList(),
@@ -338,7 +337,7 @@ class _RuleCardState extends State<_RuleCard> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: DrawingConstants.smallPadding,
               ),
               Row(
@@ -358,7 +357,7 @@ class _RuleCardState extends State<_RuleCard> {
                         initialValue: isRange
                             ? widget.rule.threshold[0]?.toString()
                             : widget.rule.threshold?.toString(),
-                        keyboardType: TextInputType.numberWithOptions(
+                        keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                           signed: true,
                         ),
@@ -372,36 +371,34 @@ class _RuleCardState extends State<_RuleCard> {
                       ),
                     ),
                     if (isRange) ...[
-                      Padding(
-                          padding: const EdgeInsets.all(
-                              DrawingConstants.smallPadding),
+                      const Padding(
+                          padding:
+                              EdgeInsets.all(DrawingConstants.smallPadding),
                           child: Text('-')),
                       Flexible(
                         fit: FlexFit.tight,
-                        child: Container(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'keywords.capitalized.upper'.tr(),
-                              filled: true,
-                              helperText: '',
-                            ),
-                            initialValue: widget.rule.threshold[1]?.toString(),
-                            keyboardType: TextInputType.numberWithOptions(
-                              decimal: true,
-                              signed: true,
-                            ),
-                            validator: (value) => _lessThanValidator(
-                              value,
-                              other: widget.rule.threshold[0]?.toString(),
-                            ),
-                            onChanged: (value) => setState(() {
-                              _setThresholdCallback(value,
-                                  index: 1, isRange: true);
-                              _modified = true;
-                            }),
-                            onSaved: (value) => _setThresholdCallback(value!,
-                                index: 1, isRange: true),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'keywords.capitalized.upper'.tr(),
+                            filled: true,
+                            helperText: '',
                           ),
+                          initialValue: widget.rule.threshold[1]?.toString(),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                            signed: true,
+                          ),
+                          validator: (value) => _lessThanValidator(
+                            value,
+                            other: widget.rule.threshold[0]?.toString(),
+                          ),
+                          onChanged: (value) => setState(() {
+                            _setThresholdCallback(value,
+                                index: 1, isRange: true);
+                            _modified = true;
+                          }),
+                          onSaved: (value) => _setThresholdCallback(value!,
+                              index: 1, isRange: true),
                         ),
                       ),
                     ],
@@ -412,8 +409,8 @@ class _RuleCardState extends State<_RuleCard> {
                         items: Rule.weekdays.entries
                             .map(
                               (e) => DropdownMenuItem(
-                                child: Text(e.value).tr(),
                                 value: e.key,
+                                child: Text(e.value).tr(),
                               ),
                             )
                             .toList(),
@@ -438,7 +435,7 @@ class _RuleCardState extends State<_RuleCard> {
               ),
               if (widget.rule.operation != 'day')
                 SwitchListTile.adaptive(
-                  title: Text('settings.statistics.per_field').tr(),
+                  title: const Text('settings.statistics.per_field').tr(),
                   value: widget.rule.perField,
                   onChanged: _setPerFieldCallback,
                 ),

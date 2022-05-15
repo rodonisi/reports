@@ -29,10 +29,10 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 class ImportView extends StatefulWidget {
   static const ValueKey valueKey = ValueKey('ImportView');
 
-  ImportView({Key? key}) : super(key: key);
+  const ImportView({Key? key}) : super(key: key);
 
   @override
-  _ImportViewState createState() => _ImportViewState();
+  State<ImportView> createState() => _ImportViewState();
 }
 
 class _ImportViewState extends State<ImportView> {
@@ -40,8 +40,8 @@ class _ImportViewState extends State<ImportView> {
   String _destination = '';
   String? _chooserPath;
   String _reportsDirectory = '';
-  List<PlatformFile> _reports = [];
-  List<PlatformFile> _layouts = [];
+  final List<PlatformFile> _reports = [];
+  final List<PlatformFile> _layouts = [];
 
   void _setDestinationCallback() {
     setState(() {
@@ -69,7 +69,7 @@ class _ImportViewState extends State<ImportView> {
     ));
   }
 
-  void _saveCallback() {
+  void _saveCallback() async {
     if (_reports.isEmpty && _layouts.isEmpty) {
       _showSnackBar('import.no_files'.tr());
       return;
@@ -81,14 +81,14 @@ class _ImportViewState extends State<ImportView> {
     var hadError = false;
 
     // Iterate over reports.
-    _reports.forEach((element) async {
+    for (var element in _reports) {
       bool didCopy = true;
       if (_importAsLayouts) {
         // Extract the layout from the report file.
         final file = File(element.path!);
         final jsonString = file.readAsStringSync();
         final report = Report.fromJSON(jsonString);
-        final layoutJSON = await report.layout.toJSON();
+        final layoutJSON = report.layout.toJSON();
 
         // Write the extracted layout.
         didCopy = await writeToFile(
@@ -105,23 +105,24 @@ class _ImportViewState extends State<ImportView> {
       }
       // Set the error bool if the copy failed.
       hadError = !didCopy;
-    });
+    }
+
+    if (!mounted) return;
 
     // Iterate over layouts.
-    _layouts.forEach((element) {
+    for (var element in _layouts) {
       final destination =
           p.join(context.read<PreferencesModel>().layoutsPath, element.name);
       final didCopy = copyFile(element.path!, destination);
       // Set the error if the copy failed.
       hadError = !didCopy;
-    });
+    }
 
-    if (hadError)
-      // Show failure snackbar.
+    if (hadError) {
       _showSnackBar('import.error'.tr());
-    else
-      // Show success snackbar.
+    } else {
       _showSnackBar('import.success'.tr(), color: Colors.green);
+    }
 
     setState(() {
       // Clear import lists.
@@ -132,7 +133,7 @@ class _ImportViewState extends State<ImportView> {
 
   AppBar _getAppBar() {
     return AppBar(
-      title: Text('import.title').tr(),
+      title: const Text('import.title').tr(),
     );
   }
 
@@ -145,8 +146,8 @@ class _ImportViewState extends State<ImportView> {
           horizontal: DrawingConstants.mediumPadding,
         ),
         child: ElevatedButton(
-          child: Text('import.import_button').tr(),
           onPressed: _saveCallback,
+          child: const Text('import.import_button').tr(),
         ),
       ),
     );
@@ -164,7 +165,7 @@ class _ImportViewState extends State<ImportView> {
     final pagesList = <MaterialPage>[];
     if (_chooserPath != null) {
       final paths = getSubPaths(_getRelativePathCallback(_chooserPath!));
-      paths.forEach((element) {
+      for (var element in paths) {
         final fullPath =
             p.join(_reportsDirectory, element == '.' ? '' : element);
         pagesList.add(
@@ -177,7 +178,7 @@ class _ImportViewState extends State<ImportView> {
             ),
           ),
         );
-      });
+      }
     }
 
     return WrapNavigator(
@@ -185,7 +186,7 @@ class _ImportViewState extends State<ImportView> {
         child: Scaffold(
           appBar: _getAppBar(),
           drawer: context.findAncestorWidgetOfExactType<SideBarLayout>() == null
-              ? MenuDrawer()
+              ? const MenuDrawer()
               : null,
           body: _ImportViewBody(
             destination: _destination,
@@ -212,7 +213,7 @@ class _ImportViewState extends State<ImportView> {
 }
 
 class _ImportViewBody extends StatefulWidget {
-  _ImportViewBody({
+  const _ImportViewBody({
     Key? key,
     required this.destination,
     required this.reports,
@@ -241,13 +242,13 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
           vertical: 8.0,
           horizontal: 16.0,
         ),
-        child: Text(
+        child: const Text(
           'import.reports_options',
           style: TextStyle(fontWeight: FontWeight.bold),
         ).tr(),
       ),
       ContainerTile(
-        title: Text('import.destination').tr(),
+        title: const Text('import.destination').tr(),
         subtitle: Text(
           p.relative(widget.destination,
               from: context.read<PreferencesModel>().reportsPath),
@@ -257,7 +258,7 @@ class __ImportViewBodyState extends State<_ImportViewBody> {
       ),
       SwitchListTile.adaptive(
         value: widget.getImportAsLayouts(),
-        title: Text('import.as_layout').tr(),
+        title: const Text('import.as_layout').tr(),
         onChanged: (value) =>
             setState(() => widget.setImportAsLayoutsCallback(value)),
       ),
@@ -318,7 +319,7 @@ class _GridView extends StatelessWidget {
   final void Function(void Function()) setState;
 
   void _processFiles(FilePickerResult pickedFiles) {
-    pickedFiles.files.forEach((picked) {
+    for (var picked in pickedFiles.files) {
       if (picked.fileType == _FileType.report &&
           files.indexWhere((element) => picked.path == element.path) < 0) {
         files.add(picked);
@@ -326,7 +327,7 @@ class _GridView extends StatelessWidget {
           layouts.indexWhere((element) => picked.path == element.path) < 0) {
         layouts.add(picked);
       }
-    });
+    }
     setState(() {});
   }
 
@@ -392,8 +393,8 @@ class _PickFilesItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(child: FittedBox(child: Icon(Icons.add))),
-            Flexible(child: Text('import.pick').tr()),
+            const Expanded(child: FittedBox(child: Icon(Icons.add))),
+            Flexible(child: const Text('import.pick').tr()),
           ],
         ),
       ),
@@ -477,7 +478,7 @@ class _DestinationChooser extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: onSelected,
-            child: Text('import.select').tr(),
+            child: const Text('import.select').tr(),
           ),
         ],
       ),

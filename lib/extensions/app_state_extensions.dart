@@ -15,7 +15,7 @@ extension ConvenienceAccessors on AppStateModel {
       case Pages.layouts:
         return const LayoutsList();
       case Pages.import:
-        return ImportView();
+        return const ImportView();
       case Pages.settings:
         return const Settings();
       case Pages.statistics:

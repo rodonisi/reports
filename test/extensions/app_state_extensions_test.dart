@@ -15,21 +15,21 @@ void main() {
   });
 
   group('get currentPageIndex', () {
-    Pages.values.forEach((element) {
+    for (var element in Pages.values) {
       test(element.name, () {
         target.currentPage = element;
         expect(target.currentPageIndex, element.index);
       });
-    });
+    }
   });
 
   group('set currentPageIndex', () {
-    Pages.values.forEach((element) {
+    for (var element in Pages.values) {
       test(element.name, () {
         target.currentPageIndex = element.index;
         expect(target.currentPage, element);
       });
-    });
+    }
   });
 
   group('get currentValueKey', () {
@@ -135,7 +135,7 @@ void main() {
 
     test('drawer', () {
       target.currentPage = Pages.drawer;
-      var expectedValueKey = null;
+      ValueKey? expectedValueKey;
       expect(target.currentMaterialPage.key, expectedValueKey);
       expect(target.currentMaterialPage.child, isInstanceOf<Container>());
     });

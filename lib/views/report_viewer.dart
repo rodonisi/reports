@@ -24,10 +24,10 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 /// Displays the report viewer for a new or existing report.
 class ReportViewer extends StatefulWidget {
   final String path;
-  ReportViewer({Key? key, required this.path}) : super(key: key);
+  const ReportViewer({Key? key, required this.path}) : super(key: key);
 
   @override
-  _ReportViewerState createState() => _ReportViewerState();
+  State<ReportViewer> createState() => _ReportViewerState();
 }
 
 class _ReportViewerState extends State<ReportViewer> {
@@ -77,12 +77,16 @@ class _ReportViewerState extends State<ReportViewer> {
       if (destPath != widget.path) fromPath = widget.path;
     }
 
+
     // Write the report to file.
     final didWrite = await writeToFile(reportString, destPath,
         checkExisting: destPath != widget.path, renameFrom: fromPath);
+    
+    if (!mounted) return;
+
     if (!didWrite) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('utiliry.file_exists').tr(args: [report.title]),
+        content: const Text('utiliry.file_exists').tr(args: [report.title]),
         backgroundColor: Colors.red,
       ));
       return;
@@ -107,6 +111,8 @@ class _ReportViewerState extends State<ReportViewer> {
       final layouts = getLayoutsList(context);
       // Read the first available layout.
       final layoutString = await layouts.first.readAsString();
+
+      if (!mounted) return;
 
       final prefs = context.read<PreferencesModel>();
       final defaultName = prefs.defaultReportName;
@@ -137,7 +143,7 @@ class _ReportViewerState extends State<ReportViewer> {
 
     // Add a share action if we're viewing an existing report.
     final List<Widget> shareAction = [];
-    if (!_isNew)
+    if (!_isNew) {
       shareAction.add(
         IconButton(
           icon: Icon(Icons.adaptive.share),
@@ -147,6 +153,7 @@ class _ReportViewerState extends State<ReportViewer> {
           },
         ),
       );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -166,7 +173,8 @@ class _ReportViewerState extends State<ReportViewer> {
         actions: shareAction,
         bottom: _isNew
             ? PreferredSize(
-                preferredSize: Size(0.0, DrawingConstants.twoRowAppBarHeight),
+                preferredSize:
+                    const Size(0.0, DrawingConstants.twoRowAppBarHeight),
                 child: _LayoutSelector(
                   report: report,
                   refreshCallback: _reinitializeData,
@@ -201,12 +209,14 @@ class _ReportViewerState extends State<ReportViewer> {
 // -----------------------------------------------------------------------------
 
 class _LayoutSelector extends StatefulWidget {
-  _LayoutSelector(
-      {Key? key, required this.report, required this.refreshCallback})
-      : super(key: key);
-
   final Report report;
-  final refreshCallback;
+  final Function() refreshCallback;
+
+  const _LayoutSelector({
+    super.key,
+    required this.report, 
+    required this.refreshCallback,
+  });
 
   @override
   __LayoutSelectorState createState() => __LayoutSelectorState();
@@ -228,8 +238,8 @@ class __LayoutSelectorState extends State<_LayoutSelector> {
     // Generate the list of dropdown menu items.
     _menuItems = layoutsList
         .map<DropdownMenuItem<File>>((element) => DropdownMenuItem(
-              child: Text(getFileNameWithoutExtension(element.path)),
               value: element,
+              child: Text(getFileNameWithoutExtension(element.path)),
             ))
         .toList();
   }

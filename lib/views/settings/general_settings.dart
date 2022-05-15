@@ -17,7 +17,7 @@ import 'package:reports/extensions/preferences_model_extensions.dart';
 
 /// Diplays the general settings of the app.
 class GeneralSettings extends StatelessWidget {
-  GeneralSettings({Key? key}) : super(key: key);
+  const GeneralSettings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class GeneralSettings extends StatelessWidget {
     return ListCard(
       children: [
         ListTile(
-          title: Text('settings.general.layout_naming').tr(),
+          title: const Text('settings.general.layout_naming').tr(),
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           onTap: () => showBarModalBottomSheet(
             context: context,
@@ -40,7 +40,7 @@ class GeneralSettings extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: Text('settings.general.report_naming').tr(),
+          title: const Text('settings.general.report_naming').tr(),
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           onTap: () => showBarModalBottomSheet(
             context: context,
@@ -59,7 +59,7 @@ class GeneralSettings extends StatelessWidget {
 }
 
 class _DefaultNamingView extends StatefulWidget {
-  _DefaultNamingView({
+  const _DefaultNamingView({
     Key? key,
     required this.title,
     required this.namePref,
@@ -87,7 +87,7 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
     return SafeArea(
       bottom: true,
       child: AnimatedSize(
-        duration: Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 150),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -95,14 +95,14 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
               padding:
                   const EdgeInsets.only(top: DrawingConstants.smallPadding),
               child: ListTile(
-                title: Text('settings.general.name').tr(),
+                title: const Text('settings.general.name').tr(),
                 subtitle: ControlledTextField(
                   initialValue: prefs.getString(
                     widget.namePref,
                     defaultValue: widget.defaultName,
                     ensureInitialized: true,
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 0.0,
@@ -115,17 +115,17 @@ class __DefaultNamingViewState extends State<_DefaultNamingView>
               ),
             ),
             SwitchListTile.adaptive(
-              title: Text('settings.general.include_date').tr(),
+              title: const Text('settings.general.include_date').tr(),
               value: prefs.getBool(widget.datePref),
               onChanged: (value) => prefs.setBool(widget.datePref, value),
             ),
             SwitchListTile.adaptive(
-              title: Text('settings.general.include_time').tr(),
+              title: const Text('settings.general.include_time').tr(),
               value: prefs.getBool(widget.timePref),
               onChanged: (value) => prefs.setBool(widget.timePref, value),
             ),
             ListTile(
-              title: Text('settings.general.preview').tr(),
+              title: const Text('settings.general.preview').tr(),
               subtitle: Text(
                 prefs.constructName(
                   prefs.getString(widget.namePref),
